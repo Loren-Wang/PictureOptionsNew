@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">PictureSelect</string>
+    <string name="title_activity_picture_select">PictureSelectActivity</string>
+</resources>
