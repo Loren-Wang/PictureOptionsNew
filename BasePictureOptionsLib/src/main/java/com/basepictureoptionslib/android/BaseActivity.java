@@ -1,5 +1,8 @@
 package com.basepictureoptionslib.android;
 
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -7,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.basepictureoptionslib.android.config.BaseConfig;
+
 
 /**
  * 创建时间： 0026/2018/2/26 下午 2:53
@@ -23,7 +27,10 @@ public class BaseActivity extends AppCompatActivity {
     private TextView tvTitle;//标题
     private Button btnConfirm;//确认按钮
 
+    private HandlerThread handlerThread = new HandlerThread(getClass().getName());
     protected int statusBarHeight;//状态栏高度
+    protected Handler handlerChild;//异步线程
+    protected Handler handlerUi;//ui主线程
 
     /**
      * 设置标题栏属性（只有在选择页以及裁剪页才会用的到）
@@ -61,6 +68,15 @@ public class BaseActivity extends AppCompatActivity {
                 tvTitle.setText(R.string.app_name);
             }
         }
+    }
+
+    /**
+     * 初始化线程
+     */
+    protected void initHandler(){
+        handlerThread.start();
+        handlerChild = new Handler(handlerThread.getLooper());
+        handlerUi = new Handler(Looper.getMainLooper());
     }
 
 }

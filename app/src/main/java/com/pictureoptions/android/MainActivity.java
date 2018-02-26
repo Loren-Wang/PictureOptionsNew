@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.pictureselect.android.PictureSelectActivity;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -11,6 +13,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Intent intent = new Intent(this,pic)
+        Intent intent = new Intent(this, PictureSelectActivity.class);
+        startActivity(intent);
     }
 }

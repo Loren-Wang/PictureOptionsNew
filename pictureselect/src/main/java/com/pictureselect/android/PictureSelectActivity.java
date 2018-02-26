@@ -7,6 +7,10 @@ import android.widget.Button;
 
 import com.basepictureoptionslib.android.AppCommon;
 import com.basepictureoptionslib.android.BaseActivity;
+import com.pictureselect.android.dto.StorePictureItemDto;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 创建时间： 0026/2018/2/26 下午 3:02
@@ -25,6 +29,7 @@ public class PictureSelectActivity extends BaseActivity {
     private Button btnPreview;//预览按钮
 
     private PictureSelectConfirg pictureSelectConfirg;
+    private List<StorePictureItemDto> allList = new ArrayList<>();//所有的图片集合
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +53,16 @@ public class PictureSelectActivity extends BaseActivity {
         setAcBar(pictureSelectConfirg);
         //初始化底部操作栏
 
+
+        //初始化线程
+        initHandler();
+
+    }
+
+    /**
+     * 初始化图片列表
+      */
+    private void initPictureList(){
 
     }
 
