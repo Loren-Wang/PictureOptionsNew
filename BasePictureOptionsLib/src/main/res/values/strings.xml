@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">BasePictureOptionsLib</string>
+    <string name="cancel">取消</string>
+    <string name="confirm">确定</string>
+    <string name="preview">预览</string>
+    <string name="origin_picture">原图</string>
 </resources>

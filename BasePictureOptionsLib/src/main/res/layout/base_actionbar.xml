@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--基础标题栏布局，各个功能模块通过引用使用-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/lnAcBar"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#2b3552">
+
+    <Button
+        android:id="@+id/btnCancel"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:textSize="12sp"
+        android:textColor="#ffffff"
+        android:background="@null"
+        android:text="@string/cancel"
+        style="@style/Widget.AppCompat.Button.Small"/>
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:textSize="15sp"
+        android:textColor="#ffffff"/>
+
+    <Button
+        android:id="@+id/btnConfirm"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:textSize="12sp"
+        android:textColor="#ffffff"
+        android:background="@null"
+        android:text="@string/confirm"
+        style="@style/Widget.AppCompat.Button.Small"/>
+
+</LinearLayout>
