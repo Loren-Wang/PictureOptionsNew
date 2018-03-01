@@ -2,11 +2,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.pictureselect.android">
 
-
     <application>
         <activity
             android:name=".PictureSelectActivity"
             android:label="@string/title_activity_picture_select"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".PicturePreviewActivity"
+            android:label="@string/title_activity_picture_preview"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
