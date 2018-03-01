@@ -1,52 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <include layout="@layout/base_actionbar"/>
+    <include
+        layout="@layout/base_actionbar"/>
+
+    <View
+        android:id="@+id/viewBottomOptions"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:background="#2b3552"/>
+
+    <CheckBox
+        android:id="@+id/cbShowOriginPic"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignTop="@id/viewBottomOptions"
+        android:text="@string/origin_picture"
+        android:textColor="#ffffff"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        />
+
+
+    <Button
+        android:id="@+id/btnPreview"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignTop="@id/viewBottomOptions"
+        android:layout_alignParentRight="true"
+        android:gravity="center"
+        android:textSize="12sp"
+        android:textColor="#ffffff"
+        android:background="@null"
+        android:text="@string/preview"
+        style="@style/Widget.AppCompat.Button.Small"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:background="#2b3552"
-        android:gravity="center_vertical">
-
-        <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/origin_picture"
-            android:textColor="#ffffff"
-            />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:visibility="invisible"/>
-
-        <Button
-            android:id="@+id/btnPreview"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:textSize="12sp"
-            android:textColor="#ffffff"
-            android:background="@null"
-            android:text="@string/preview"
-            style="@style/Widget.AppCompat.Button.Small"
-            />
-
-    </LinearLayout>
+        android:layout_below="@+id/viewAcBar"
+        android:layout_above="@id/viewBottomOptions"/>
 
 
-</LinearLayout>
+
+</RelativeLayout>

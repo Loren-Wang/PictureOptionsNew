@@ -1,6 +1,9 @@
 package com.pictureselect.android;
 
+import android.graphics.Color;
 import android.os.Parcel;
+import android.support.annotation.ColorRes;
+import android.support.annotation.DimenRes;
 
 import com.basepictureoptionslib.android.config.BaseConfig;
 
@@ -24,9 +27,25 @@ import java.util.List;
 public class PictureSelectConfirg extends BaseConfig{
     private int maxSelectNum = 9;//最大选择张数
     private int showRowCount = 3;//显示的列数
+    private List<String> selectedPicList = new ArrayList<>();//已选择图片列表
     private boolean isShowPreview = true;//是否需要预览（即是否显示预览按钮以及点击图片预览），默认不需要
     private boolean isShowOriginPicSelect = false;//是否需要显示原图选择
-    private List<String> selectedPicList = new ArrayList<>();//已选择图片列表
+    @ColorRes
+    private int bottomOptionsBackground;//底部操作栏背景颜色
+    @DimenRes
+    private int bottomOptionsHeight;//底部操作栏高度
+    @ColorRes
+    private int bottomOptionsTextColor;//底部操作栏文字颜色
+    @DimenRes
+    private int bottomOptionsTextSize;//底部操作栏文字大小
+
+    public PictureSelectConfirg() {
+        super();
+        bottomOptionsBackground = R.color.yudao_primary;
+        bottomOptionsTextColor = Color.WHITE;
+        bottomOptionsHeight = 44;
+        bottomOptionsTextSize = 14;
+    }
 
 
     public int getMaxSelectNum() {
@@ -74,6 +93,43 @@ public class PictureSelectConfirg extends BaseConfig{
         return this;
     }
 
+
+    public int getBottomOptionsBackground() {
+        return bottomOptionsBackground;
+    }
+
+    public PictureSelectConfirg setBottomOptionsBackground(@ColorRes int bottomOptionsBackground) {
+        this.bottomOptionsBackground = bottomOptionsBackground;
+        return this;
+    }
+
+    public int getBottomOptionsHeight() {
+        return bottomOptionsHeight;
+    }
+
+    public PictureSelectConfirg setBottomOptionsHeight(@DimenRes int bottomOptionsHeight) {
+        this.bottomOptionsHeight = bottomOptionsHeight;
+        return this;
+    }
+
+    public int getBottomOptionsTextColor() {
+        return bottomOptionsTextColor;
+    }
+
+    public PictureSelectConfirg setBottomOptionsTextColor(@ColorRes int bottomOptionsTextColor) {
+        this.bottomOptionsTextColor = bottomOptionsTextColor;
+        return this;
+    }
+
+    public int getBottomOptionsTextSize() {
+        return bottomOptionsTextSize;
+    }
+
+    public PictureSelectConfirg setBottomOptionsTextSize(@DimenRes int bottomOptionsTextSize) {
+        this.bottomOptionsTextSize = bottomOptionsTextSize;
+        return this;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -92,8 +148,7 @@ public class PictureSelectConfirg extends BaseConfig{
         dest.writeString(this.titleText);
     }
 
-    public PictureSelectConfirg() {
-    }
+
 
     protected PictureSelectConfirg(Parcel in) {
         this.maxSelectNum = in.readInt();

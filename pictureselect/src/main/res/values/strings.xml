@@ -1,4 +1,7 @@
 <resources>
-    <string name="app_name">PictureSelect</string>
-    <string name="title_activity_picture_select">PictureSelectActivity</string>
+    <string name="app_name"></string>
+    <string name="title_activity_picture_select"></string>
+    <string name="toast_hint_exceed_max_selected_num">选择数量不得大于最大选择数量</string>
+    <string name="confirm_have_size">确定(d%/d%)</string>
+    <string name="preview_have_size">预览(d%)</string>
 </resources>

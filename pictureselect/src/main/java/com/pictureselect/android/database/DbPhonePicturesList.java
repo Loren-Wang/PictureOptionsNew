@@ -80,7 +80,7 @@ public class DbPhonePicturesList{
         }
 
         for(StorePictureItemDto itemDto : searchList){
-            if(itemDto.directoryPath.equals(directoryPath)){
+            if(itemDto.getDirectoryPath().equals(directoryPath)){
                 list.add(itemDto);
             }
         }
@@ -130,7 +130,7 @@ public class DbPhonePicturesList{
         @RequiresApi(api = Build.VERSION_CODES.KITKAT)
         @Override
         public int compare(StorePictureItemDto o1, StorePictureItemDto o2) {
-            int compare = Long.compare(o1.timeModify, o2.timeModify);
+            int compare = Long.compare(o1.getTimeModify(), o2.getTimeModify());
             if(compare > 0){
                 return -1;
             }else if(compare < 0){
@@ -149,7 +149,7 @@ public class DbPhonePicturesList{
         }
         Map<String,StorePictureItemDto> map = new HashMap<>();
         for(StorePictureItemDto itemDto : searchList){
-            map.put(itemDto.absolutePath,itemDto);
+            map.put(itemDto.getAbsolutePath(),itemDto);
         }
         list.addAll(map.values());
         return list;
@@ -184,31 +184,31 @@ public class DbPhonePicturesList{
                     && absolutePathFile.exists()
                     && absolutePathFile.length() > 0
                     && cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME)) != null){
-                storePictureItemDto.absolutePath = absolutePathFile.getAbsolutePath();
+                storePictureItemDto.setAbsolutePath(absolutePathFile.getAbsolutePath());
             }else {
                 continue;
             }
 
-            storePictureItemDto._id = cursor.getInt(cursor.getColumnIndex(MediaStore.Images.Media._ID));
-            storePictureItemDto.size = cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media.SIZE));
-            storePictureItemDto.fileName = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME));
-            storePictureItemDto.mimeType = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.MIME_TYPE));
-            storePictureItemDto.timeAdd = cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media.DATE_ADDED));
-            storePictureItemDto.timeModify = cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media.DATE_MODIFIED));
-            storePictureItemDto.lat = cursor.getDouble(cursor.getColumnIndex(MediaStore.Images.Media.LATITUDE));
-            storePictureItemDto.lng = cursor.getDouble(cursor.getColumnIndex(MediaStore.Images.Media.LONGITUDE));
-            storePictureItemDto.width = cursor.getInt(cursor.getColumnIndex(MediaStore.Images.Media.WIDTH));
-            storePictureItemDto.height = cursor.getInt(cursor.getColumnIndex(MediaStore.Images.Media.HEIGHT));
-            storePictureItemDto.orientation = cursor.getInt(cursor.getColumnIndex(MediaStore.Images.Media.ORIENTATION));
-            storePictureItemDto.directoryPath = String.valueOf(storePictureItemDto.absolutePath)
-                    .replace(String.valueOf(storePictureItemDto.fileName), "");//使用intern()方法防止原有数据被破坏，该方法会创建一个新的对象字符串
+            storePictureItemDto.set_id(cursor.getInt(cursor.getColumnIndex(MediaStore.Images.Media._ID)));
+            storePictureItemDto.setSize(cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media.SIZE)));
+            storePictureItemDto.setFileName(cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME)));
+            storePictureItemDto.setMimeType(cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.MIME_TYPE)));
+            storePictureItemDto.setTimeAdd(cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media.DATE_ADDED)));
+            storePictureItemDto.setTimeModify(cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media.DATE_MODIFIED)));
+            storePictureItemDto.setLat(cursor.getDouble(cursor.getColumnIndex(MediaStore.Images.Media.LATITUDE)));
+            storePictureItemDto.setLng(cursor.getDouble(cursor.getColumnIndex(MediaStore.Images.Media.LONGITUDE)));
+            storePictureItemDto.setWidth(cursor.getInt(cursor.getColumnIndex(MediaStore.Images.Media.WIDTH)));
+            storePictureItemDto.setHeight(cursor.getInt(cursor.getColumnIndex(MediaStore.Images.Media.HEIGHT)));
+            storePictureItemDto.setOrientation(cursor.getInt(cursor.getColumnIndex(MediaStore.Images.Media.ORIENTATION)));
+            storePictureItemDto.setDirectoryPath(String.valueOf(storePictureItemDto.getAbsolutePath())
+                    .replace(String.valueOf(storePictureItemDto.getFileName()), ""));//使用intern()方法防止原有数据被破坏，该方法会创建一个新的对象字符串
 
-            list = map.get(storePictureItemDto.directoryPath);
+            list = map.get(storePictureItemDto.getDirectoryPath());
             if(list == null){
                 list = new ArrayList<>();
             }
             list.add(storePictureItemDto);
-            map.put(storePictureItemDto.directoryPath,list);
+            map.put(storePictureItemDto.getDirectoryPath(),list);
         }
         cursor.close();
         return map;
