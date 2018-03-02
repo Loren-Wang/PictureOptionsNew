@@ -54,6 +54,7 @@ public class PictureSelectActivity extends BaseActivity implements View.OnClickL
 
     protected int windowWidth;//屏幕宽度
     private final int PERMISSTION_REQUEST_FOR_EXTERNAL_STORAGE = 0;//请求存储卡权限
+    private final int GO_TO_PREVIEW_ACT_REQUES_CODE = 1;//跳转到预览界面的请求码
 
 
     @Override
@@ -103,7 +104,7 @@ public class PictureSelectActivity extends BaseActivity implements View.OnClickL
                 bundle.putParcelableArrayList(getString(R.string.go_to_poreview_act_key_for_all_list),allList);
                 bundle.putInt(getString(R.string.go_to_poreview_act_key_for_all_list_show_posi),position);
                 intent.putExtras(bundle);
-                startActivityForResult(intent, 0);
+                startActivityForResult(intent, GO_TO_PREVIEW_ACT_REQUES_CODE);
             }
 
         };
@@ -333,8 +334,72 @@ public class PictureSelectActivity extends BaseActivity implements View.OnClickL
             bundle.putParcelable(AppCommon.OPTIONS_CONFIG_KEY,pictureSelectConfirg);
             bundle.putParcelableArrayList(getString(R.string.go_to_poreview_act_key_for_select_list),selectedPicturesList);
             intent.putExtras(bundle);
-            startActivityForResult(intent, 0);
+            startActivityForResult(intent, GO_TO_PREVIEW_ACT_REQUES_CODE);
         } else {
         }
+    }
+
+    /**
+     * 接收预览界面操作后的返回值处理，不管怎样都要返回已选列表，即使已选择列表为空；
+     * ①、在接受返回值的时候需要通过一个参数来判断是否需要直接返回选中数据，并销毁该界面参数
+     *     对应的key{@link R.string.preview_end_result_for_is_finish_select_and_result}，值为布尔型
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(data != null && data.getExtras() != null){
+            switch (requestCode){
+                case GO_TO_PREVIEW_ACT_REQUES_CODE:
+                    //判断是否需要结束该界面并返回数据
+                    boolean isFinish = data.getExtras().getBoolean(getString(R.string.preview_end_result_for_is_finish_select_and_result), false);
+                    ArrayList<Parcelable> list = data.getExtras().getParcelableArrayList(getString(R.string.go_to_poreview_act_key_for_select_list));
+                    if(isFinish){
+                        resultData(RESULT_OK);
+                    }else {
+                        List<StorePictureItemDto> removeList = new ArrayList<>();
+                        List<StorePictureItemDto> addList = new ArrayList<>();
+                        Iterator<StorePictureItemDto> iterator = selectedPicturesList.iterator();
+                        StorePictureItemDto dto;
+                        while (iterator.hasNext()){
+                            dto = iterator.next();
+                            if(!list.contains(dto)){
+                                removeList.add(dto);
+                            }
+                            dto = null;
+                        }
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+
+    /**
+     * 返回结果数据
+     * @param resultCode 返回类型code码
+     */
+    private void resultData(int resultCode){
+        ArrayList<String> selectPicturePathList = new ArrayList<>();
+        Iterator<StorePictureItemDto> iterator = selectedPicturesList.iterator();
+        StorePictureItemDto dto;
+        while (iterator.hasNext()){
+            dto = iterator.next();
+            selectPicturePathList.add(dto.getAbsolutePath());
+            dto = null;
+        }
+        iterator = null;
+
+        Intent intent = new Intent();
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList(AppCommon.PICTURE_SELECT_RESULT_DATA_FOR_DTO,selectedPicturesList);
+        bundle.putStringArrayList(AppCommon.PICTURE_SELECT_RESULT_DATA_FOR_PATH,selectPicturePathList);
+        intent.putExtras(bundle);
+        setResult(resultCode,intent);
+        finish();
     }
 }

@@ -9,4 +9,5 @@
     <string name="go_to_poreview_act_key_for_select_list">select_list</string>
     <string name="go_to_poreview_act_key_for_all_list">all_list</string>
     <string name="go_to_poreview_act_key_for_all_list_show_posi">all_list_show_posi</string>
+    <string name="preview_end_result_for_is_finish_select_and_result">isFinsh</string>
 </resources>
