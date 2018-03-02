@@ -1,6 +1,7 @@
 package com.pictureselect.android;
 
 import android.Manifest;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.widget.GridLayoutManager;
@@ -39,7 +40,7 @@ import java.util.Map;
  * 修改时间：
  * 备注：
  */
-public class PictureSelectActivity extends BaseActivity {
+public class PictureSelectActivity extends BaseActivity implements View.OnClickListener {
 
     private RecyclerView recyList;//图片列表
     private View viewBottomOptions;//底部操作栏
@@ -47,8 +48,8 @@ public class PictureSelectActivity extends BaseActivity {
     private Button btnPreview;//预览按钮
 
     private PictureSelectConfirg pictureSelectConfirg;
-    private List<StorePictureItemDto> allList = new ArrayList<>();//所有的图片集合
-    private List<StorePictureItemDto> selectedPicturesList = new ArrayList<>();//已经选中的图片列表,使用哈希表存储已选中的数据由于key的唯一
+    private ArrayList<StorePictureItemDto> allList = new ArrayList<>();//所有的图片集合
+    private ArrayList<StorePictureItemDto> selectedPicturesList = new ArrayList<StorePictureItemDto>();//已经选中的图片列表,使用哈希表存储已选中的数据由于key的唯一
     private PictureSelectNoCameraAdapter pictureSelectsAdapter;
 
     protected int windowWidth;//屏幕宽度
@@ -77,23 +78,37 @@ public class PictureSelectActivity extends BaseActivity {
         cbShowOriginPic = findViewById(R.id.cbShowOriginPic);
         btnPreview = findViewById(R.id.btnPreview);
 
+        //初始话参数
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        windowWidth = dm.widthPixels;
 
         //初始化列表显示参数
         recyList.setLayoutManager(new GridLayoutManager(getApplicationContext(),pictureSelectConfirg.getShowRowCount()));
         recyList.addItemDecoration(new DividerGridItemDecoration(getApplicationContext(),null));
         //初始化适配器
-        pictureSelectsAdapter = new PictureSelectNoCameraAdapter(getApplicationContext(), windowWidth) {
+        pictureSelectsAdapter = new PictureSelectNoCameraAdapter(getApplicationContext()) {
             @Override
-            public void onItemClick(BaseViewHolder holder, StorePictureItemDto storePictureItemDto, int position) {
+            public void onSelceChangeClick(BaseViewHolder holder, StorePictureItemDto storePictureItemDto, int position) {
                 //设置选中
                 setSelectForNoCamera(storePictureItemDto,!storePictureItemDto.isSelect(),position);
             }
+
+            @Override
+            public void onImgClick(BaseViewHolder holder, StorePictureItemDto storePictureItemDto, int position) {
+                Intent intent = new Intent(PictureSelectActivity.this, PicturePreviewActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(AppCommon.OPTIONS_CONFIG_KEY,pictureSelectConfirg);
+                bundle.putParcelableArrayList(getString(R.string.go_to_poreview_act_key_for_select_list),selectedPicturesList);
+                bundle.putParcelableArrayList(getString(R.string.go_to_poreview_act_key_for_all_list),allList);
+                bundle.putInt(getString(R.string.go_to_poreview_act_key_for_all_list_show_posi),position);
+                intent.putExtras(bundle);
+                startActivityForResult(intent, 0);
+            }
+
         };
 
-        //初始话参数
-        DisplayMetrics dm = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(dm);
-        windowWidth = dm.widthPixels;
+
         //初始化线程
         initHandler();
         //初始化标题栏
@@ -118,6 +133,7 @@ public class PictureSelectActivity extends BaseActivity {
                 }
             }
         });
+        btnPreview.setOnClickListener(this);
 
     }
 
@@ -309,7 +325,16 @@ public class PictureSelectActivity extends BaseActivity {
     }
 
 
-
-
-
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.btnPreview) {
+            Intent intent = new Intent(this, PicturePreviewActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(AppCommon.OPTIONS_CONFIG_KEY,pictureSelectConfirg);
+            bundle.putParcelableArrayList(getString(R.string.go_to_poreview_act_key_for_select_list),selectedPicturesList);
+            intent.putExtras(bundle);
+            startActivityForResult(intent, 0);
+        } else {
+        }
+    }
 }

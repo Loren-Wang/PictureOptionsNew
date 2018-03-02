@@ -1,38 +1,207 @@
 package com.pictureselect.android;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.LinearLayoutManager;
+import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.ImageButton;
+import android.widget.TextView;
+
+import com.basepictureoptionslib.android.AppCommon;
+import com.basepictureoptionslib.android.utils.ParamsAndJudgeUtils;
+import com.pictureselect.android.adapter.PicturePreviewAdapter;
+import com.pictureselect.android.dto.StorePictureItemDto;
+import com.pictureselect.android.interfaces_abstract.RecycleviewViewPageOnPageChangeListener;
+import com.pictureselect.android.view.RecycleViewViewpager;
+
+import java.util.ArrayList;
 
 /**
  * 创建时间： 0001/2018/3/1 下午 5:55
  * 创建人：王亮（Loren wang）
  * 功能作用：图片选择的预览图界面
- * 思路：
+ * 思路： 两种模式，一种是通过预览按钮进行预览，这个时候仅仅显示选中的图片
+ *               第二种是点击图片进行预览，这个时候就要浏览所有的图片同时定位到点击的图片
+ *       两种模式通用部分：①、标题栏以及状态栏使用半透明模式，同时预览的图片使用全屏模式，标题栏为三个模块，分别是后退，
+ *                         图片位置显示，以及确定按钮，底部操作栏为选中按钮以及原图按钮
+ *                      ②、图片预览列表使用recycleview的仿viewpager效果的；
+ *                      ③、界面主题使用传入的config配置主题，同样，标题栏以及状态栏高度也使用config配置主题；
+ *       通过intent接收参数信息，参数key分别为{@link R.string.go_to_poreview_act_key_for_select_list}:已选择图片列表
+ *                                       {@link R.string.go_to_poreview_act_key_for_all_list}:所有图片列表
+ *                                       {@link com.basepictureoptionslib.android.AppCommon.OPTIONS_CONFIG_KEY}:主题等参数配置类
+ *       进入该界面需要使用带有返回值的方式进入，同时操作完成后需要销毁该界面所有数据，后续通过setResult()返回最后数据
  * 修改人：
  * 修改时间：
  * 备注：
  */
 public class PicturePreviewActivity extends AppCompatActivity {
 
+    private View viewAcBar;//标题栏背景
+    private TextView tvTitle;//标题
+    private ImageButton imgBtnback;//后退按钮
+    private Button btnConfirm;//确定按钮
+    private View viewBottomOptions;//底部操作栏背景
+    private CheckBox cbShowOriginPic;//原图选择
+    private CheckBox cbShowOriginSelect;//当前图片选中选择
+    private RecycleViewViewpager recyList;//预览图列表
+
+    private int aBarAndBottomAlpha = (int) (255 * 0.5f);//标题栏以及底部操作栏透明度
+    private int aBarAndBottomBgColor;//标题栏以及底部操作栏颜色
+    private PictureSelectConfirg pictureSelectConfirg;
+    private PicturePreviewAdapter picturePreviewAdapter;
+    private ArrayList<StorePictureItemDto> allList;
+    private ArrayList<StorePictureItemDto> selectedPicturesList;
+    private int windowWidth;
+    private int windowHeight;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if(getIntent().getExtras() != null){
+            Parcelable parcelable = getIntent().getExtras().getParcelable(AppCommon.OPTIONS_CONFIG_KEY);
+            if(parcelable == null){
+                pictureSelectConfirg = new PictureSelectConfirg();
+            }else {
+                pictureSelectConfirg = (PictureSelectConfirg) parcelable;
+            }
+        }else {
+            pictureSelectConfirg = new PictureSelectConfirg();
+        }
+        setTheme(pictureSelectConfirg.getThemeId());
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_picture_preview);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        viewAcBar = findViewById(R.id.viewAcBar);
+        tvTitle = findViewById(R.id.tvTitle);
+        imgBtnback = findViewById(R.id.imgBtnback);
+        btnConfirm = findViewById(R.id.btnConfirm);
+        viewBottomOptions = findViewById(R.id.viewBottomOptions);
+        cbShowOriginPic = findViewById(R.id.cbShowOriginPic);
+        cbShowOriginSelect = findViewById(R.id.cbShowOriginSelect);
+        recyList = findViewById(R.id.recyList);
+        recyList.setLayoutManager(new LinearLayoutManager(getApplicationContext(),LinearLayoutManager.HORIZONTAL,false));
+
+        //初始话参数
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        windowWidth = dm.widthPixels;
+        windowHeight = dm.heightPixels;
+        picturePreviewAdapter = new PicturePreviewAdapter(getApplicationContext(),windowWidth,windowHeight);
+        recyList.setRecycleviewViewPageOnPageChangeListener(new RecycleviewViewPageOnPageChangeListener() {
             @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+            public void onPageChange(int nowPagePosition) {
+                StorePictureItemDto itemDto = allList == null ? selectedPicturesList.get(nowPagePosition) : allList.get(nowPagePosition);
+                if(itemDto.isSelect()){
+                    cbShowOriginSelect.setChecked(true);
+                }else {
+                    cbShowOriginSelect.setChecked(false);
+                }
             }
         });
+
+
+
+        //设置标题栏属性
+        setAcBar();
+        //初始化底部操作栏
+        initBottomOptions();
+        //初始化图片显示列表
+        initShowList();
+
+
+
+    }
+
+    /**
+     * 设置标题栏属性
+     */
+    private void setAcBar(){
+        int statusBarHeight = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            statusBarHeight = getResources().getDimensionPixelSize(resourceId);
+        }
+        //设置标题栏最外层布局属性
+        int color = getResources().getColor(pictureSelectConfirg.getaBarColor());
+        int red = (color & 0xff0000) >> 16;
+        int green = (color & 0x00ff00) >> 8;
+        int blue = (color & 0x0000ff);
+        aBarAndBottomBgColor = (aBarAndBottomAlpha << 24) | (red << 16) | (green << 8) | blue;
+        ViewGroup.LayoutParams viewAcBarLayoutParams = viewAcBar.getLayoutParams();
+        int height = ParamsAndJudgeUtils.dip2px(pictureSelectConfirg.getaBarHeight()) + statusBarHeight;
+        if(viewAcBarLayoutParams == null){
+            viewAcBarLayoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,height);
+        }else {
+            viewAcBarLayoutParams.height = height;
+        }
+        viewAcBar.setBackgroundColor(aBarAndBottomBgColor);
+        viewAcBar.setLayoutParams(viewAcBarLayoutParams);
+
+        //设置标题文字颜色
+        tvTitle.setTextColor(pictureSelectConfirg.getTitleColor());
+        //设置标题栏确认取消文字大小颜色
+        btnConfirm.setTextSize(pictureSelectConfirg.getaBarTextSize());
+        btnConfirm.setTextColor(pictureSelectConfirg.getaBarTextColor());
+        //设置标题、确认按钮、后退按钮padding
+        tvTitle.setPadding(tvTitle.getPaddingLeft(),tvTitle.getPaddingTop() + statusBarHeight,tvTitle.getPaddingRight(),tvTitle.getPaddingBottom());
+        imgBtnback.setPadding(imgBtnback.getPaddingLeft(),imgBtnback.getPaddingTop() + statusBarHeight,imgBtnback.getPaddingRight(),imgBtnback.getPaddingBottom());
+        btnConfirm.setPadding(btnConfirm.getPaddingLeft(),btnConfirm.getPaddingTop() + statusBarHeight,btnConfirm.getPaddingRight(),btnConfirm.getPaddingBottom());
+    }
+
+    /**
+     * 初始化底部操作栏
+     */
+    private void initBottomOptions() {
+        if(pictureSelectConfirg.isShowPreview() || pictureSelectConfirg.isShowOriginPicSelect()){
+            //判断是否需要原图选择
+            if(!pictureSelectConfirg.isShowOriginPicSelect()){
+                cbShowOriginPic.setVisibility(View.GONE);
+            }
+
+            //设置底部操作栏高度以及背景颜色
+            int height = ParamsAndJudgeUtils.dip2px(pictureSelectConfirg.getBottomOptionsHeight());
+            ViewGroup.LayoutParams layoutParams = viewBottomOptions.getLayoutParams();
+            if(layoutParams == null){
+                layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,height);
+            }else {
+                layoutParams.height = height;
+            }
+            viewBottomOptions.setBackgroundColor(aBarAndBottomBgColor);
+            viewBottomOptions.setLayoutParams(layoutParams);
+
+            //设置底部操作栏文字颜色以及大小
+            cbShowOriginSelect.setTextSize(pictureSelectConfirg.getBottomOptionsTextSize());
+            cbShowOriginPic.setTextSize(pictureSelectConfirg.getBottomOptionsTextSize());
+            cbShowOriginSelect.setTextColor(pictureSelectConfirg.getBottomOptionsTextColor());
+            cbShowOriginPic.setTextColor(pictureSelectConfirg.getBottomOptionsTextColor());
+        }
+    }
+
+    /**
+     * 初始化预览图片列表
+     */
+    private void initShowList(){
+        if (getIntent().getExtras() != null){
+            allList = getIntent().getExtras().getParcelableArrayList(getString(R.string.go_to_poreview_act_key_for_all_list));
+            selectedPicturesList = getIntent().getExtras().getParcelableArrayList(getString(R.string.go_to_poreview_act_key_for_select_list));
+            if(selectedPicturesList == null){
+                selectedPicturesList = new ArrayList();
+            }
+            if(allList == null) {
+                picturePreviewAdapter.setList(selectedPicturesList);
+            }else {
+                picturePreviewAdapter.setList(allList);
+            }
+            recyList.setAdapter(picturePreviewAdapter);
+            recyList.scrollToPosition(getIntent().getExtras().getInt(getString(R.string.go_to_poreview_act_key_for_all_list_show_posi),0));
+
+        }
     }
 
 }

@@ -93,8 +93,8 @@ public class DbPhonePicturesList{
      * 获取所有的图片
      * @return
      */
-    public List<StorePictureItemDto> getAllList(Map<String, List<StorePictureItemDto>> map){
-        List<StorePictureItemDto> list = new ArrayList<>();
+    public ArrayList<StorePictureItemDto> getAllList(Map<String, List<StorePictureItemDto>> map){
+        ArrayList<StorePictureItemDto> list = new ArrayList<>();
         if(map != null){
             Iterator<Map.Entry<String, List<StorePictureItemDto>>> iterator = map.entrySet().iterator();
             while (iterator.hasNext()){
@@ -142,8 +142,8 @@ public class DbPhonePicturesList{
     };
 
     //去除重复项
-    private List<StorePictureItemDto> wipeOffRepetitionDto(List<StorePictureItemDto> searchList){
-        List<StorePictureItemDto> list = new ArrayList<>();
+    private ArrayList<StorePictureItemDto> wipeOffRepetitionDto(List<StorePictureItemDto> searchList){
+        ArrayList<StorePictureItemDto> list = new ArrayList<>();
         if(!check(searchList)){
             return list;
         }

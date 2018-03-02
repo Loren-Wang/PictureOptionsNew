@@ -5,11 +5,9 @@
     <application>
         <activity
             android:name=".PictureSelectActivity"
-            android:label="@string/title_activity_picture_select"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".PicturePreviewActivity"
-            android:label="@string/title_activity_picture_preview"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

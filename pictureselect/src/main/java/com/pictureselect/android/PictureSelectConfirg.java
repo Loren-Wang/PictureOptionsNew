@@ -139,27 +139,39 @@ public class PictureSelectConfirg extends BaseConfig{
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.maxSelectNum);
         dest.writeInt(this.showRowCount);
+        dest.writeStringList(this.selectedPicList);
         dest.writeByte(this.isShowPreview ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isShowOriginPicSelect ? (byte) 1 : (byte) 0);
-        dest.writeStringList(this.selectedPicList);
+        dest.writeInt(this.bottomOptionsBackground);
+        dest.writeInt(this.bottomOptionsHeight);
+        dest.writeInt(this.bottomOptionsTextColor);
+        dest.writeInt(this.bottomOptionsTextSize);
         dest.writeInt(this.aBarHeight);
         dest.writeInt(this.aBarColor);
         dest.writeInt(this.titleColor);
         dest.writeString(this.titleText);
+        dest.writeInt(this.aBarTextColor);
+        dest.writeInt(this.aBarTextSize);
+        dest.writeInt(this.themeId);
     }
-
-
 
     protected PictureSelectConfirg(Parcel in) {
         this.maxSelectNum = in.readInt();
         this.showRowCount = in.readInt();
+        this.selectedPicList = in.createStringArrayList();
         this.isShowPreview = in.readByte() != 0;
         this.isShowOriginPicSelect = in.readByte() != 0;
-        this.selectedPicList = in.createStringArrayList();
+        this.bottomOptionsBackground = in.readInt();
+        this.bottomOptionsHeight = in.readInt();
+        this.bottomOptionsTextColor = in.readInt();
+        this.bottomOptionsTextSize = in.readInt();
         this.aBarHeight = in.readInt();
         this.aBarColor = in.readInt();
         this.titleColor = in.readInt();
         this.titleText = in.readString();
+        this.aBarTextColor = in.readInt();
+        this.aBarTextSize = in.readInt();
+        this.themeId = in.readInt();
     }
 
     public static final Creator<PictureSelectConfirg> CREATOR = new Creator<PictureSelectConfirg>() {

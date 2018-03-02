@@ -6,17 +6,14 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.pictureselect.android.R;
-import com.pictureselect.android.dto.StorePictureItemDto;
 import com.pictureselect.android.recycleViewHolder.BaseViewHolder;
 
 
 public abstract class BasePictureSelectAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
-    private int windowWidth;
     private LayoutInflater inflater;
-    protected BasePictureSelectAdapter(Context context,int windowWidth){
+    protected BasePictureSelectAdapter(Context context){
         inflater = LayoutInflater.from(context);
-        this.windowWidth = windowWidth;
     }
 
     @Override

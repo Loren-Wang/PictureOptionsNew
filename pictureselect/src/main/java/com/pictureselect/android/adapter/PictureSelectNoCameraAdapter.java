@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.View;
 
 import com.pictureselect.android.dto.StorePictureItemDto;
+import com.pictureselect.android.interfaces_abstract.ChangeSelectStateViewCallback;
 import com.pictureselect.android.recycleViewHolder.BaseViewHolder;
 
 import java.util.ArrayList;
@@ -12,8 +13,8 @@ import java.util.List;
 public abstract class PictureSelectNoCameraAdapter extends BasePictureSelectAdapter {
 
     private List<StorePictureItemDto> list = new ArrayList<>();
-    public PictureSelectNoCameraAdapter(Context context, int windowWidth) {
-        super(context, windowWidth);
+    public PictureSelectNoCameraAdapter(Context context) {
+        super(context);
     }
 
     public PictureSelectNoCameraAdapter setList(List<StorePictureItemDto> list) {
@@ -49,10 +50,21 @@ public abstract class PictureSelectNoCameraAdapter extends BasePictureSelectAdap
         holder.setImagePath(storePictureItemDto.getAbsolutePath());
         holder.setSelectState(storePictureItemDto.isSelect());
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
+        holder.viewSelect.setChangeSelectStateViewCallback(new ChangeSelectStateViewCallback() {
+            @Override
+            public void chageState() {
+                onSelceChangeClick(holder,storePictureItemDto,list.indexOf(storePictureItemDto));
+            }
+
+            @Override
+            public void otherTouch() {
+                onImgClick(holder,storePictureItemDto,list.indexOf(storePictureItemDto));
+            }
+        });
+        holder.imgPic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onItemClick(holder,storePictureItemDto,list.indexOf(storePictureItemDto));
+                onImgClick(holder,storePictureItemDto,list.indexOf(storePictureItemDto));
             }
         });
     }
@@ -68,5 +80,6 @@ public abstract class PictureSelectNoCameraAdapter extends BasePictureSelectAdap
      * @param position
      * @return
      */
-    public abstract void onItemClick(BaseViewHolder holder,StorePictureItemDto storePictureItemDto,int position);
+    public abstract void onSelceChangeClick(BaseViewHolder holder,StorePictureItemDto storePictureItemDto,int position);
+    public abstract void onImgClick(BaseViewHolder holder,StorePictureItemDto storePictureItemDto,int position);
 }

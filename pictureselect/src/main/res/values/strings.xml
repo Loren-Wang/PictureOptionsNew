@@ -4,5 +4,9 @@
     <string name="toast_hint_exceed_max_selected_num">选择数量不得大于最大选择数量</string>
     <string name="confirm_have_size">确定(d%/d%)</string>
     <string name="preview_have_size">预览(d%)</string>
-    <string name="title_activity_picture_preview">PicturePreviewActivity</string>
+
+    <!--跳转到与偶按界面需要传递的参数key-->
+    <string name="go_to_poreview_act_key_for_select_list">select_list</string>
+    <string name="go_to_poreview_act_key_for_all_list">all_list</string>
+    <string name="go_to_poreview_act_key_for_all_list_show_posi">all_list_show_posi</string>
 </resources>

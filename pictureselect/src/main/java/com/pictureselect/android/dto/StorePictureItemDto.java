@@ -1,6 +1,7 @@
 package com.pictureselect.android.dto;
 
-import java.io.Serializable;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 /**
  * Created by wangliang on 0013/2017/3/13.
@@ -11,7 +12,7 @@ import java.io.Serializable;
  * 修改人：
  * 修改时间：
  */
-public class StorePictureItemDto implements Serializable{
+public class StorePictureItemDto implements Parcelable {
     private Integer _id;//主键id
     private String directoryPath;//文件所在的文件夹
     private String absolutePath;//绝对路径
@@ -171,4 +172,60 @@ public class StorePictureItemDto implements Serializable{
                 ", height=" + height +
                 '}';
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(this._id);
+        dest.writeString(this.directoryPath);
+        dest.writeString(this.absolutePath);
+        dest.writeValue(this.size);
+        dest.writeString(this.fileName);
+        dest.writeString(this.mimeType);
+        dest.writeValue(this.timeAdd);
+        dest.writeValue(this.timeModify);
+        dest.writeValue(this.lat);
+        dest.writeValue(this.lng);
+        dest.writeValue(this.orientation);
+        dest.writeValue(this.width);
+        dest.writeValue(this.height);
+        dest.writeByte(this.isSelect ? (byte) 1 : (byte) 0);
+    }
+
+    public StorePictureItemDto() {
+    }
+
+    protected StorePictureItemDto(Parcel in) {
+        this._id = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.directoryPath = in.readString();
+        this.absolutePath = in.readString();
+        this.size = (Long) in.readValue(Long.class.getClassLoader());
+        this.fileName = in.readString();
+        this.mimeType = in.readString();
+        this.timeAdd = (Long) in.readValue(Long.class.getClassLoader());
+        this.timeModify = (Long) in.readValue(Long.class.getClassLoader());
+        this.lat = (Double) in.readValue(Double.class.getClassLoader());
+        this.lng = (Double) in.readValue(Double.class.getClassLoader());
+        this.orientation = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.width = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.height = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.isSelect = in.readByte() != 0;
+    }
+
+    public static final Creator<StorePictureItemDto> CREATOR = new Creator<StorePictureItemDto>() {
+        @Override
+        public StorePictureItemDto createFromParcel(Parcel source) {
+            return new StorePictureItemDto(source);
+        }
+
+        @Override
+        public StorePictureItemDto[] newArray(int size) {
+            return new StorePictureItemDto[size];
+        }
+    };
 }

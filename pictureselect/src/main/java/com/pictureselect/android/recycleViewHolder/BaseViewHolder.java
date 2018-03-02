@@ -1,19 +1,22 @@
 package com.pictureselect.android.recycleViewHolder;
 
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.basepictureoptionslib.android.plugin.image.ImageLoadingUtis;
 import com.pictureselect.android.R;
+import com.pictureselect.android.view.ChangeSelectStateView;
 import com.pictureselect.android.view.PictureSelectView;
 
 public class BaseViewHolder extends RecyclerView.ViewHolder {
     public PictureSelectView imgPic;
-    public View viewSelect;
+    public ChangeSelectStateView viewSelect;
     public BaseViewHolder(View itemView) {
         super(itemView);
         imgPic = itemView.findViewById(R.id.imgPic);
         viewSelect = itemView.findViewById(R.id.viewSelect);
+        viewSelect.setEffectiveArea(0.5f,0f,1f,0.5f);
     }
 
     /**
@@ -30,9 +33,9 @@ public class BaseViewHolder extends RecyclerView.ViewHolder {
      */
     public void setSelectState(boolean state){
         if(state){
-            viewSelect.setVisibility(View.VISIBLE);
+            viewSelect.setBackgroundColor(Color.parseColor("#99000000"));
         }else {
-            viewSelect.setVisibility(View.GONE);
+            viewSelect.setBackgroundColor(Color.parseColor("#00000000"));
         }
     }
 
