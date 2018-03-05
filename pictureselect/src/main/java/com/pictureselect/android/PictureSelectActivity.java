@@ -105,6 +105,7 @@ public class PictureSelectActivity extends BaseActivity implements View.OnClickL
                 bundle.putInt(getString(R.string.go_to_poreview_act_key_for_all_list_show_posi),position);
                 intent.putExtras(bundle);
                 startActivityForResult(intent, GO_TO_PREVIEW_ACT_REQUES_CODE);
+                overridePendingTransition(R.anim.anim_from_center,0);
             }
 
         };
@@ -135,6 +136,8 @@ public class PictureSelectActivity extends BaseActivity implements View.OnClickL
             }
         });
         btnPreview.setOnClickListener(this);
+        btnCancel.setOnClickListener(this);
+        btnConfirm.setOnClickListener(this);
 
     }
 
@@ -325,17 +328,22 @@ public class PictureSelectActivity extends BaseActivity implements View.OnClickL
         }
     }
 
-
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.btnPreview) {
-            Intent intent = new Intent(this, PicturePreviewActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putParcelable(AppCommon.OPTIONS_CONFIG_KEY,pictureSelectConfirg);
-            bundle.putParcelableArrayList(getString(R.string.go_to_poreview_act_key_for_select_list),selectedPicturesList);
-            intent.putExtras(bundle);
-            startActivityForResult(intent, GO_TO_PREVIEW_ACT_REQUES_CODE);
-        } else {
+        if (Integer.compare(v.getId(),R.id.btnPreview) == 0) {
+            if(selectedPicturesList.size() > 0) {
+                Intent intent = new Intent(this, PicturePreviewActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(AppCommon.OPTIONS_CONFIG_KEY, pictureSelectConfirg);
+                bundle.putParcelableArrayList(getString(R.string.go_to_poreview_act_key_for_select_list), selectedPicturesList);
+                intent.putExtras(bundle);
+                startActivityForResult(intent, GO_TO_PREVIEW_ACT_REQUES_CODE);
+                overridePendingTransition(R.anim.anim_from_center, 0);
+            }
+        } else if(Integer.compare(v.getId(),R.id.btnCancel) == 0){
+            finish();
+        }else if(Integer.compare(v.getId(),R.id.btnConfirm) == 0){
+            resultData(RESULT_OK);
         }
     }
 
@@ -355,19 +363,74 @@ public class PictureSelectActivity extends BaseActivity implements View.OnClickL
                 case GO_TO_PREVIEW_ACT_REQUES_CODE:
                     //判断是否需要结束该界面并返回数据
                     boolean isFinish = data.getExtras().getBoolean(getString(R.string.preview_end_result_for_is_finish_select_and_result), false);
-                    ArrayList<Parcelable> list = data.getExtras().getParcelableArrayList(getString(R.string.go_to_poreview_act_key_for_select_list));
+                    ArrayList<StorePictureItemDto> list = data.getExtras().getParcelableArrayList(getString(R.string.go_to_poreview_act_key_for_select_list));
                     if(isFinish){
                         resultData(RESULT_OK);
                     }else {
+                        List<StorePictureItemDto> previewSlectList = new ArrayList<>();
+                        Iterator<StorePictureItemDto> iteratorAll = allList.iterator();
+                        Iterator<StorePictureItemDto> iteratorPreview;
+                        StorePictureItemDto dtoForAll;
+                        StorePictureItemDto dtoForPreview;
+                        while (iteratorAll.hasNext()){
+                            dtoForAll = iteratorAll.next();
+                            if(list.size() <= 0){
+                                dtoForAll = null;
+                                break;
+                            }else {
+                                iteratorPreview = list.iterator();
+                                while (iteratorPreview.hasNext()) {
+                                    dtoForPreview = iteratorPreview.next();
+                                    if (dtoForAll.getAbsolutePath().equals(dtoForPreview.getAbsolutePath())) {
+                                        previewSlectList.add(dtoForAll);
+                                        list.remove(dtoForPreview);
+                                        dtoForPreview = null;
+                                        break;
+                                    }
+                                    dtoForPreview = null;
+                                }
+                            }
+                            dtoForAll = null;
+                        }
+                        list.clear();
+                        list = null;
+
+
                         List<StorePictureItemDto> removeList = new ArrayList<>();
                         List<StorePictureItemDto> addList = new ArrayList<>();
-                        Iterator<StorePictureItemDto> iterator = selectedPicturesList.iterator();
                         StorePictureItemDto dto;
+                        //获取被移除图片
+                        Iterator<StorePictureItemDto> iterator = selectedPicturesList.iterator();
                         while (iterator.hasNext()){
                             dto = iterator.next();
-                            if(!list.contains(dto)){
+                            //在返回列表中没有该页面选中中的一个的话，代表该图片是被取消选中了
+                            if(!previewSlectList.contains(dto)){
                                 removeList.add(dto);
                             }
+                            dto = null;
+                        }
+                        //获取被添加图片
+                        iterator = previewSlectList.iterator();
+                        while (iterator.hasNext()){
+                            dto = iterator.next();
+                            //在该页选中列表中不存在返回列表中的图片的话代表图片是新加的
+                            if(!selectedPicturesList.contains(dto)){
+                                addList.add(dto);
+                            }
+                            dto = null;
+                        }
+                        //在该页面选中中移除被移除图片
+                        iterator = removeList.iterator();
+                        while (iterator.hasNext()){
+                            dto = iterator.next();
+                            setSelectForNoCamera(dto,false,allList.indexOf(dto));
+                            dto = null;
+                        }
+                        //在该页面选中中添加预览中新添加的图片
+                        iterator = addList.iterator();
+                        while (iterator.hasNext()){
+                            dto = iterator.next();
+                            setSelectForNoCamera(dto,true,allList.indexOf(dto));
                             dto = null;
                         }
                     }
@@ -401,5 +464,26 @@ public class PictureSelectActivity extends BaseActivity implements View.OnClickL
         intent.putExtras(bundle);
         setResult(resultCode,intent);
         finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        pictureSelectsAdapter = null;
+        selectedPicturesList.clear();
+        selectedPicturesList = null;
+        allList.clear();
+        allList = null;
+        pictureSelectConfirg = null;
+        btnPreview = null;
+        cbShowOriginPic = null;
+        viewBottomOptions = null;
+        recyList = null;
+
+        super.onDestroy();
     }
 }

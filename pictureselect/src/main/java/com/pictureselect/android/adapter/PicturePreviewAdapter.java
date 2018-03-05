@@ -32,6 +32,7 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<PicturePreviewVi
         return this;
     }
 
+
     @Override
     public PicturePreviewViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new PicturePreviewViewHolder(inflater.inflate(R.layout.item_list_picture_preview,null),windowWidth,windowHeight);

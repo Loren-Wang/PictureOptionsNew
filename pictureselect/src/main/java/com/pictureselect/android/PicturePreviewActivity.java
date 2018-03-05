@@ -1,19 +1,21 @@
 package com.pictureselect.android;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.basepictureoptionslib.android.AppCommon;
+import com.basepictureoptionslib.android.plugin.image.ImageLoadingUtis;
 import com.basepictureoptionslib.android.utils.ParamsAndJudgeUtils;
 import com.pictureselect.android.adapter.PicturePreviewAdapter;
 import com.pictureselect.android.dto.StorePictureItemDto;
@@ -57,6 +59,7 @@ public class PicturePreviewActivity extends AppCompatActivity {
     private PicturePreviewAdapter picturePreviewAdapter;
     private ArrayList<StorePictureItemDto> allList;
     private ArrayList<StorePictureItemDto> selectedPicturesList;
+    private ArrayList<StorePictureItemDto> adapterShowList;//适配器显示列表
     private int windowWidth;
     private int windowHeight;
 
@@ -72,8 +75,6 @@ public class PicturePreviewActivity extends AppCompatActivity {
         }else {
             pictureSelectConfirg = new PictureSelectConfirg();
         }
-        setTheme(pictureSelectConfirg.getThemeId());
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_picture_preview);
 
@@ -96,7 +97,7 @@ public class PicturePreviewActivity extends AppCompatActivity {
         recyList.setRecycleviewViewPageOnPageChangeListener(new RecycleviewViewPageOnPageChangeListener() {
             @Override
             public void onPageChange(int nowPagePosition) {
-                StorePictureItemDto itemDto = allList == null ? selectedPicturesList.get(nowPagePosition) : allList.get(nowPagePosition);
+                StorePictureItemDto itemDto = adapterShowList.get(nowPagePosition);
                 if(itemDto.isSelect()){
                     cbShowOriginSelect.setChecked(true);
                 }else {
@@ -104,6 +105,55 @@ public class PicturePreviewActivity extends AppCompatActivity {
                 }
             }
         });
+
+        cbShowOriginSelect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                StorePictureItemDto nowPosiShowDto = adapterShowList.get(recyList.getNowPosi());
+                if(nowPosiShowDto != null) {
+                    nowPosiShowDto.setSelect(cbShowOriginSelect.isChecked());
+                    if (cbShowOriginSelect.isChecked()) {
+                        selectedPicturesList.add(nowPosiShowDto);
+                    }else {
+                        selectedPicturesList.remove(nowPosiShowDto);
+                    }
+                    adapterShowList.set(recyList.getNowPosi(),nowPosiShowDto);
+                    showSelectSize();
+                }
+            }
+        });
+
+        btnConfirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resultData(true);
+            }
+        });
+
+        imgBtnback.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resultData(false);
+            }
+        });
+
+        recyList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                try {
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                        ImageLoadingUtis.getInstance().onResume();
+                    } else {
+                        ImageLoadingUtis.getInstance().onPause();
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        });
+
+
 
 
 
@@ -194,14 +244,75 @@ public class PicturePreviewActivity extends AppCompatActivity {
                 selectedPicturesList = new ArrayList();
             }
             if(allList == null) {
-                picturePreviewAdapter.setList(selectedPicturesList);
+                adapterShowList = new ArrayList<>(selectedPicturesList);
             }else {
-                picturePreviewAdapter.setList(allList);
+                adapterShowList = new ArrayList<>(allList);
             }
+            picturePreviewAdapter.setList(adapterShowList);
             recyList.setAdapter(picturePreviewAdapter);
             recyList.scrollToPosition(getIntent().getExtras().getInt(getString(R.string.go_to_poreview_act_key_for_all_list_show_posi),0));
 
+            showSelectSize();
         }
     }
 
+    /**
+     * 显示选中大小
+     */
+    private void showSelectSize(){
+        int nowSize = selectedPicturesList.size();
+        if(nowSize > 0) {
+            btnConfirm.setText(getResources().getString(R.string.confirm_have_size).replaceFirst("d%", String.valueOf(nowSize))
+                    .replaceFirst("d%", String.valueOf(pictureSelectConfirg.getMaxSelectNum())));
+        }else {
+            btnConfirm.setText(R.string.confirm);
+        }
+    }
+
+
+    private void resultData(boolean isFinishPictureSelect){
+        Intent intent = new Intent();
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(getString(R.string.preview_end_result_for_is_finish_select_and_result),isFinishPictureSelect);
+        bundle.putParcelableArrayList(getString(R.string.go_to_poreview_act_key_for_select_list),selectedPicturesList);
+        intent.putExtras(bundle);
+        setResult(RESULT_OK,intent);
+        finish();
+        overridePendingTransition(0,R.anim.frame_anim_to_bottom);
+    }
+
+    @Override
+    public void onBackPressed() {
+        resultData(false);
+    }
+
+    @Override
+    protected void onDestroy() {
+        if(adapterShowList != null){
+            adapterShowList.clear();
+            adapterShowList = null;
+        }
+        if(selectedPicturesList != null){
+            selectedPicturesList.clear();
+            selectedPicturesList = null;
+        }
+        if(allList != null){
+            allList.clear();
+            allList = null;
+        }
+
+        picturePreviewAdapter = null;
+        pictureSelectConfirg = null;
+        recyList = null;
+        cbShowOriginSelect = null;
+        cbShowOriginPic = null;
+        viewBottomOptions = null;
+        btnConfirm = null;
+        imgBtnback = null;
+        tvTitle = null;
+        viewAcBar = null;
+        setContentView(R.layout.activity_base_null);
+        System.gc();
+        super.onDestroy();
+    }
 }

@@ -10,7 +10,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.basepictureoptionslib.android.config.BaseConfig;
@@ -157,4 +156,10 @@ public class BaseActivity extends AppCompatActivity {
         handlerUi = new Handler(Looper.getMainLooper());
     }
 
+    @Override
+    protected void onDestroy() {
+        setContentView(R.layout.activity_base_null);
+        System.gc();
+        super.onDestroy();
+    }
 }
