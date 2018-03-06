@@ -46,7 +46,7 @@ public class ChangePictureSelectStateView extends View {
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean dispatchTouchEvent(MotionEvent event) {
         if(changeSelectStateViewCallback != null){
             switch (event.getAction()){
                 case MotionEvent.ACTION_DOWN:
@@ -72,9 +72,11 @@ public class ChangePictureSelectStateView extends View {
                     break;
             }
             return true;
+        }else {
+            return super.dispatchTouchEvent(event);
         }
-        return super.onTouchEvent(event);
     }
+
 
     /**
      * 设置有效范围

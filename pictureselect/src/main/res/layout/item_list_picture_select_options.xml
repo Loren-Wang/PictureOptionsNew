@@ -16,7 +16,10 @@
         android:id="@+id/viewSelect"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="right"
+        android:layout_alignLeft="@id/imgPicture"
+        android:layout_alignRight="@id/imgPicture"
+        android:layout_alignTop="@id/imgPicture"
+        android:layout_alignBottom="@id/imgPicture"
         />
 
 </RelativeLayout>
