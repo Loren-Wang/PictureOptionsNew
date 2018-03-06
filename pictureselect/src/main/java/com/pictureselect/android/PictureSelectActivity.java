@@ -319,9 +319,8 @@ public class PictureSelectActivity extends BaseActivity implements View.OnClickL
     private void showSelectSize(){
         int nowSize = selectedPicturesList.size();
         if(nowSize > 0) {
-            btnPreview.setText(getResources().getString(R.string.preview_have_size).replace("d%", String.valueOf(nowSize)));
-            btnConfirm.setText(getResources().getString(R.string.confirm_have_size).replaceFirst("d%", String.valueOf(nowSize))
-                    .replaceFirst("d%", String.valueOf(pictureSelectConfirg.getMaxSelectNum())));
+            btnPreview.setText(getResources().getString(R.string.preview_have_size) + "(" + nowSize + ")");
+            btnConfirm.setText(getResources().getString(R.string.confirm_have_size) + "(" + nowSize + "/" + pictureSelectConfirg.getMaxSelectNum() + ")");
         }else {
             btnPreview.setText(R.string.preview);
             btnConfirm.setText(R.string.confirm);

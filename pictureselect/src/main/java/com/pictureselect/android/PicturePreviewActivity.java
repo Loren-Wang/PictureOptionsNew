@@ -262,8 +262,7 @@ public class PicturePreviewActivity extends AppCompatActivity {
     private void showSelectSize(){
         int nowSize = selectedPicturesList.size();
         if(nowSize > 0) {
-            btnConfirm.setText(getResources().getString(R.string.confirm_have_size).replaceFirst("d%", String.valueOf(nowSize))
-                    .replaceFirst("d%", String.valueOf(pictureSelectConfirg.getMaxSelectNum())));
+            btnConfirm.setText(getResources().getString(R.string.confirm_have_size) + "(" + nowSize + "/" + pictureSelectConfirg.getMaxSelectNum() + ")");
         }else {
             btnConfirm.setText(R.string.confirm);
         }
