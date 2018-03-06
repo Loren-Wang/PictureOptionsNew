@@ -25,7 +25,7 @@ import com.pictureselect.android.interfaces_abstract.ChangeSelectStateViewCallba
  * 修改时间：
  * 备注：
  */
-public class ChangeSelectStateView extends View {
+public class ChangePictureSelectStateView extends View {
 
     private float startPosiForWidthPercent = 0f;//起始位置所处宽度百分比
     private float startPosiForHeightPercent = 0f;//起始位置所处高度百分比
@@ -33,15 +33,15 @@ public class ChangeSelectStateView extends View {
     private float endPosiForHeightPercent = 1f;//结束位置所处高度百分比
     private ChangeSelectStateViewCallback changeSelectStateViewCallback;//触摸点击回调
 
-    public ChangeSelectStateView(Context context) {
+    public ChangePictureSelectStateView(Context context) {
         super(context);
     }
 
-    public ChangeSelectStateView(Context context, @Nullable AttributeSet attrs) {
+    public ChangePictureSelectStateView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public ChangeSelectStateView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public ChangePictureSelectStateView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
@@ -83,10 +83,10 @@ public class ChangeSelectStateView extends View {
      * @param endPosiForWidthPercent
      * @param endPosiForHeightPercent
      */
-    public ChangeSelectStateView setEffectiveArea(@Size(min = 0,max = 1) float startPosiForWidthPercent
-            ,@Size(min = 0,max = 1) float startPosiForHeightPercent
-            ,@Size(min = 0,max = 1) float endPosiForWidthPercent
-            ,@Size(min = 0,max = 1) float endPosiForHeightPercent){
+    public ChangePictureSelectStateView setEffectiveArea(@Size(min = 0,max = 1) float startPosiForWidthPercent
+            , @Size(min = 0,max = 1) float startPosiForHeightPercent
+            , @Size(min = 0,max = 1) float endPosiForWidthPercent
+            , @Size(min = 0,max = 1) float endPosiForHeightPercent){
         this.startPosiForWidthPercent = startPosiForWidthPercent;
         this.startPosiForHeightPercent = startPosiForHeightPercent;
         this.endPosiForWidthPercent = endPosiForWidthPercent;
@@ -99,7 +99,7 @@ public class ChangeSelectStateView extends View {
      * @param changeSelectStateViewCallback
      * @return
      */
-    public ChangeSelectStateView setChangeSelectStateViewCallback(ChangeSelectStateViewCallback changeSelectStateViewCallback) {
+    public ChangePictureSelectStateView setChangeSelectStateViewCallback(ChangeSelectStateViewCallback changeSelectStateViewCallback) {
         this.changeSelectStateViewCallback = changeSelectStateViewCallback;
         return this;
     }

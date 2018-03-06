@@ -1,10 +1,8 @@
 package com.pictureselect.android.view;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.widget.ImageView;
 
 /**
  * 创建时间： 0001/2018/3/1 上午 10:03
@@ -16,20 +14,19 @@ import android.widget.ImageView;
  * 修改时间：
  * 备注：
  */
-@SuppressLint("AppCompatCustomView")
-public class PictureSelectView extends ImageView {
+public class PictureSelectsView extends android.support.v7.widget.AppCompatImageView {
 
-    public PictureSelectView(Context context) {
+    public PictureSelectsView(Context context) {
         super(context);
         init();
     }
 
-    public PictureSelectView(Context context, @Nullable AttributeSet attrs) {
+    public PictureSelectsView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public PictureSelectView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public PictureSelectsView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }

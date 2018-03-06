@@ -17,12 +17,14 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<PicturePreviewVi
 
     private List<StorePictureItemDto> list = new ArrayList<>();
     private LayoutInflater inflater;
+    private Context context;
     private int windowWidth;
     private int windowHeight;
     public PicturePreviewAdapter(Context context,int windowWidth,int windowHeight){
         inflater = LayoutInflater.from(context);
         this.windowWidth = windowWidth;
         this.windowHeight = windowHeight;
+        this.context = context;
     }
 
     public PicturePreviewAdapter setList(ArrayList<StorePictureItemDto> list) {
@@ -35,7 +37,7 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<PicturePreviewVi
 
     @Override
     public PicturePreviewViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new PicturePreviewViewHolder(inflater.inflate(R.layout.item_list_picture_preview,null),windowWidth,windowHeight);
+        return new PicturePreviewViewHolder(context,inflater.inflate(R.layout.item_list_picture_preview,null),windowWidth,windowHeight);
     }
 
     @Override

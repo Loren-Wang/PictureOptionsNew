@@ -126,9 +126,9 @@ public class PictureSelectActivity extends BaseActivity implements View.OnClickL
                 super.onScrollStateChanged(recyclerView, newState);
                 try {
                     if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        ImageLoadingUtis.getInstance().onResume();
+                        ImageLoadingUtis.getInstance(getApplicationContext()).onResume();
                     } else {
-                        ImageLoadingUtis.getInstance().onPause();
+                        ImageLoadingUtis.getInstance(getApplicationContext()).onPause();
                     }
                 }catch (Exception e){
                     e.printStackTrace();
@@ -170,7 +170,7 @@ public class PictureSelectActivity extends BaseActivity implements View.OnClickL
 
             //设置底部操作栏高度以及背景颜色
             viewBottomOptions.setBackgroundResource(pictureSelectConfirg.getBottomOptionsBackground());
-            int height = ParamsAndJudgeUtils.dip2px(pictureSelectConfirg.getBottomOptionsHeight());
+            int height = ParamsAndJudgeUtils.dip2px(getApplicationContext(),pictureSelectConfirg.getBottomOptionsHeight());
             ViewGroup.LayoutParams layoutParams = viewBottomOptions.getLayoutParams();
             if(layoutParams == null){
                 layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,height);
@@ -277,7 +277,7 @@ public class PictureSelectActivity extends BaseActivity implements View.OnClickL
         }
         //先判定是否大于最大的选择图片的数量
         if(selectedPicturesList.size() >= pictureSelectConfirg.getMaxSelectNum() && selectState){
-            HintPopUtils.getInstance().toastMsg(R.string.toast_hint_exceed_max_selected_num,null);
+            HintPopUtils.getInstance(getApplicationContext()).toastMsg(R.string.toast_hint_exceed_max_selected_num,null);
             return;
         }
 

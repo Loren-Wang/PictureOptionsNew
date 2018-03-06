@@ -143,9 +143,9 @@ public class PicturePreviewActivity extends AppCompatActivity {
                 super.onScrollStateChanged(recyclerView, newState);
                 try {
                     if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        ImageLoadingUtis.getInstance().onResume();
+                        ImageLoadingUtis.getInstance(getApplicationContext()).onResume();
                     } else {
-                        ImageLoadingUtis.getInstance().onPause();
+                        ImageLoadingUtis.getInstance(getApplicationContext()).onPause();
                     }
                 }catch (Exception e){
                     e.printStackTrace();
@@ -184,7 +184,7 @@ public class PicturePreviewActivity extends AppCompatActivity {
         int blue = (color & 0x0000ff);
         aBarAndBottomBgColor = (aBarAndBottomAlpha << 24) | (red << 16) | (green << 8) | blue;
         ViewGroup.LayoutParams viewAcBarLayoutParams = viewAcBar.getLayoutParams();
-        int height = ParamsAndJudgeUtils.dip2px(pictureSelectConfirg.getaBarHeight()) + statusBarHeight;
+        int height = ParamsAndJudgeUtils.dip2px(getApplicationContext(), pictureSelectConfirg.getaBarHeight()) + statusBarHeight;
         if(viewAcBarLayoutParams == null){
             viewAcBarLayoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,height);
         }else {
@@ -215,7 +215,7 @@ public class PicturePreviewActivity extends AppCompatActivity {
             }
 
             //设置底部操作栏高度以及背景颜色
-            int height = ParamsAndJudgeUtils.dip2px(pictureSelectConfirg.getBottomOptionsHeight());
+            int height = ParamsAndJudgeUtils.dip2px(getApplicationContext(),pictureSelectConfirg.getBottomOptionsHeight());
             ViewGroup.LayoutParams layoutParams = viewBottomOptions.getLayoutParams();
             if(layoutParams == null){
                 layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,height);

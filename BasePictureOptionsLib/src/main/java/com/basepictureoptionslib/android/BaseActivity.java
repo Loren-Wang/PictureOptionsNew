@@ -42,6 +42,7 @@ public class BaseActivity extends AppCompatActivity {
     protected Handler handlerUi;//ui主线程
 
 
+
     /**
      * 发起权限请求
      */
@@ -122,7 +123,7 @@ public class BaseActivity extends AppCompatActivity {
 
             //设置标题栏最外层布局属性
             ViewGroup.LayoutParams viewAcBarLayoutParams = viewAcBar.getLayoutParams();
-            int height = ParamsAndJudgeUtils.dip2px(baseConfig.getaBarHeight());
+            int height = ParamsAndJudgeUtils.dip2px(getApplicationContext(),baseConfig.getaBarHeight());
             if(viewAcBarLayoutParams == null){
                 viewAcBarLayoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,height);
             }else {

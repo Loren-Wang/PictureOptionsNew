@@ -1,9 +1,8 @@
 package com.basepictureoptionslib.android.utils;
 
+import android.content.Context;
 import android.support.annotation.StringRes;
 import android.widget.Toast;
-
-import com.basepictureoptionslib.android.AppCommon;
 
 /**
  * 创建时间： 0001/2018/3/1 下午 2:03
@@ -18,10 +17,15 @@ import com.basepictureoptionslib.android.AppCommon;
 public class HintPopUtils {
     private static HintPopUtils hintPopUtils;
     private Toast allToast;//吐司提示弹窗，如果有下一个要弹出则隐藏上一个
+    private Context context;
 
-    public static HintPopUtils getInstance(){
+    public HintPopUtils(Context context) {
+        this.context = context;
+    }
+
+    public static HintPopUtils getInstance(Context context){
         if(hintPopUtils == null){
-            hintPopUtils = new HintPopUtils();
+            hintPopUtils = new HintPopUtils(context);
         }
         return hintPopUtils;
     }
@@ -36,7 +40,7 @@ public class HintPopUtils {
             if(allToast != null){
                 allToast.cancel();
             }
-            allToast = Toast.makeText(AppCommon.APPLICATION_CONTEXT,msg,toastTime != null ? toastTime : Toast.LENGTH_SHORT);
+            allToast = Toast.makeText(context,msg,toastTime != null ? toastTime : Toast.LENGTH_SHORT);
             allToast.show();
         }
     }
@@ -50,7 +54,7 @@ public class HintPopUtils {
         if(allToast != null){
             allToast.cancel();
         }
-        allToast = Toast.makeText(AppCommon.APPLICATION_CONTEXT,msgResId,toastTime != null ? toastTime : Toast.LENGTH_SHORT);
+        allToast = Toast.makeText(context,msgResId,toastTime != null ? toastTime : Toast.LENGTH_SHORT);
         allToast.show();
     }
 

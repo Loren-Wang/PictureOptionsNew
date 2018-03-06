@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/relItem"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.pictureselect.android.view.PictureSelectView
-        android:id="@+id/imgPic"
+    <com.pictureselect.android.view.PictureSelectsView
+        android:id="@+id/imgPicture"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop" />
 
 
-    <com.pictureselect.android.view.ChangeSelectStateView
+    <com.pictureselect.android.view.ChangePictureSelectStateView
         android:id="@+id/viewSelect"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="right"
         />
 
-</FrameLayout>
+</RelativeLayout>

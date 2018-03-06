@@ -1,21 +1,23 @@
 package com.basepictureoptionslib.android.plugin.image;
 
+import android.content.Context;
 import android.widget.ImageView;
 
-import com.basepictureoptionslib.android.AppCommon;
 import com.bumptech.glide.Glide;
 
 import java.io.File;
 
 public class ImageLoadingUtis {
     private static ImageLoadingUtis imageLoadingUtis;
+    private Context context;
 
-    private ImageLoadingUtis(){
+    private ImageLoadingUtis(Context context){
+        this.context = context;
     }
 
-    public static ImageLoadingUtis getInstance(){
+    public static ImageLoadingUtis getInstance(Context context){
         if(imageLoadingUtis == null){
-            imageLoadingUtis = new ImageLoadingUtis();
+            imageLoadingUtis = new ImageLoadingUtis(context);
         }
         return imageLoadingUtis;
     }
@@ -25,16 +27,16 @@ public class ImageLoadingUtis {
             //本地文件
             File file = new File(path);
             //加载图片
-            Glide.with(AppCommon.APPLICATION_CONTEXT).load(file).into(imageView);
+            Glide.with(context).load(file).into(imageView);
         }
     }
 
     public void onResume(){
-        Glide.with(AppCommon.APPLICATION_CONTEXT).resumeRequests();
+        Glide.with(context).resumeRequests();
     }
     public void onPause(){
-        Glide.with(AppCommon.APPLICATION_CONTEXT).pauseRequests();
-        Glide.get(AppCommon.APPLICATION_CONTEXT).clearMemory();
+        Glide.with(context).pauseRequests();
+        Glide.get(context).clearMemory();
     }
 
 
