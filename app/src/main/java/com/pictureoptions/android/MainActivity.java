@@ -16,7 +16,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         PictureVideoSelectConfirg pictureSelectConfirg = new  PictureVideoSelectConfirg();
-        pictureSelectConfirg.setVideoMaxDuration(3000l);
         Intent intent = new Intent(this, PictureVideoSelectActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(AppCommon.OPTIONS_CONFIG_KEY,pictureSelectConfirg);

@@ -3,6 +3,7 @@ package com.basepictureoptionslib.android.plugin.image;
 import android.content.Context;
 import android.widget.ImageView;
 
+import com.basepictureoptionslib.android.plugin.wxplayer.WxPlayer;
 import com.bumptech.glide.Glide;
 
 import java.io.File;
@@ -28,6 +29,11 @@ public class ImageLoadingUtis {
             File file = new File(path);
             //加载图片
             Glide.with(context).load(file).into(imageView);
+        }
+    }
+    public void loadingVideoAndPlay(String path, WxPlayer imageView){
+        if(path != null && imageView != null && !path.isEmpty()) {
+            imageView.setVideoPath(path);
         }
     }
 

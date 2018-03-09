@@ -1,10 +1,15 @@
 package com.pictureselect.android.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
+import com.basepictureoptionslib.android.AppCommon;
+import com.basepictureoptionslib.android.VideoPlayActivity;
 import com.pictureselect.android.R;
 import com.pictureselect.android.dto.StorePictureVideoItemDto;
 import com.pictureselect.android.recycleViewHolder.PicturePreviewViewHolder;
@@ -20,7 +25,7 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<PicturePreviewVi
     private Context context;
     private int windowWidth;
     private int windowHeight;
-    public PicturePreviewAdapter(Context context,int windowWidth,int windowHeight){
+    public PicturePreviewAdapter(Context context, int windowWidth, int windowHeight){
         inflater = LayoutInflater.from(context);
         this.windowWidth = windowWidth;
         this.windowHeight = windowHeight;
@@ -43,7 +48,18 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<PicturePreviewVi
     @Override
     public void onBindViewHolder(PicturePreviewViewHolder holder, int position) {
         final StorePictureVideoItemDto storePictureItemDto = list.get(position);
-        holder.setImagePath(storePictureItemDto.getAbsolutePath());
+        holder.setImageInfo(storePictureItemDto);
+
+        holder.imgBtnPlay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, VideoPlayActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString(AppCommon.VIDEO_PLAY_FOR_LOCAL_PATH,storePictureItemDto.getAbsolutePath());
+                intent.putExtras(bundle);
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override

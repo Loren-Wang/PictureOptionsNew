@@ -33,7 +33,7 @@ public class PictureVideoSelectConfirg extends BaseConfig{
     private List<String> selectedPicList = new ArrayList<>();//已选择图片列表
     private boolean isShowPreview = true;//是否需要预览（即是否显示预览按钮以及点击图片预览），默认不需要
     private boolean isShowOriginPicSelect = false;//是否需要显示原图选择
-    private int selectType = 1;//选择类型
+    private int selectType = 2;//选择类型
     private Long videoMaxDuration;//视频选择最长时间
     private Long videoMinDuration;//视频选择最短时间
     @ColorRes

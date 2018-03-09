@@ -93,7 +93,7 @@ public class PictureVideoPreviewActivity extends AppCompatActivity {
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         windowWidth = dm.widthPixels;
         windowHeight = dm.heightPixels;
-        picturePreviewAdapter = new PicturePreviewAdapter(getApplicationContext(),windowWidth,windowHeight);
+        picturePreviewAdapter = new PicturePreviewAdapter(this,windowWidth,windowHeight);
         recyList.setRecycleviewViewPageOnPageChangeListener(new RecycleviewViewPageOnPageChangeListener() {
             @Override
             public void onPageChange(int nowPagePosition) {
