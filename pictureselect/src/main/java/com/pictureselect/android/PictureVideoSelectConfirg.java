@@ -28,12 +28,18 @@ import java.util.List;
  * 备注：
  */
 public class PictureVideoSelectConfirg extends BaseConfig{
-    private int maxSelectNum = 9;//最大选择张数
+    public static final int SELECT_TYPE_FOR_PICTURE = 0;//仅选择图片
+    public static final int SELECT_TYPE_FOR_VIDEO = 1;//仅选择视频
+    public static final int SELECT_TYPE_FOR_PICTURE_AND_VIDEO = 2;//图片视频一起选择
+
+    private int maxSelectPictureNum = 9;//最大选择张数
+    private int maxSelectVideoNum = 1;//最大选择视频的数量
     private int showRowCount = 3;//显示的列数
     private List<String> selectedPicList = new ArrayList<>();//已选择图片列表
     private boolean isShowPreview = true;//是否需要预览（即是否显示预览按钮以及点击图片预览），默认不需要
     private boolean isShowOriginPicSelect = false;//是否需要显示原图选择
-    private int selectType = 2;//选择类型
+    private boolean isAllowConcurrentSelection = false;//是否允许图片视频同时选择
+    private int selectType = SELECT_TYPE_FOR_PICTURE_AND_VIDEO;//选择类型
     private Long videoMaxDuration;//视频选择最长时间
     private Long videoMinDuration;//视频选择最短时间
     @ColorRes
@@ -54,14 +60,6 @@ public class PictureVideoSelectConfirg extends BaseConfig{
     }
 
 
-    public int getMaxSelectNum() {
-        return maxSelectNum;
-    }
-
-    public PictureVideoSelectConfirg setMaxSelectNum(int maxSelectNum) {
-        this.maxSelectNum = maxSelectNum;
-        return this;
-    }
 
     public boolean isShowPreview() {
         return isShowPreview;
@@ -164,6 +162,33 @@ public class PictureVideoSelectConfirg extends BaseConfig{
         return this;
     }
 
+    public int getMaxSelectPictureNum() {
+        return maxSelectPictureNum;
+    }
+
+    public PictureVideoSelectConfirg setMaxSelectPictureNum(int maxSelectPictureNum) {
+        this.maxSelectPictureNum = maxSelectPictureNum;
+        return this;
+    }
+
+    public int getMaxSelectVideoNum() {
+        return maxSelectVideoNum;
+    }
+
+    public PictureVideoSelectConfirg setMaxSelectVideoNum(int maxSelectVideoNum) {
+        this.maxSelectVideoNum = maxSelectVideoNum;
+        return this;
+    }
+
+    public boolean isAllowConcurrentSelection() {
+        return isAllowConcurrentSelection;
+    }
+
+    public PictureVideoSelectConfirg setAllowConcurrentSelection(boolean allowConcurrentSelection) {
+        isAllowConcurrentSelection = allowConcurrentSelection;
+        return this;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -171,11 +196,13 @@ public class PictureVideoSelectConfirg extends BaseConfig{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.maxSelectNum);
+        dest.writeInt(this.maxSelectPictureNum);
+        dest.writeInt(this.maxSelectVideoNum);
         dest.writeInt(this.showRowCount);
         dest.writeStringList(this.selectedPicList);
         dest.writeByte(this.isShowPreview ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isShowOriginPicSelect ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isAllowConcurrentSelection ? (byte) 1 : (byte) 0);
         dest.writeInt(this.selectType);
         dest.writeValue(this.videoMaxDuration);
         dest.writeValue(this.videoMinDuration);
@@ -193,11 +220,13 @@ public class PictureVideoSelectConfirg extends BaseConfig{
     }
 
     protected PictureVideoSelectConfirg(Parcel in) {
-        this.maxSelectNum = in.readInt();
+        this.maxSelectPictureNum = in.readInt();
+        this.maxSelectVideoNum = in.readInt();
         this.showRowCount = in.readInt();
         this.selectedPicList = in.createStringArrayList();
         this.isShowPreview = in.readByte() != 0;
         this.isShowOriginPicSelect = in.readByte() != 0;
+        this.isAllowConcurrentSelection = in.readByte() != 0;
         this.selectType = in.readInt();
         this.videoMaxDuration = (Long) in.readValue(Long.class.getClassLoader());
         this.videoMinDuration = (Long) in.readValue(Long.class.getClassLoader());

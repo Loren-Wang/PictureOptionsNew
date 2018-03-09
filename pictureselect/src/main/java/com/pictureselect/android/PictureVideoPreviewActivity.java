@@ -3,7 +3,6 @@ package com.pictureselect.android;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
@@ -42,7 +41,7 @@ import java.util.ArrayList;
  * 修改时间：
  * 备注：
  */
-public class PictureVideoPreviewActivity extends AppCompatActivity {
+public class PictureVideoPreviewActivity extends BasePictureVideoActivity {
 
     private View viewAcBar;//标题栏背景
     private TextView tvTitle;//标题
@@ -55,7 +54,6 @@ public class PictureVideoPreviewActivity extends AppCompatActivity {
 
     private int aBarAndBottomAlpha = (int) (255 * 0.5f);//标题栏以及底部操作栏透明度
     private int aBarAndBottomBgColor;//标题栏以及底部操作栏颜色
-    private PictureVideoSelectConfirg pictureSelectConfirg;
     private PicturePreviewAdapter picturePreviewAdapter;
     private ArrayList<StorePictureVideoItemDto> allList;
     private ArrayList<StorePictureVideoItemDto> selectedPicturesList;
@@ -112,11 +110,7 @@ public class PictureVideoPreviewActivity extends AppCompatActivity {
                 StorePictureVideoItemDto nowPosiShowDto = adapterShowList.get(recyList.getNowPosi());
                 if(nowPosiShowDto != null) {
                     nowPosiShowDto.setSelect(cbShowOriginSelect.isChecked());
-                    if (cbShowOriginSelect.isChecked()) {
-                        selectedPicturesList.add(nowPosiShowDto);
-                    }else {
-                        selectedPicturesList.remove(nowPosiShowDto);
-                    }
+                    setSelectForNoCamera(nowPosiShowDto,cbShowOriginSelect.isChecked(),recyList.getNowPosi());
                     adapterShowList.set(recyList.getNowPosi(),nowPosiShowDto);
                     showSelectSize();
                 }
@@ -262,7 +256,7 @@ public class PictureVideoPreviewActivity extends AppCompatActivity {
     private void showSelectSize(){
         int nowSize = selectedPicturesList.size();
         if(nowSize > 0) {
-            btnConfirm.setText(getResources().getString(R.string.confirm_have_size) + "(" + nowSize + "/" + pictureSelectConfirg.getMaxSelectNum() + ")");
+            btnConfirm.setText(getResources().getString(R.string.confirm_have_size) + "(" + nowSize + "/" + getMaxSelectNum() + ")");
         }else {
             btnConfirm.setText(R.string.confirm);
         }

@@ -13,9 +13,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 
 import com.basepictureoptionslib.android.AppCommon;
-import com.basepictureoptionslib.android.BaseActivity;
 import com.basepictureoptionslib.android.plugin.image.ImageLoadingUtis;
-import com.basepictureoptionslib.android.utils.HintPopUtils;
 import com.basepictureoptionslib.android.utils.ParamsAndJudgeUtils;
 import com.pictureselect.android.adapter.PictureSelectNoCameraAdapter;
 import com.pictureselect.android.database.DbPhonePictureVideoList;
@@ -40,21 +38,19 @@ import java.util.Map;
  * 修改时间：
  * 备注：
  */
-public class PictureVideoSelectActivity extends BaseActivity implements View.OnClickListener {
+public class PictureVideoSelectActivity extends BasePictureVideoActivity implements View.OnClickListener {
 
     private RecyclerView recyList;//图片列表
     private View viewBottomOptions;//底部操作栏
     private CheckBox cbShowOriginPic;//原图选择
     private Button btnPreview;//预览按钮
 
-    private PictureVideoSelectConfirg pictureSelectConfirg;
-    private ArrayList<StorePictureVideoItemDto> allList = new ArrayList<>();//所有的图片集合
-    private ArrayList<StorePictureVideoItemDto> selectedPicturesList = new ArrayList<StorePictureVideoItemDto>();//已经选中的图片列表,使用哈希表存储已选中的数据由于key的唯一
     private PictureSelectNoCameraAdapter pictureSelectsAdapter;
 
     protected int windowWidth;//屏幕宽度
     private final int PERMISSTION_REQUEST_FOR_EXTERNAL_STORAGE = 0;//请求存储卡权限
     private final int GO_TO_PREVIEW_ACT_REQUES_CODE = 1;//跳转到预览界面的请求码
+
 
 
     @Override
@@ -93,6 +89,8 @@ public class PictureVideoSelectActivity extends BaseActivity implements View.OnC
             public void onSelceChangeClick(BaseViewHolder holder, StorePictureVideoItemDto storePictureItemDto, int position) {
                 //设置选中
                 setSelectForNoCamera(storePictureItemDto,!storePictureItemDto.isSelect(),position);
+                pictureSelectsAdapter.modifySelectState(storePictureItemDto, position);
+                showSelectSize();
             }
 
             @Override
@@ -252,6 +250,8 @@ public class PictureVideoSelectActivity extends BaseActivity implements View.OnC
                                 //找到相应数据
                                 if(itemDto != null && itemDto.getAbsolutePath() != null && nowSelectPicturePath.equals(itemDto.getAbsolutePath())){
                                     setSelectForNoCamera(itemDto, true, posi);
+                                    pictureSelectsAdapter.modifySelectState(itemDto, posi);
+                                    showSelectSize();
                                     isHave = true;
                                     break;
                                 }
@@ -265,6 +265,8 @@ public class PictureVideoSelectActivity extends BaseActivity implements View.OnC
                                 allList.add(0, itemDto);
                                 pictureSelectsAdapter.addItemDto(itemDto, 0);
                                 setSelectForNoCamera(itemDto, true, 0);
+                                pictureSelectsAdapter.modifySelectState(itemDto, posi);
+                                showSelectSize();
                             }
                         }
                     }
@@ -275,57 +277,7 @@ public class PictureVideoSelectActivity extends BaseActivity implements View.OnC
         });
     }
 
-    /**
-     * 先盘空以及判定最大数量；第二步遍历已选择列表查看是否在已选择列表中有要操作的图片，
-     * 如果有同时要被操作状态的参数是选中的话则不操作，否则的话则在已选中里面移除改图片
-     * 如果没有但是操作状态是选中的话则在已选中里面新增该图片，否则的话不操作
-     *
-     * @param selectDto 当前被选中的图片信息
-     * @param selectState 是否被选中
-     * @param postion 更新位置，位置小于0的话那么就不更新适配器
-     */
-    private void setSelectForNoCamera(StorePictureVideoItemDto selectDto, boolean selectState, int postion){
-        //判定传入的数据是否为空
-        if(selectDto == null ){
-            return;
-        }
-        //先判定是否大于最大的选择图片的数量
-        if(selectedPicturesList.size() >= pictureSelectConfirg.getMaxSelectNum() && selectState){
-            HintPopUtils.getInstance(getApplicationContext()).toastMsg(R.string.toast_hint_exceed_max_selected_num,null);
-            return;
-        }
 
-        //查找相同实体
-        Iterator<StorePictureVideoItemDto> iterator = selectedPicturesList.iterator();
-        StorePictureVideoItemDto sameOptionsDto = null;//在已选中里面查找是否有和要做操做的图片相同的实体，有的话则不为空
-        while (iterator.hasNext()){
-            sameOptionsDto = iterator.next();
-            if(sameOptionsDto.getAbsolutePath().equals(selectDto.getAbsolutePath())){
-                //查找到相同实体，直接弹出
-                break;
-            }
-            sameOptionsDto = null;//没查到相同实体
-        }
-        iterator = null;
-
-        //设置选中状态改变以及界面改变
-        if(selectState && sameOptionsDto == null){
-            selectDto.setSelect(selectState);
-            selectedPicturesList.add(selectDto);
-            pictureSelectsAdapter.modifySelectState(selectDto, postion);
-
-            //显示选中数量
-            showSelectSize();
-
-        }else if(!selectState && sameOptionsDto != null){
-            selectDto.setSelect(selectState);
-            selectedPicturesList.remove(selectDto);
-            pictureSelectsAdapter.modifySelectState(selectDto, postion);
-            //显示选中数量
-            showSelectSize();
-
-        }
-    }
 
     /**
      * 显示选中大小
@@ -334,12 +286,19 @@ public class PictureVideoSelectActivity extends BaseActivity implements View.OnC
         int nowSize = selectedPicturesList.size();
         if(nowSize > 0) {
             btnPreview.setText(getResources().getString(R.string.preview_have_size) + "(" + nowSize + ")");
-            btnConfirm.setText(getResources().getString(R.string.confirm_have_size) + "(" + nowSize + "/" + pictureSelectConfirg.getMaxSelectNum() + ")");
+            int maxShowNum = getMaxSelectNum();
+            if(maxShowNum > 0){
+                btnConfirm.setText(getResources().getString(R.string.confirm_have_size) + "(" + nowSize + "/" + maxShowNum + ")");
+            }else {
+                btnConfirm.setText(R.string.confirm);
+            }
         }else {
             btnPreview.setText(R.string.preview);
             btnConfirm.setText(R.string.confirm);
         }
     }
+
+
 
     @Override
     public void onClick(View v) {
@@ -434,16 +393,23 @@ public class PictureVideoSelectActivity extends BaseActivity implements View.OnC
                         }
                         //在该页面选中中移除被移除图片
                         iterator = removeList.iterator();
+                        int indexOf;
                         while (iterator.hasNext()){
                             dto = iterator.next();
-                            setSelectForNoCamera(dto,false,allList.indexOf(dto));
+                            indexOf = allList.indexOf(dto);
+                            setSelectForNoCamera(dto,false,indexOf);
+                            pictureSelectsAdapter.modifySelectState(dto, indexOf);
+                            showSelectSize();
                             dto = null;
                         }
                         //在该页面选中中添加预览中新添加的图片
                         iterator = addList.iterator();
                         while (iterator.hasNext()){
                             dto = iterator.next();
-                            setSelectForNoCamera(dto,true,allList.indexOf(dto));
+                            indexOf = allList.indexOf(dto);
+                            setSelectForNoCamera(dto,true,indexOf);
+                            pictureSelectsAdapter.modifySelectState(dto, indexOf);
+                            showSelectSize();
                             dto = null;
                         }
                     }
