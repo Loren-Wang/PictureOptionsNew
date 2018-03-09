@@ -22,4 +22,14 @@
         android:layout_alignBottom="@id/imgPicture"
         />
 
+    <TextView
+        android:id="@+id/tvVideoTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/imgPicture"
+        android:layout_alignBottom="@id/imgPicture"
+        android:textColor="#ffffff"
+        android:textSize="12sp"
+        android:paddingLeft="2dp"/>
+
 </RelativeLayout>

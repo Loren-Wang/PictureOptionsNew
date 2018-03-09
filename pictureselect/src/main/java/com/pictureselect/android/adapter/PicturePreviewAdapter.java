@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.pictureselect.android.R;
-import com.pictureselect.android.dto.StorePictureItemDto;
+import com.pictureselect.android.dto.StorePictureVideoItemDto;
 import com.pictureselect.android.recycleViewHolder.PicturePreviewViewHolder;
 
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ import java.util.List;
 
 public class PicturePreviewAdapter extends RecyclerView.Adapter<PicturePreviewViewHolder> {
 
-    private List<StorePictureItemDto> list = new ArrayList<>();
+    private List<StorePictureVideoItemDto> list = new ArrayList<>();
     private LayoutInflater inflater;
     private Context context;
     private int windowWidth;
@@ -27,7 +27,7 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<PicturePreviewVi
         this.context = context;
     }
 
-    public PicturePreviewAdapter setList(ArrayList<StorePictureItemDto> list) {
+    public PicturePreviewAdapter setList(ArrayList<StorePictureVideoItemDto> list) {
         if(list != null) {
             this.list = list;
         }
@@ -42,7 +42,7 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<PicturePreviewVi
 
     @Override
     public void onBindViewHolder(PicturePreviewViewHolder holder, int position) {
-        final StorePictureItemDto storePictureItemDto = list.get(position);
+        final StorePictureVideoItemDto storePictureItemDto = list.get(position);
         holder.setImagePath(storePictureItemDto.getAbsolutePath());
     }
 

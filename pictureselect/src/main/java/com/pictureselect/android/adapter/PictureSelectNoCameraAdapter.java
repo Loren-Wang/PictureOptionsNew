@@ -3,7 +3,7 @@ package com.pictureselect.android.adapter;
 import android.content.Context;
 import android.view.View;
 
-import com.pictureselect.android.dto.StorePictureItemDto;
+import com.pictureselect.android.dto.StorePictureVideoItemDto;
 import com.pictureselect.android.interfaces_abstract.ChangeSelectStateViewCallback;
 import com.pictureselect.android.recycleViewHolder.BaseViewHolder;
 
@@ -12,19 +12,19 @@ import java.util.List;
 
 public abstract class PictureSelectNoCameraAdapter extends BasePictureSelectAdapter {
 
-    private List<StorePictureItemDto> list = new ArrayList<>();
+    private List<StorePictureVideoItemDto> list = new ArrayList<>();
     public PictureSelectNoCameraAdapter(Context context) {
         super(context);
     }
 
-    public PictureSelectNoCameraAdapter setList(List<StorePictureItemDto> list) {
+    public PictureSelectNoCameraAdapter setList(List<StorePictureVideoItemDto> list) {
         if(list != null) {
             this.list = list;
         }
         return this;
     }
 
-    public void addItemDto(StorePictureItemDto itemDto, int position){
+    public void addItemDto(StorePictureVideoItemDto itemDto, int position){
         if(itemDto != null){
             this.list.add(position,itemDto);
             notifyItemInserted(position);
@@ -36,7 +36,7 @@ public abstract class PictureSelectNoCameraAdapter extends BasePictureSelectAdap
      * @param storePictureItemDto
      * @param position
      */
-    public void modifySelectState(StorePictureItemDto storePictureItemDto, int position){
+    public void modifySelectState(StorePictureVideoItemDto storePictureItemDto, int position){
         if(this.list != null && storePictureItemDto != null){
             this.list.set(position,storePictureItemDto);
             notifyItemChanged(position);
@@ -46,8 +46,8 @@ public abstract class PictureSelectNoCameraAdapter extends BasePictureSelectAdap
 
     @Override
     public void onBindViewHolder(final BaseViewHolder holder, int position) {
-        final StorePictureItemDto storePictureItemDto = list.get(position);
-        holder.setImagePath(storePictureItemDto.getAbsolutePath());
+        final StorePictureVideoItemDto storePictureItemDto = list.get(position);
+        holder.setImageInfo(storePictureItemDto);
         holder.setSelectState(storePictureItemDto.isSelect());
 
         holder.viewSelect.setChangeSelectStateViewCallback(new ChangeSelectStateViewCallback() {
@@ -80,6 +80,6 @@ public abstract class PictureSelectNoCameraAdapter extends BasePictureSelectAdap
      * @param position
      * @return
      */
-    public abstract void onSelceChangeClick(BaseViewHolder holder,StorePictureItemDto storePictureItemDto,int position);
-    public abstract void onImgClick(BaseViewHolder holder,StorePictureItemDto storePictureItemDto,int position);
+    public abstract void onSelceChangeClick(BaseViewHolder holder, StorePictureVideoItemDto storePictureItemDto, int position);
+    public abstract void onImgClick(BaseViewHolder holder, StorePictureVideoItemDto storePictureItemDto, int position);
 }

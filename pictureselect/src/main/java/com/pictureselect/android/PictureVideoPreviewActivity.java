@@ -18,7 +18,7 @@ import com.basepictureoptionslib.android.AppCommon;
 import com.basepictureoptionslib.android.plugin.image.ImageLoadingUtis;
 import com.basepictureoptionslib.android.utils.ParamsAndJudgeUtils;
 import com.pictureselect.android.adapter.PicturePreviewAdapter;
-import com.pictureselect.android.dto.StorePictureItemDto;
+import com.pictureselect.android.dto.StorePictureVideoItemDto;
 import com.pictureselect.android.interfaces_abstract.RecycleviewViewPageOnPageChangeListener;
 import com.pictureselect.android.view.RecycleViewViewpager;
 
@@ -42,7 +42,7 @@ import java.util.ArrayList;
  * 修改时间：
  * 备注：
  */
-public class PicturePreviewActivity extends AppCompatActivity {
+public class PictureVideoPreviewActivity extends AppCompatActivity {
 
     private View viewAcBar;//标题栏背景
     private TextView tvTitle;//标题
@@ -55,11 +55,11 @@ public class PicturePreviewActivity extends AppCompatActivity {
 
     private int aBarAndBottomAlpha = (int) (255 * 0.5f);//标题栏以及底部操作栏透明度
     private int aBarAndBottomBgColor;//标题栏以及底部操作栏颜色
-    private PictureSelectConfirg pictureSelectConfirg;
+    private PictureVideoSelectConfirg pictureSelectConfirg;
     private PicturePreviewAdapter picturePreviewAdapter;
-    private ArrayList<StorePictureItemDto> allList;
-    private ArrayList<StorePictureItemDto> selectedPicturesList;
-    private ArrayList<StorePictureItemDto> adapterShowList;//适配器显示列表
+    private ArrayList<StorePictureVideoItemDto> allList;
+    private ArrayList<StorePictureVideoItemDto> selectedPicturesList;
+    private ArrayList<StorePictureVideoItemDto> adapterShowList;//适配器显示列表
     private int windowWidth;
     private int windowHeight;
 
@@ -68,12 +68,12 @@ public class PicturePreviewActivity extends AppCompatActivity {
         if(getIntent().getExtras() != null){
             Parcelable parcelable = getIntent().getExtras().getParcelable(AppCommon.OPTIONS_CONFIG_KEY);
             if(parcelable == null){
-                pictureSelectConfirg = new PictureSelectConfirg();
+                pictureSelectConfirg = new PictureVideoSelectConfirg();
             }else {
-                pictureSelectConfirg = (PictureSelectConfirg) parcelable;
+                pictureSelectConfirg = (PictureVideoSelectConfirg) parcelable;
             }
         }else {
-            pictureSelectConfirg = new PictureSelectConfirg();
+            pictureSelectConfirg = new PictureVideoSelectConfirg();
         }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_picture_preview);
@@ -97,7 +97,7 @@ public class PicturePreviewActivity extends AppCompatActivity {
         recyList.setRecycleviewViewPageOnPageChangeListener(new RecycleviewViewPageOnPageChangeListener() {
             @Override
             public void onPageChange(int nowPagePosition) {
-                StorePictureItemDto itemDto = adapterShowList.get(nowPagePosition);
+                StorePictureVideoItemDto itemDto = adapterShowList.get(nowPagePosition);
                 if(itemDto.isSelect()){
                     cbShowOriginSelect.setChecked(true);
                 }else {
@@ -109,7 +109,7 @@ public class PicturePreviewActivity extends AppCompatActivity {
         cbShowOriginSelect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                StorePictureItemDto nowPosiShowDto = adapterShowList.get(recyList.getNowPosi());
+                StorePictureVideoItemDto nowPosiShowDto = adapterShowList.get(recyList.getNowPosi());
                 if(nowPosiShowDto != null) {
                     nowPosiShowDto.setSelect(cbShowOriginSelect.isChecked());
                     if (cbShowOriginSelect.isChecked()) {

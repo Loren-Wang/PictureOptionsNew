@@ -18,8 +18,8 @@ import com.basepictureoptionslib.android.plugin.image.ImageLoadingUtis;
 import com.basepictureoptionslib.android.utils.HintPopUtils;
 import com.basepictureoptionslib.android.utils.ParamsAndJudgeUtils;
 import com.pictureselect.android.adapter.PictureSelectNoCameraAdapter;
-import com.pictureselect.android.database.DbPhonePicturesList;
-import com.pictureselect.android.dto.StorePictureItemDto;
+import com.pictureselect.android.database.DbPhonePictureVideoList;
+import com.pictureselect.android.dto.StorePictureVideoItemDto;
 import com.pictureselect.android.recycleViewHolder.BaseViewHolder;
 import com.pictureselect.android.view.DividerGridItemDecoration;
 
@@ -40,16 +40,16 @@ import java.util.Map;
  * 修改时间：
  * 备注：
  */
-public class PictureSelectActivity extends BaseActivity implements View.OnClickListener {
+public class PictureVideoSelectActivity extends BaseActivity implements View.OnClickListener {
 
     private RecyclerView recyList;//图片列表
     private View viewBottomOptions;//底部操作栏
     private CheckBox cbShowOriginPic;//原图选择
     private Button btnPreview;//预览按钮
 
-    private PictureSelectConfirg pictureSelectConfirg;
-    private ArrayList<StorePictureItemDto> allList = new ArrayList<>();//所有的图片集合
-    private ArrayList<StorePictureItemDto> selectedPicturesList = new ArrayList<StorePictureItemDto>();//已经选中的图片列表,使用哈希表存储已选中的数据由于key的唯一
+    private PictureVideoSelectConfirg pictureSelectConfirg;
+    private ArrayList<StorePictureVideoItemDto> allList = new ArrayList<>();//所有的图片集合
+    private ArrayList<StorePictureVideoItemDto> selectedPicturesList = new ArrayList<StorePictureVideoItemDto>();//已经选中的图片列表,使用哈希表存储已选中的数据由于key的唯一
     private PictureSelectNoCameraAdapter pictureSelectsAdapter;
 
     protected int windowWidth;//屏幕宽度
@@ -63,12 +63,12 @@ public class PictureSelectActivity extends BaseActivity implements View.OnClickL
         if(getIntent().getExtras() != null){
             Parcelable parcelable = getIntent().getExtras().getParcelable(AppCommon.OPTIONS_CONFIG_KEY);
             if(parcelable == null){
-                pictureSelectConfirg = new PictureSelectConfirg();
+                pictureSelectConfirg = new PictureVideoSelectConfirg();
             }else {
-                pictureSelectConfirg = (PictureSelectConfirg) parcelable;
+                pictureSelectConfirg = (PictureVideoSelectConfirg) parcelable;
             }
         }else {
-            pictureSelectConfirg = new PictureSelectConfirg();
+            pictureSelectConfirg = new PictureVideoSelectConfirg();
         }
         setTheme(pictureSelectConfirg.getThemeId());
         super.onCreate(savedInstanceState);
@@ -90,14 +90,14 @@ public class PictureSelectActivity extends BaseActivity implements View.OnClickL
         //初始化适配器
         pictureSelectsAdapter = new PictureSelectNoCameraAdapter(getApplicationContext()) {
             @Override
-            public void onSelceChangeClick(BaseViewHolder holder, StorePictureItemDto storePictureItemDto, int position) {
+            public void onSelceChangeClick(BaseViewHolder holder, StorePictureVideoItemDto storePictureItemDto, int position) {
                 //设置选中
                 setSelectForNoCamera(storePictureItemDto,!storePictureItemDto.isSelect(),position);
             }
 
             @Override
-            public void onImgClick(BaseViewHolder holder, StorePictureItemDto storePictureItemDto, int position) {
-                Intent intent = new Intent(PictureSelectActivity.this, PicturePreviewActivity.class);
+            public void onImgClick(BaseViewHolder holder, StorePictureVideoItemDto storePictureItemDto, int position) {
+                Intent intent = new Intent(getApplicationContext(), PictureVideoPreviewActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(AppCommon.OPTIONS_CONFIG_KEY,pictureSelectConfirg);
                 bundle.putParcelableArrayList(getString(R.string.go_to_poreview_act_key_for_select_list),selectedPicturesList);
@@ -194,7 +194,21 @@ public class PictureSelectActivity extends BaseActivity implements View.OnClickL
         handlerChild.post(new Runnable() {
             @Override
             public void run() {
-                allList = DbPhonePicturesList.getInstance(PictureSelectActivity.this).getAllList(DbPhonePicturesList.getInstance(PictureSelectActivity.this).getAllMapList());
+                switch (pictureSelectConfirg.getSelectType()){
+                    case 0://仅图片
+                        allList = DbPhonePictureVideoList.getInstance(getApplicationContext())
+                                .getAllList(DbPhonePictureVideoList.getInstance(getApplicationContext()).getPictureAllMapList());
+                        break;
+                    case 1://仅视频
+                        allList = DbPhonePictureVideoList.getInstance(getApplicationContext())
+                                .getAllList(DbPhonePictureVideoList.getInstance(getApplicationContext()).getVideoAllMapList(pictureSelectConfirg.getVideoMinDuration(),pictureSelectConfirg.getVideoMaxDuration()));
+                        break;
+                    case 2://两者都有
+                    default:
+                        allList = DbPhonePictureVideoList.getInstance(getApplicationContext())
+                                .getAllList(DbPhonePictureVideoList.getInstance(getApplicationContext()).getAllMapList(pictureSelectConfirg.getVideoMinDuration(),pictureSelectConfirg.getVideoMaxDuration()));
+                        break;
+                }
                 //获取已选择的列表
                 List<String> selectPathList = pictureSelectConfirg.getSelectedPicList();
                 //移除重复项
@@ -223,11 +237,11 @@ public class PictureSelectActivity extends BaseActivity implements View.OnClickL
 
                         //在已选择列表中寻找所有图片中不存在的图片
                         boolean isHave;//在所有图片中是否有已选择图片
-                        StorePictureItemDto itemDto;
+                        StorePictureVideoItemDto itemDto;
                         String nowSelectPicturePath;
                         int posi;//记录在所有图片当中位置的
                         Iterator<String> selectIterator = finalSelectPathList.iterator();
-                        Iterator<StorePictureItemDto> allIterator;
+                        Iterator<StorePictureVideoItemDto> allIterator;
                         while (selectIterator.hasNext()){
                             nowSelectPicturePath = selectIterator.next();
                             isHave = false;
@@ -246,7 +260,7 @@ public class PictureSelectActivity extends BaseActivity implements View.OnClickL
                             }
 
                             if(!isHave){
-                                itemDto = new StorePictureItemDto();
+                                itemDto = new StorePictureVideoItemDto();
                                 itemDto.setAbsolutePath(nowSelectPicturePath);
                                 allList.add(0, itemDto);
                                 pictureSelectsAdapter.addItemDto(itemDto, 0);
@@ -270,7 +284,7 @@ public class PictureSelectActivity extends BaseActivity implements View.OnClickL
      * @param selectState 是否被选中
      * @param postion 更新位置，位置小于0的话那么就不更新适配器
      */
-    private void setSelectForNoCamera(StorePictureItemDto selectDto, boolean selectState, int postion){
+    private void setSelectForNoCamera(StorePictureVideoItemDto selectDto, boolean selectState, int postion){
         //判定传入的数据是否为空
         if(selectDto == null ){
             return;
@@ -282,8 +296,8 @@ public class PictureSelectActivity extends BaseActivity implements View.OnClickL
         }
 
         //查找相同实体
-        Iterator<StorePictureItemDto> iterator = selectedPicturesList.iterator();
-        StorePictureItemDto sameOptionsDto = null;//在已选中里面查找是否有和要做操做的图片相同的实体，有的话则不为空
+        Iterator<StorePictureVideoItemDto> iterator = selectedPicturesList.iterator();
+        StorePictureVideoItemDto sameOptionsDto = null;//在已选中里面查找是否有和要做操做的图片相同的实体，有的话则不为空
         while (iterator.hasNext()){
             sameOptionsDto = iterator.next();
             if(sameOptionsDto.getAbsolutePath().equals(selectDto.getAbsolutePath())){
@@ -331,7 +345,7 @@ public class PictureSelectActivity extends BaseActivity implements View.OnClickL
     public void onClick(View v) {
         if (Integer.compare(v.getId(),R.id.btnPreview) == 0) {
             if(selectedPicturesList.size() > 0) {
-                Intent intent = new Intent(this, PicturePreviewActivity.class);
+                Intent intent = new Intent(this, PictureVideoPreviewActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(AppCommon.OPTIONS_CONFIG_KEY, pictureSelectConfirg);
                 bundle.putParcelableArrayList(getString(R.string.go_to_poreview_act_key_for_select_list), selectedPicturesList);
@@ -362,15 +376,15 @@ public class PictureSelectActivity extends BaseActivity implements View.OnClickL
                 case GO_TO_PREVIEW_ACT_REQUES_CODE:
                     //判断是否需要结束该界面并返回数据
                     boolean isFinish = data.getExtras().getBoolean(getString(R.string.preview_end_result_for_is_finish_select_and_result), false);
-                    ArrayList<StorePictureItemDto> list = data.getExtras().getParcelableArrayList(getString(R.string.go_to_poreview_act_key_for_select_list));
+                    ArrayList<StorePictureVideoItemDto> list = data.getExtras().getParcelableArrayList(getString(R.string.go_to_poreview_act_key_for_select_list));
                     if(isFinish){
                         resultData(RESULT_OK);
                     }else {
-                        List<StorePictureItemDto> previewSlectList = new ArrayList<>();
-                        Iterator<StorePictureItemDto> iteratorAll = allList.iterator();
-                        Iterator<StorePictureItemDto> iteratorPreview;
-                        StorePictureItemDto dtoForAll;
-                        StorePictureItemDto dtoForPreview;
+                        List<StorePictureVideoItemDto> previewSlectList = new ArrayList<>();
+                        Iterator<StorePictureVideoItemDto> iteratorAll = allList.iterator();
+                        Iterator<StorePictureVideoItemDto> iteratorPreview;
+                        StorePictureVideoItemDto dtoForAll;
+                        StorePictureVideoItemDto dtoForPreview;
                         while (iteratorAll.hasNext()){
                             dtoForAll = iteratorAll.next();
                             if(list.size() <= 0){
@@ -395,11 +409,11 @@ public class PictureSelectActivity extends BaseActivity implements View.OnClickL
                         list = null;
 
 
-                        List<StorePictureItemDto> removeList = new ArrayList<>();
-                        List<StorePictureItemDto> addList = new ArrayList<>();
-                        StorePictureItemDto dto;
+                        List<StorePictureVideoItemDto> removeList = new ArrayList<>();
+                        List<StorePictureVideoItemDto> addList = new ArrayList<>();
+                        StorePictureVideoItemDto dto;
                         //获取被移除图片
-                        Iterator<StorePictureItemDto> iterator = selectedPicturesList.iterator();
+                        Iterator<StorePictureVideoItemDto> iterator = selectedPicturesList.iterator();
                         while (iterator.hasNext()){
                             dto = iterator.next();
                             //在返回列表中没有该页面选中中的一个的话，代表该图片是被取消选中了
@@ -447,8 +461,8 @@ public class PictureSelectActivity extends BaseActivity implements View.OnClickL
      */
     private void resultData(int resultCode){
         ArrayList<String> selectPicturePathList = new ArrayList<>();
-        Iterator<StorePictureItemDto> iterator = selectedPicturesList.iterator();
-        StorePictureItemDto dto;
+        Iterator<StorePictureVideoItemDto> iterator = selectedPicturesList.iterator();
+        StorePictureVideoItemDto dto;
         while (iterator.hasNext()){
             dto = iterator.next();
             selectPicturePathList.add(dto.getAbsolutePath());

@@ -12,7 +12,7 @@ import android.os.Parcelable;
  * 修改人：
  * 修改时间：
  */
-public class StorePictureItemDto implements Parcelable {
+public class StorePictureVideoItemDto implements Parcelable {
     private Integer _id;//主键id
     private String directoryPath;//文件所在的文件夹
     private String absolutePath;//绝对路径
@@ -27,12 +27,13 @@ public class StorePictureItemDto implements Parcelable {
     private Integer width;//图片高度
     private Integer height;//图片宽度
     private boolean isSelect = false;//是否选中
+    private long duration = 0l;//时长
 
     public Integer get_id() {
         return _id;
     }
 
-    public StorePictureItemDto set_id(Integer _id) {
+    public StorePictureVideoItemDto set_id(Integer _id) {
         this._id = _id;
         return this;
     }
@@ -41,7 +42,7 @@ public class StorePictureItemDto implements Parcelable {
         return directoryPath;
     }
 
-    public StorePictureItemDto setDirectoryPath(String directoryPath) {
+    public StorePictureVideoItemDto setDirectoryPath(String directoryPath) {
         this.directoryPath = directoryPath;
         return this;
     }
@@ -50,7 +51,7 @@ public class StorePictureItemDto implements Parcelable {
         return absolutePath;
     }
 
-    public StorePictureItemDto setAbsolutePath(String absolutePath) {
+    public StorePictureVideoItemDto setAbsolutePath(String absolutePath) {
         this.absolutePath = absolutePath;
         return this;
     }
@@ -59,7 +60,7 @@ public class StorePictureItemDto implements Parcelable {
         return size;
     }
 
-    public StorePictureItemDto setSize(Long size) {
+    public StorePictureVideoItemDto setSize(Long size) {
         this.size = size;
         return this;
     }
@@ -68,7 +69,7 @@ public class StorePictureItemDto implements Parcelable {
         return fileName;
     }
 
-    public StorePictureItemDto setFileName(String fileName) {
+    public StorePictureVideoItemDto setFileName(String fileName) {
         this.fileName = fileName;
         return this;
     }
@@ -77,7 +78,7 @@ public class StorePictureItemDto implements Parcelable {
         return mimeType;
     }
 
-    public StorePictureItemDto setMimeType(String mimeType) {
+    public StorePictureVideoItemDto setMimeType(String mimeType) {
         this.mimeType = mimeType;
         return this;
     }
@@ -86,7 +87,7 @@ public class StorePictureItemDto implements Parcelable {
         return timeAdd;
     }
 
-    public StorePictureItemDto setTimeAdd(Long timeAdd) {
+    public StorePictureVideoItemDto setTimeAdd(Long timeAdd) {
         this.timeAdd = timeAdd;
         return this;
     }
@@ -95,7 +96,7 @@ public class StorePictureItemDto implements Parcelable {
         return timeModify;
     }
 
-    public StorePictureItemDto setTimeModify(Long timeModify) {
+    public StorePictureVideoItemDto setTimeModify(Long timeModify) {
         this.timeModify = timeModify;
         return this;
     }
@@ -104,7 +105,7 @@ public class StorePictureItemDto implements Parcelable {
         return lat;
     }
 
-    public StorePictureItemDto setLat(Double lat) {
+    public StorePictureVideoItemDto setLat(Double lat) {
         this.lat = lat;
         return this;
     }
@@ -113,7 +114,7 @@ public class StorePictureItemDto implements Parcelable {
         return lng;
     }
 
-    public StorePictureItemDto setLng(Double lng) {
+    public StorePictureVideoItemDto setLng(Double lng) {
         this.lng = lng;
         return this;
     }
@@ -122,7 +123,7 @@ public class StorePictureItemDto implements Parcelable {
         return orientation;
     }
 
-    public StorePictureItemDto setOrientation(Integer orientation) {
+    public StorePictureVideoItemDto setOrientation(Integer orientation) {
         this.orientation = orientation;
         return this;
     }
@@ -131,7 +132,7 @@ public class StorePictureItemDto implements Parcelable {
         return width;
     }
 
-    public StorePictureItemDto setWidth(Integer width) {
+    public StorePictureVideoItemDto setWidth(Integer width) {
         this.width = width;
         return this;
     }
@@ -140,7 +141,7 @@ public class StorePictureItemDto implements Parcelable {
         return height;
     }
 
-    public StorePictureItemDto setHeight(Integer height) {
+    public StorePictureVideoItemDto setHeight(Integer height) {
         this.height = height;
         return this;
     }
@@ -149,9 +150,18 @@ public class StorePictureItemDto implements Parcelable {
         return isSelect;
     }
 
-    public StorePictureItemDto setSelect(boolean select) {
+    public StorePictureVideoItemDto setSelect(boolean select) {
         isSelect = select;
         return this;
+    }
+
+    public StorePictureVideoItemDto setDuration(Long duration) {
+        this.duration = duration;
+        return this;
+    }
+
+    public Long getDuration() {
+        return duration;
     }
 
     @Override
@@ -174,6 +184,9 @@ public class StorePictureItemDto implements Parcelable {
     }
 
 
+    public StorePictureVideoItemDto() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -195,12 +208,10 @@ public class StorePictureItemDto implements Parcelable {
         dest.writeValue(this.width);
         dest.writeValue(this.height);
         dest.writeByte(this.isSelect ? (byte) 1 : (byte) 0);
+        dest.writeValue(this.duration);
     }
 
-    public StorePictureItemDto() {
-    }
-
-    protected StorePictureItemDto(Parcel in) {
+    protected StorePictureVideoItemDto(Parcel in) {
         this._id = (Integer) in.readValue(Integer.class.getClassLoader());
         this.directoryPath = in.readString();
         this.absolutePath = in.readString();
@@ -215,17 +226,18 @@ public class StorePictureItemDto implements Parcelable {
         this.width = (Integer) in.readValue(Integer.class.getClassLoader());
         this.height = (Integer) in.readValue(Integer.class.getClassLoader());
         this.isSelect = in.readByte() != 0;
+        this.duration = (Long) in.readValue(Long.class.getClassLoader());
     }
 
-    public static final Creator<StorePictureItemDto> CREATOR = new Creator<StorePictureItemDto>() {
+    public static final Creator<StorePictureVideoItemDto> CREATOR = new Creator<StorePictureVideoItemDto>() {
         @Override
-        public StorePictureItemDto createFromParcel(Parcel source) {
-            return new StorePictureItemDto(source);
+        public StorePictureVideoItemDto createFromParcel(Parcel source) {
+            return new StorePictureVideoItemDto(source);
         }
 
         @Override
-        public StorePictureItemDto[] newArray(int size) {
-            return new StorePictureItemDto[size];
+        public StorePictureVideoItemDto[] newArray(int size) {
+            return new StorePictureVideoItemDto[size];
         }
     };
 }

@@ -4,10 +4,10 @@
 
     <application>
         <activity
-            android:name=".PictureSelectActivity"
+            android:name=".PictureVideoSelectActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".PicturePreviewActivity"
+            android:name=".PictureVideoPreviewActivity"
             android:theme="@style/AppTheme.TranslucentTheme"></activity>
     </application>
 
