@@ -84,7 +84,7 @@ public class PictureVideoSelectActivity extends BasePictureVideoActivity impleme
         recyList.setLayoutManager(new GridLayoutManager(getApplicationContext(),pictureSelectConfirg.getShowRowCount()));
         recyList.addItemDecoration(new DividerGridItemDecoration(getApplicationContext(),null));
         //初始化适配器
-        pictureSelectsAdapter = new PictureSelectNoCameraAdapter(getApplicationContext()) {
+        pictureSelectsAdapter = new PictureSelectNoCameraAdapter(getApplicationContext(),pictureSelectConfirg.getSelectStateY(),pictureSelectConfirg.getSelectStateN()) {
             @Override
             public void onSelceChangeClick(BaseViewHolder holder, StorePictureVideoItemDto storePictureItemDto, int position) {
                 //设置选中
@@ -95,15 +95,7 @@ public class PictureVideoSelectActivity extends BasePictureVideoActivity impleme
 
             @Override
             public void onImgClick(BaseViewHolder holder, StorePictureVideoItemDto storePictureItemDto, int position) {
-                Intent intent = new Intent(getApplicationContext(), PictureVideoPreviewActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putParcelable(AppCommon.OPTIONS_CONFIG_KEY,pictureSelectConfirg);
-                bundle.putParcelableArrayList(getString(R.string.go_to_poreview_act_key_for_select_list),selectedPicturesList);
-                bundle.putParcelableArrayList(getString(R.string.go_to_poreview_act_key_for_all_list),allList);
-                bundle.putInt(getString(R.string.go_to_poreview_act_key_for_all_list_show_posi),position);
-                intent.putExtras(bundle);
-                startActivityForResult(intent, GO_TO_PREVIEW_ACT_REQUES_CODE);
-                overridePendingTransition(R.anim.anim_from_center,0);
+                goToPreview(position);
             }
 
         };
@@ -304,13 +296,7 @@ public class PictureVideoSelectActivity extends BasePictureVideoActivity impleme
     public void onClick(View v) {
         if (Integer.compare(v.getId(),R.id.btnPreview) == 0) {
             if(selectedPicturesList.size() > 0) {
-                Intent intent = new Intent(this, PictureVideoPreviewActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putParcelable(AppCommon.OPTIONS_CONFIG_KEY, pictureSelectConfirg);
-                bundle.putParcelableArrayList(getString(R.string.go_to_poreview_act_key_for_select_list), selectedPicturesList);
-                intent.putExtras(bundle);
-                startActivityForResult(intent, GO_TO_PREVIEW_ACT_REQUES_CODE);
-                overridePendingTransition(R.anim.anim_from_center, 0);
+                goToPreview(null);
             }
         } else if(Integer.compare(v.getId(),R.id.btnCancel) == 0){
             finish();
@@ -334,6 +320,9 @@ public class PictureVideoSelectActivity extends BasePictureVideoActivity impleme
             switch (requestCode){
                 case GO_TO_PREVIEW_ACT_REQUES_CODE:
                     //判断是否需要结束该界面并返回数据
+                    isSelectPicture = getIntent().getExtras().getBoolean(getResources().getString(R.string.go_to_poreview_act_key_for_is_select_picture),isSelectPicture);
+                    isSelectVideo = getIntent().getExtras().getBoolean(getResources().getString(R.string.go_to_poreview_act_key_for_is_select_video),isSelectVideo);
+
                     boolean isFinish = data.getExtras().getBoolean(getString(R.string.preview_end_result_for_is_finish_select_and_result), false);
                     ArrayList<StorePictureVideoItemDto> list = data.getExtras().getParcelableArrayList(getString(R.string.go_to_poreview_act_key_for_select_list));
                     if(isFinish){
@@ -420,6 +409,25 @@ public class PictureVideoSelectActivity extends BasePictureVideoActivity impleme
         }
     }
 
+    /**
+     * 跳转到预览界面
+     * @param position
+     */
+    private void goToPreview(Integer position){
+        Intent intent = new Intent(getApplicationContext(), PictureVideoPreviewActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(AppCommon.OPTIONS_CONFIG_KEY,pictureSelectConfirg);
+        bundle.putParcelableArrayList(getString(R.string.go_to_poreview_act_key_for_select_list),selectedPicturesList);
+        bundle.putParcelableArrayList(getString(R.string.go_to_poreview_act_key_for_all_list),allList);
+        if(position != null) {
+            bundle.putInt(getString(R.string.go_to_poreview_act_key_for_all_list_show_posi), position);
+        }
+        bundle.putBoolean(getResources().getString(R.string.go_to_poreview_act_key_for_is_select_picture),isSelectPicture);
+        bundle.putBoolean(getResources().getString(R.string.go_to_poreview_act_key_for_is_select_video),isSelectVideo);
+        intent.putExtras(bundle);
+        startActivityForResult(intent, GO_TO_PREVIEW_ACT_REQUES_CODE);
+        overridePendingTransition(R.anim.anim_from_center,0);
+    }
 
     /**
      * 返回结果数据

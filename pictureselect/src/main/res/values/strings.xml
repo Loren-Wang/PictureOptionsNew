@@ -10,5 +10,7 @@
     <string name="go_to_poreview_act_key_for_select_list">select_list</string>
     <string name="go_to_poreview_act_key_for_all_list">all_list</string>
     <string name="go_to_poreview_act_key_for_all_list_show_posi">all_list_show_posi</string>
+    <string name="go_to_poreview_act_key_for_is_select_picture">is_select_picture</string>
+    <string name="go_to_poreview_act_key_for_is_select_video">is_select_video</string>
     <string name="preview_end_result_for_is_finish_select_and_result">isFinsh</string>
 </resources>

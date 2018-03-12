@@ -109,10 +109,13 @@ public class PictureVideoPreviewActivity extends BasePictureVideoActivity {
             public void onClick(View v) {
                 StorePictureVideoItemDto nowPosiShowDto = adapterShowList.get(recyList.getNowPosi());
                 if(nowPosiShowDto != null) {
-                    nowPosiShowDto.setSelect(cbShowOriginSelect.isChecked());
-                    setSelectForNoCamera(nowPosiShowDto,cbShowOriginSelect.isChecked(),recyList.getNowPosi());
-                    adapterShowList.set(recyList.getNowPosi(),nowPosiShowDto);
-                    showSelectSize();
+                    boolean state = setSelectForNoCamera(nowPosiShowDto, cbShowOriginSelect.isChecked(), recyList.getNowPosi());
+                    if(state) {
+                        adapterShowList.set(recyList.getNowPosi(), nowPosiShowDto);
+                        showSelectSize();
+                    }else {//未选中恢复原状态
+                        cbShowOriginSelect.setChecked(!cbShowOriginSelect.isChecked());
+                    }
                 }
             }
         });
@@ -234,6 +237,8 @@ public class PictureVideoPreviewActivity extends BasePictureVideoActivity {
         if (getIntent().getExtras() != null){
             allList = getIntent().getExtras().getParcelableArrayList(getString(R.string.go_to_poreview_act_key_for_all_list));
             selectedPicturesList = getIntent().getExtras().getParcelableArrayList(getString(R.string.go_to_poreview_act_key_for_select_list));
+            isSelectPicture = getIntent().getExtras().getBoolean(getResources().getString(R.string.go_to_poreview_act_key_for_is_select_picture),isSelectPicture);
+            isSelectVideo = getIntent().getExtras().getBoolean(getResources().getString(R.string.go_to_poreview_act_key_for_is_select_video),isSelectVideo);
             if(selectedPicturesList == null){
                 selectedPicturesList = new ArrayList();
             }
@@ -268,6 +273,8 @@ public class PictureVideoPreviewActivity extends BasePictureVideoActivity {
         Bundle bundle = new Bundle();
         bundle.putBoolean(getString(R.string.preview_end_result_for_is_finish_select_and_result),isFinishPictureSelect);
         bundle.putParcelableArrayList(getString(R.string.go_to_poreview_act_key_for_select_list),selectedPicturesList);
+        bundle.putBoolean(getResources().getString(R.string.go_to_poreview_act_key_for_is_select_picture),isSelectPicture);
+        bundle.putBoolean(getResources().getString(R.string.go_to_poreview_act_key_for_is_select_video),isSelectVideo);
         intent.putExtras(bundle);
         setResult(RESULT_OK,intent);
         finish();

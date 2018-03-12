@@ -25,16 +25,16 @@ public abstract class BasePictureVideoActivity extends BaseActivity {
      * @param selectState 是否被选中
      * @param postion 更新位置，位置小于0的话那么就不更新适配器
      */
-    protected void setSelectForNoCamera(StorePictureVideoItemDto selectDto
+    protected boolean setSelectForNoCamera(StorePictureVideoItemDto selectDto
             , boolean selectState, int postion){
         //判定传入的数据是否为空
         if(selectDto == null ){
-            return;
+            return false;
         }
         //先判定是否大于最大的选择图片的数量
         if(selectedPicturesList.size() >= getMaxSelectNum() && selectState){
             HintPopUtils.getInstance(getApplicationContext()).toastMsg(R.string.toast_hint_exceed_max_selected_num,null);
-            return;
+            return false;
         }
 
         //当是选中状态且是不允许图片视频同时选择的时候进行图片视频等逻辑判断
@@ -42,7 +42,7 @@ public abstract class BasePictureVideoActivity extends BaseActivity {
         if(selectState && !pictureSelectConfirg.isAllowConcurrentSelection()
                 && ( (isSelectPicture && selectDto.getDuration() > 0) || (isSelectVideo && selectDto.getDuration() == 0)) ){
             HintPopUtils.getInstance(getApplicationContext()).toastMsg(R.string.toast_hint_not_allow_concurrent_selection,null);
-            return;
+            return false;
         }
 
 
@@ -81,6 +81,8 @@ public abstract class BasePictureVideoActivity extends BaseActivity {
                     isSelectPicture = true;
                 }
             }
+
+            return true;
         }else if(!selectState && sameOptionsDto != null){
             selectDto.setSelect(selectState);
             selectedPicturesList.remove(selectDto);
@@ -90,8 +92,9 @@ public abstract class BasePictureVideoActivity extends BaseActivity {
                 isSelectPicture = false;
                 isSelectVideo = false;
             }
-
+            return true;
         }
+        return false;
     }
 
     /**
@@ -117,11 +120,11 @@ public abstract class BasePictureVideoActivity extends BaseActivity {
                 }else if(isSelectVideo){
                     maxSelectNum = pictureSelectConfirg.getMaxSelectVideoNum();
                 }else {
-                    maxSelectNum = 0;
+                    maxSelectNum = 1;
                 }
                 break;
             default:
-                maxSelectNum = 0;
+                maxSelectNum = 1;
                 break;
         }
         return maxSelectNum;

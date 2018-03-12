@@ -1,6 +1,7 @@
 package com.pictureselect.android.adapter;
 
 import android.content.Context;
+import android.support.annotation.DrawableRes;
 import android.view.View;
 
 import com.pictureselect.android.dto.StorePictureVideoItemDto;
@@ -13,8 +14,8 @@ import java.util.List;
 public abstract class PictureSelectNoCameraAdapter extends BasePictureSelectAdapter {
 
     private List<StorePictureVideoItemDto> list = new ArrayList<>();
-    public PictureSelectNoCameraAdapter(Context context) {
-        super(context);
+    public PictureSelectNoCameraAdapter(Context context, @DrawableRes Integer selectY, @DrawableRes Integer selectN) {
+        super(context,selectY,selectN);
     }
 
     public PictureSelectNoCameraAdapter setList(List<StorePictureVideoItemDto> list) {

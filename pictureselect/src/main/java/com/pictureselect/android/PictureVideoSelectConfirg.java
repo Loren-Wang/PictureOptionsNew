@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.os.Parcel;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DimenRes;
+import android.support.annotation.DrawableRes;
 
 import com.basepictureoptionslib.android.config.BaseConfig;
 
@@ -50,6 +51,10 @@ public class PictureVideoSelectConfirg extends BaseConfig{
     private int bottomOptionsTextColor;//底部操作栏文字颜色
     @DimenRes
     private int bottomOptionsTextSize;//底部操作栏文字大小
+    @DrawableRes
+    private Integer selectStateY = null;//选中状态图标
+    @DrawableRes
+    private Integer selectStateN = null;//非选中状态图标
 
     public PictureVideoSelectConfirg() {
         super();
@@ -59,7 +64,23 @@ public class PictureVideoSelectConfirg extends BaseConfig{
         bottomOptionsTextSize = 14;
     }
 
+    public Integer getSelectStateY() {
+        return selectStateY;
+    }
 
+    public PictureVideoSelectConfirg setSelectStateY(@DrawableRes Integer selectStateY) {
+        this.selectStateY = selectStateY;
+        return this;
+    }
+
+    public Integer getSelectStateN() {
+        return selectStateN;
+    }
+
+    public PictureVideoSelectConfirg setSelectStateN(@DrawableRes Integer selectStateN) {
+        this.selectStateN = selectStateN;
+        return this;
+    }
 
     public boolean isShowPreview() {
         return isShowPreview;
@@ -210,6 +231,8 @@ public class PictureVideoSelectConfirg extends BaseConfig{
         dest.writeInt(this.bottomOptionsHeight);
         dest.writeInt(this.bottomOptionsTextColor);
         dest.writeInt(this.bottomOptionsTextSize);
+        dest.writeValue(this.selectStateY);
+        dest.writeValue(this.selectStateN);
         dest.writeInt(this.aBarHeight);
         dest.writeInt(this.aBarColor);
         dest.writeInt(this.titleColor);
@@ -234,6 +257,8 @@ public class PictureVideoSelectConfirg extends BaseConfig{
         this.bottomOptionsHeight = in.readInt();
         this.bottomOptionsTextColor = in.readInt();
         this.bottomOptionsTextSize = in.readInt();
+        this.selectStateY = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.selectStateN = (Integer) in.readValue(Integer.class.getClassLoader());
         this.aBarHeight = in.readInt();
         this.aBarColor = in.readInt();
         this.titleColor = in.readInt();

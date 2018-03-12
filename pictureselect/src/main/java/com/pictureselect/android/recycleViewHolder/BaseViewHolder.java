@@ -1,7 +1,7 @@
 package com.pictureselect.android.recycleViewHolder;
 
 import android.content.Context;
-import android.graphics.Color;
+import android.support.annotation.DrawableRes;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -19,7 +19,7 @@ public class BaseViewHolder extends RecyclerView.ViewHolder {
     public ChangePictureSelectStateView viewSelect;
     private TextView tvVideoTime;
     private Context context;
-    public BaseViewHolder(Context context,View itemView) {
+    public BaseViewHolder(Context context, View itemView, @DrawableRes Integer selectY, @DrawableRes Integer selectN) {
         super(itemView);
         this.context = context;
         relItem = itemView.findViewById(R.id.relItem);
@@ -27,6 +27,7 @@ public class BaseViewHolder extends RecyclerView.ViewHolder {
         viewSelect = itemView.findViewById(R.id.viewSelect);
         tvVideoTime = itemView.findViewById(R.id.tvVideoTime);
         viewSelect.setEffectiveArea(0.5f,0f,1f,0.5f);
+        viewSelect.setStateChangeImage(selectY,selectN);
     }
 
     /**
@@ -76,11 +77,7 @@ public class BaseViewHolder extends RecyclerView.ViewHolder {
      * @param state
      */
     public void setSelectState(boolean state){
-        if(state){
-            viewSelect.setBackgroundColor(Color.parseColor("#99000000"));
-        }else {
-            viewSelect.setBackgroundColor(Color.parseColor("#00000000"));
-        }
+       viewSelect.setSelected(state);
     }
 
 

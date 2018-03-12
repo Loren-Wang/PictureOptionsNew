@@ -1,18 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.pictureoptions.android.MainActivity">
+    android:orientation="vertical">
 
     <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="最大图片选择数量"/>
+
+    <EditText
+        android:id="@+id/edtMaxPictureNum"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="最大视频选择数量"/>
+    <EditText
+        android:id="@+id/edtMaxVideoNum"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        />
+
+    <CheckBox
+        android:id="@+id/cbShowAllPicture"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:text="显示所有图片"/>
+    <CheckBox
+        android:id="@+id/cbShowAllVideo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="显示所有视频"/>
+    <CheckBox
+        android:id="@+id/cbAllowSelectAll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="允许选择图片和视频"/>
 
-</android.support.constraint.ConstraintLayout>
+
+    <Button
+        android:id="@+id/btnBegin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="开始选择"/>
+
+    <ListView
+        android:id="@+id/lvList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+
+</LinearLayout>
