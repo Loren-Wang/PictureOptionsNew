@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/relItem"
+    android:id="@+id/relOpItem"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#000000">
 
     <ImageView
-        android:id="@+id/imgPreview"
+        android:id="@+id/imgOpPreview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerInside"
         />
 
     <ImageButton
-        android:id="@+id/imgBtnPlay"
+        android:id="@+id/imgBtnOpPlay"
         android:visibility="gone"
         android:layout_width="100dp"
         android:layout_height="100dp"

@@ -7,32 +7,32 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.basepictureoptionslib.android.plugin.wxplayer.WxMediaController;
-import com.basepictureoptionslib.android.plugin.wxplayer.WxPlayer;
+import com.basepictureoptionslib.android.plugin.wxplayer.PictureOptionsWxMediaController;
+import com.basepictureoptionslib.android.plugin.wxplayer.PictureOptionsWxPlayer;
 import com.basepictureoptionslib.android.utils.SharedPrefUtils;
 
 
-public class VideoPlayActivity extends AppCompatActivity{
+public class PictureOptionsVideoPlayActivity extends AppCompatActivity{
     private String videoUrl;
-    private WxPlayer mWxPlayer;
+    private PictureOptionsWxPlayer pictureOpWxPlayer;
     private boolean isMute;
     private ImageView getmMute;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_video_play);
-        mWxPlayer = findViewById(R.id.wx_player);
+        setContentView(R.layout.activity_options_video_play);
+        pictureOpWxPlayer = findViewById(R.id.pictureOpWxPlayer);
         int uiOptions = View.SYSTEM_UI_FLAG_LAYOUT_STABLE| //保持布局状态
 //                //全屏
                 View.SYSTEM_UI_FLAG_FULLSCREEN;
         getWindow().getDecorView().setSystemUiVisibility(uiOptions);
 
-        final WxMediaController controller = new WxMediaController(this);
+        final PictureOptionsWxMediaController controller = new PictureOptionsWxMediaController(this);
         if (getIntent().getExtras() != null) {
             videoUrl = getIntent().getExtras().getString(AppCommon.VIDEO_PLAY_FOR_LOCAL_PATH, "");
             if(!videoUrl.isEmpty()){
-                mWxPlayer.setVideoPath(videoUrl);
+                pictureOpWxPlayer.setVideoPath(videoUrl);
 
                 //初始话参数
                 DisplayMetrics dm = new DisplayMetrics();
@@ -43,14 +43,14 @@ public class VideoPlayActivity extends AppCompatActivity{
                         .setThumbHeight(dm.heightPixels);
             }
         }
-        mWxPlayer.setMediaController(controller);
+        pictureOpWxPlayer.setMediaController(controller);
         getmMute = controller.getmMute();
 
         if (isMute) {
-            mWxPlayer.setVolumeOff();
+            pictureOpWxPlayer.setVolumeOff();
             getmMute.setImageResource(R.mipmap.icon_mute);
         } else {
-            mWxPlayer.setVolumeOn();
+            pictureOpWxPlayer.setVolumeOn();
             getmMute.setImageResource(R.mipmap.icon_unmute);
         }
 
@@ -59,11 +59,11 @@ public class VideoPlayActivity extends AppCompatActivity{
             public void onClick(View view) {
                 boolean mute = SharedPrefUtils.getBoolean(getApplicationContext(),AppCommon.VIDEO_PLAY_MUTE_OR_UNMUTE, true);
                 if (mute) {
-                    mWxPlayer.setVolumeOn();
+                    pictureOpWxPlayer.setVolumeOn();
                     SharedPrefUtils.putBoolean(getApplicationContext(),AppCommon.VIDEO_PLAY_MUTE_OR_UNMUTE, false);
                     getmMute.setImageResource(R.mipmap.icon_unmute);
                 } else {
-                    mWxPlayer.setVolumeOff();
+                    pictureOpWxPlayer.setVolumeOff();
                     SharedPrefUtils.putBoolean(getApplicationContext(),AppCommon.VIDEO_PLAY_MUTE_OR_UNMUTE, true);
                     getmMute.setImageResource(R.mipmap.icon_mute);
                 }
@@ -74,14 +74,14 @@ public class VideoPlayActivity extends AppCompatActivity{
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mWxPlayer.release();
+        pictureOpWxPlayer.release();
         SharedPrefUtils.putBoolean(getApplicationContext(),AppCommon.VIDEO_PLAY_MUTE_OR_UNMUTE, true);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        mWxPlayer.release();
+        pictureOpWxPlayer.release();
         SharedPrefUtils.putBoolean(getApplicationContext(),AppCommon.VIDEO_PLAY_MUTE_OR_UNMUTE, true);
     }
 }

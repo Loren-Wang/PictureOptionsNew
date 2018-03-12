@@ -4,7 +4,7 @@
     android:layout_height="match_parent">
 
     <ImageView
-        android:id="@+id/image"
+        android:id="@+id/imageOp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
@@ -14,7 +14,7 @@
 
 
     <LinearLayout
-        android:id="@+id/loading"
+        android:id="@+id/loadingOp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
@@ -29,7 +29,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/error"
+        android:id="@+id/errorOp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/black"
@@ -48,14 +48,14 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/top"
+        android:id="@+id/topOp"
         android:layout_width="match_parent"
         android:layout_height="42dp"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
         <ImageView
-            android:id="@+id/back"
+            android:id="@+id/backOp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="10dp"
@@ -68,7 +68,7 @@
             android:layout_weight="1" />
 
         <ImageView
-            android:id="@+id/mute"
+            android:id="@+id/muteOp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center|right"
@@ -79,7 +79,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/bottom"
+        android:id="@+id/bottomOp"
         android:layout_width="match_parent"
         android:layout_height="42dp"
         android:layout_alignParentBottom="true"
@@ -89,14 +89,14 @@
         >
 
         <ImageView
-            android:id="@+id/restart_or_pause"
+            android:id="@+id/restart_or_pauseOp"
             android:layout_width="12dp"
             android:layout_height="20dp"
             android:src="@mipmap/icon_player_start"
             android:visibility="visible" />
 
         <TextView
-            android:id="@+id/position"
+            android:id="@+id/positionOp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
@@ -105,7 +105,7 @@
             android:textSize="11.2sp" />
 
         <SeekBar
-            android:id="@+id/seek"
+            android:id="@+id/seekOp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -118,7 +118,7 @@
             android:thumb="@drawable/seek_thumb" />
 
         <TextView
-            android:id="@+id/duration"
+            android:id="@+id/durationOp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="10dp"
@@ -130,7 +130,7 @@
 
     <LinearLayout
         android:orientation="vertical"
-        android:id="@+id/rl_center_start"
+        android:id="@+id/rl_center_startOp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
@@ -138,7 +138,7 @@
 
         <ImageView
             android:layout_gravity="center_horizontal"
-            android:id="@+id/center_start"
+            android:id="@+id/center_startOp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@mipmap/icon_replay"

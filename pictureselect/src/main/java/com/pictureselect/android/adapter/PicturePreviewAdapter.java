@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.basepictureoptionslib.android.AppCommon;
-import com.basepictureoptionslib.android.VideoPlayActivity;
+import com.basepictureoptionslib.android.PictureOptionsVideoPlayActivity;
 import com.pictureselect.android.R;
 import com.pictureselect.android.dto.StorePictureVideoItemDto;
 import com.pictureselect.android.recycleViewHolder.PicturePreviewViewHolder;
@@ -42,7 +42,7 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<PicturePreviewVi
 
     @Override
     public PicturePreviewViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new PicturePreviewViewHolder(context,inflater.inflate(R.layout.item_list_picture_preview,null),windowWidth,windowHeight);
+        return new PicturePreviewViewHolder(context,inflater.inflate(R.layout.item_list_picture_and_video_preview,null),windowWidth,windowHeight);
     }
 
     @Override
@@ -53,7 +53,7 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<PicturePreviewVi
         holder.imgBtnPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, VideoPlayActivity.class);
+                Intent intent = new Intent(context, PictureOptionsVideoPlayActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putString(AppCommon.VIDEO_PLAY_FOR_LOCAL_PATH,storePictureItemDto.getAbsolutePath());
                 intent.putExtras(bundle);

@@ -22,10 +22,10 @@ public class BaseViewHolder extends RecyclerView.ViewHolder {
     public BaseViewHolder(Context context, View itemView, @DrawableRes Integer selectY, @DrawableRes Integer selectN) {
         super(itemView);
         this.context = context;
-        relItem = itemView.findViewById(R.id.relItem);
-        imgPic = itemView.findViewById(R.id.imgPicture);
-        viewSelect = itemView.findViewById(R.id.viewSelect);
-        tvVideoTime = itemView.findViewById(R.id.tvVideoTime);
+        relItem = itemView.findViewById(R.id.relOpItem);
+        imgPic = itemView.findViewById(R.id.imgOpPicture);
+        viewSelect = itemView.findViewById(R.id.viewOpSelect);
+        tvVideoTime = itemView.findViewById(R.id.tvOpVideoTime);
         viewSelect.setEffectiveArea(0.5f,0f,1f,0.5f);
         viewSelect.setStateChangeImage(selectY,selectN);
     }

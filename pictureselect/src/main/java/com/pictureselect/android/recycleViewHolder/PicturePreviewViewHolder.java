@@ -21,9 +21,9 @@ public class PicturePreviewViewHolder extends RecyclerView.ViewHolder {
     public PicturePreviewViewHolder(Context context,View itemView,int windowWidth,int windowHeight) {
         super(itemView);
         this.context = context;
-        relItem = itemView.findViewById(R.id.relItem);
-        imgPreview = itemView.findViewById(R.id.imgPreview);
-        imgBtnPlay = itemView.findViewById(R.id.imgBtnPlay);
+        relItem = itemView.findViewById(R.id.relOpItem);
+        imgPreview = itemView.findViewById(R.id.imgOpPreview);
+        imgBtnPlay = itemView.findViewById(R.id.imgBtnOpPlay);
         relItem.setLayoutParams(new ViewGroup.LayoutParams(windowWidth,windowHeight));
     }
 

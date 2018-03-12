@@ -18,7 +18,7 @@ import com.bumptech.glide.Glide;
 /**
  * author   maimingliang
  */
-public class WxMediaController extends FrameLayout implements View.OnClickListener, SeekBar.OnSeekBarChangeListener {
+public class PictureOptionsWxMediaController extends FrameLayout implements View.OnClickListener, SeekBar.OnSeekBarChangeListener {
 
     private Context mContext;
     private ImageView mImage;
@@ -42,27 +42,27 @@ public class WxMediaController extends FrameLayout implements View.OnClickListen
     private ImageView mMute;
     private boolean isMute = true;
 
-    public WxMediaController(Context context) {
+    public PictureOptionsWxMediaController(Context context) {
         super(context);
         mContext = context;
         init();
     }
 
     private void init() {
-        View.inflate(mContext, R.layout.video_palyer_controller, this);
+        View.inflate(mContext, R.layout.options_video_palyer_controller, this);
 
-        mImage = (ImageView) findViewById(R.id.image);
-        mBack = (ImageView) findViewById(R.id.back);
-        mBottom = (LinearLayout) findViewById(R.id.bottom);
-        mPosition = ((TextView) findViewById(R.id.position));
-        mDuration = (TextView) findViewById(R.id.duration);
-        mSeek = (SeekBar) findViewById(R.id.seek);
-        mCenterStart = (LinearLayout) findViewById(R.id.rl_center_start);
-        mPasue = (ImageView) findViewById(R.id.restart_or_pause);
-        mTop = (LinearLayout) findViewById(R.id.top);
-        mLoading = (LinearLayout) findViewById(R.id.loading);
-        mError = (LinearLayout) findViewById(R.id.error);
-        mMute = findViewById(R.id.mute);
+        mImage = (ImageView) findViewById(R.id.imageOp);
+        mBack = (ImageView) findViewById(R.id.backOp);
+        mBottom = (LinearLayout) findViewById(R.id.bottomOp);
+        mPosition = ((TextView) findViewById(R.id.positionOp));
+        mDuration = (TextView) findViewById(R.id.durationOp);
+        mSeek = (SeekBar) findViewById(R.id.seekOp);
+        mCenterStart = (LinearLayout) findViewById(R.id.rl_center_startOp);
+        mPasue = (ImageView) findViewById(R.id.restart_or_pauseOp);
+        mTop = (LinearLayout) findViewById(R.id.topOp);
+        mLoading = (LinearLayout) findViewById(R.id.loadingOp);
+        mError = (LinearLayout) findViewById(R.id.errorOp);
+        mMute = findViewById(R.id.muteOp);
         mCenterStart.setOnClickListener(this);
         mPasue.setOnClickListener(this);
         mSeek.setOnSeekBarChangeListener(this);
@@ -72,19 +72,19 @@ public class WxMediaController extends FrameLayout implements View.OnClickListen
         setTopBottomVisible(false);
     }
 
-    public WxMediaController setThumbImage(String imageUrl) {
+    public PictureOptionsWxMediaController setThumbImage(String imageUrl) {
         Glide.with(mContext)
                 .load(imageUrl)
                 .into(mImage);
         return this;
     }
 
-    public WxMediaController setThumbWidth(int width){
+    public PictureOptionsWxMediaController setThumbWidth(int width){
         thumbWidth = width;
         return this;
     }
 
-    public WxMediaController setThumbHeight(int height){
+    public PictureOptionsWxMediaController setThumbHeight(int height){
         thumbHeight = height;
 
         ViewGroup.LayoutParams layoutParams = mImage.getLayoutParams();
@@ -112,9 +112,9 @@ public class WxMediaController extends FrameLayout implements View.OnClickListen
 
         Log.e("tag", "------ currState = " + currState);
         switch (currState) {
-            case WxPlayer.STATE_IDLE:
+            case PictureOptionsWxPlayer.STATE_IDLE:
                 break;
-            case WxPlayer.STATE_ERROR:
+            case PictureOptionsWxPlayer.STATE_ERROR:
                 mImage.setVisibility(GONE);
                 mCenterStart.setVisibility(GONE);
                 mLoading.setVisibility(GONE);
@@ -122,46 +122,46 @@ public class WxMediaController extends FrameLayout implements View.OnClickListen
                 removeCallback();
                 setTopBottomVisible(false);
                 break;
-            case WxPlayer.STATE_COMPLETED:
+            case PictureOptionsWxPlayer.STATE_COMPLETED:
                 mImage.setVisibility(VISIBLE);
                 mCenterStart.setVisibility(VISIBLE);
                 mLoading.setVisibility(GONE);
                 removeCallback();
                 setTopBottomVisible(false);
                 break;
-            case WxPlayer.STATE_PREPARING:
+            case PictureOptionsWxPlayer.STATE_PREPARING:
                 mImage.setVisibility(VISIBLE);
                 mCenterStart.setVisibility(GONE);
                 mLoading.setVisibility(VISIBLE);
                 mError.setVisibility(GONE);
                 mPasue.setImageResource(R.mipmap.icon_player_start);
                 break;
-            case WxPlayer.STATE_PREPARED:
+            case PictureOptionsWxPlayer.STATE_PREPARED:
                 mImage.setVisibility(GONE);
                 mCenterStart.setVisibility(GONE);
                 mPasue.setImageResource(R.mipmap.icon_player_start);
                 mLoading.setVisibility(VISIBLE);
                 startUpdateProgress();
                 break;
-            case WxPlayer.STATE_PLAYING:
+            case PictureOptionsWxPlayer.STATE_PLAYING:
                 mImage.setVisibility(GONE);
                 mCenterStart.setVisibility(GONE);
                 mLoading.setVisibility(GONE);
                 mPasue.setImageResource(R.mipmap.icon_player_pause);
                 break;
-            case WxPlayer.STATE_PAUSED:
+            case PictureOptionsWxPlayer.STATE_PAUSED:
                 mImage.setVisibility(GONE);
                 mCenterStart.setVisibility(GONE);
                 mLoading.setVisibility(GONE);
                 mPasue.setImageResource(R.mipmap.icon_player_start);
                 break;
-            case WxPlayer.STATE_BUFFERING_PAUSED:
+            case PictureOptionsWxPlayer.STATE_BUFFERING_PAUSED:
                 mImage.setVisibility(GONE);
                 mCenterStart.setVisibility(GONE);
                 mLoading.setVisibility(VISIBLE);
                 mPasue.setImageResource(R.mipmap.icon_player_start);
                 break;
-            case WxPlayer.STATE_BUFFERING_PLAYING:
+            case PictureOptionsWxPlayer.STATE_BUFFERING_PLAYING:
                 mImage.setVisibility(GONE);
                 mCenterStart.setVisibility(GONE);
                 mLoading.setVisibility(VISIBLE);
@@ -205,8 +205,8 @@ public class WxMediaController extends FrameLayout implements View.OnClickListen
         int progress = (int) (100f * position / duration);
         mSeek.setProgress(progress);
 
-        mPosition.setText(NiceUtil.formatTime(position));
-        mDuration.setText(NiceUtil.formatTime(duration));
+        mPosition.setText(PictureOptionsNiceUtil.formatTime(position));
+        mDuration.setText(PictureOptionsNiceUtil.formatTime(duration));
     }
 
     /**

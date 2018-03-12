@@ -16,7 +16,7 @@ import java.util.Locale;
  * Created by XiaoJianjun on 2017/5/8.
  * 工具类.
  */
-public class NiceUtil {
+public class PictureOptionsNiceUtil {
     /**
      * Get activity from context object
      *

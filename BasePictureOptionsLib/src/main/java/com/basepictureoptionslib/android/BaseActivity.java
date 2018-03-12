@@ -114,10 +114,10 @@ public class BaseActivity extends AppCompatActivity {
      * 设置标题栏属性（只有在选择页以及裁剪页才会用的到）
      */
     protected void setAcBar(BaseConfig baseConfig){
-        viewAcBar = findViewById(R.id.viewAcBar);
-        tvTitle = findViewById(R.id.tvTitle);
-        btnCancel = findViewById(R.id.btnCancel);
-        btnConfirm = findViewById(R.id.btnConfirm);
+        viewAcBar = findViewById(R.id.viewOpAcBar);
+        tvTitle = findViewById(R.id.tvOpTitle);
+        btnCancel = findViewById(R.id.btnOpCancel);
+        btnConfirm = findViewById(R.id.btnOpConfirm);
         if(baseConfig != null && viewAcBar != null && btnCancel != null
                 && tvTitle != null && btnConfirm != null){
 
@@ -159,7 +159,7 @@ public class BaseActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        setContentView(R.layout.activity_base_null);
+        setContentView(R.layout.activity_options_base_null);
         System.gc();
         super.onDestroy();
     }

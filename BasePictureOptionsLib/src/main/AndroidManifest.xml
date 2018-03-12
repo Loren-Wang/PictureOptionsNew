@@ -6,7 +6,7 @@
 
     <application>
         <activity
-            android:name=".VideoPlayActivity"
+            android:name=".PictureOptionsVideoPlayActivity"
             android:launchMode="singleTop"
             android:theme="@style/AppTheme.TranslucentTheme"></activity>
     </application>

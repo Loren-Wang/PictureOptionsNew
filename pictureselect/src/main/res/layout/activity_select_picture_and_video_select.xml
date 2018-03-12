@@ -10,17 +10,17 @@
         layout="@layout/base_actionbar"/>
 
     <View
-        android:id="@+id/viewBottomOptions"
+        android:id="@+id/viewOpBottomOptions"
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="44dp"
         android:background="#2b3552"/>
 
     <CheckBox
-        android:id="@+id/cbShowOriginPic"
+        android:id="@+id/cbOpShowOriginPic"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_alignTop="@id/viewBottomOptions"
+        android:layout_alignTop="@id/viewOpBottomOptions"
         android:text="@string/origin_picture"
         android:textColor="#ffffff"
         android:paddingLeft="5dp"
@@ -29,10 +29,10 @@
 
 
     <Button
-        android:id="@+id/btnPreview"
+        android:id="@+id/btnOpPreview"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_alignTop="@id/viewBottomOptions"
+        android:layout_alignTop="@id/viewOpBottomOptions"
         android:layout_alignParentRight="true"
         android:gravity="center"
         android:textSize="12sp"
@@ -45,11 +45,12 @@
         />
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyList"
+        android:id="@+id/recyOpList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/viewAcBar"
-        android:layout_above="@id/viewBottomOptions"/>
+        android:layout_below="@+id/viewOpAcBar"
+        android:layout_above="@id/viewOpBottomOptions"
+        tools:ignore="UnknownId" />
 
 
 

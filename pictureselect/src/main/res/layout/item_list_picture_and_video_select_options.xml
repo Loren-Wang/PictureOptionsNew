@@ -1,33 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/relItem"
+    android:id="@+id/relOpItem"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <com.pictureselect.android.view.PictureSelectsView
-        android:id="@+id/imgPicture"
+        android:id="@+id/imgOpPicture"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop" />
 
 
     <com.pictureselect.android.view.ChangePictureSelectStateView
-        android:id="@+id/viewSelect"
+        android:id="@+id/viewOpSelect"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignLeft="@id/imgPicture"
-        android:layout_alignRight="@id/imgPicture"
-        android:layout_alignTop="@id/imgPicture"
-        android:layout_alignBottom="@id/imgPicture"
+        android:layout_alignLeft="@id/imgOpPicture"
+        android:layout_alignRight="@id/imgOpPicture"
+        android:layout_alignTop="@id/imgOpPicture"
+        android:layout_alignBottom="@id/imgOpPicture"
         />
 
     <TextView
-        android:id="@+id/tvVideoTime"
+        android:id="@+id/tvOpVideoTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/imgPicture"
-        android:layout_alignBottom="@id/imgPicture"
+        android:layout_alignLeft="@id/imgOpPicture"
+        android:layout_alignBottom="@id/imgOpPicture"
         android:textColor="#ffffff"
         android:textSize="12sp"
         android:paddingLeft="2dp"/>

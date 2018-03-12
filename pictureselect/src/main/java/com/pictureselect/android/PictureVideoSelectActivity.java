@@ -68,12 +68,12 @@ public class PictureVideoSelectActivity extends BasePictureVideoActivity impleme
         }
         setTheme(pictureSelectConfirg.getThemeId());
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_picture_select);
+        setContentView(R.layout.activity_select_picture_and_video_select);
 
-        recyList = findViewById(R.id.recyList);
-        viewBottomOptions = findViewById(R.id.viewBottomOptions);
-        cbShowOriginPic = findViewById(R.id.cbShowOriginPic);
-        btnPreview = findViewById(R.id.btnPreview);
+        recyList = findViewById(R.id.recyOpList);
+        viewBottomOptions = findViewById(R.id.viewOpBottomOptions);
+        cbShowOriginPic = findViewById(R.id.cbOpShowOriginPic);
+        btnPreview = findViewById(R.id.btnOpPreview);
 
         //初始话参数
         DisplayMetrics dm = new DisplayMetrics();
@@ -294,13 +294,13 @@ public class PictureVideoSelectActivity extends BasePictureVideoActivity impleme
 
     @Override
     public void onClick(View v) {
-        if (Integer.compare(v.getId(),R.id.btnPreview) == 0) {
+        if (Integer.compare(v.getId(),R.id.btnOpPreview) == 0) {
             if(selectedPicturesList.size() > 0) {
                 goToPreview(null);
             }
-        } else if(Integer.compare(v.getId(),R.id.btnCancel) == 0){
+        } else if(Integer.compare(v.getId(),R.id.btnOpCancel) == 0){
             finish();
-        }else if(Integer.compare(v.getId(),R.id.btnConfirm) == 0){
+        }else if(Integer.compare(v.getId(),R.id.btnOpConfirm) == 0){
             resultData(RESULT_OK);
         }
     }

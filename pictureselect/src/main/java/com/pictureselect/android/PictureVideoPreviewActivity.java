@@ -74,16 +74,16 @@ public class PictureVideoPreviewActivity extends BasePictureVideoActivity {
             pictureSelectConfirg = new PictureVideoSelectConfirg();
         }
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_picture_preview);
+        setContentView(R.layout.activity_select_picture_and_video_preview);
 
-        viewAcBar = findViewById(R.id.viewAcBar);
-        tvTitle = findViewById(R.id.tvTitle);
-        imgBtnback = findViewById(R.id.imgBtnback);
-        btnConfirm = findViewById(R.id.btnConfirm);
-        viewBottomOptions = findViewById(R.id.viewBottomOptions);
-        cbShowOriginPic = findViewById(R.id.cbShowOriginPic);
-        cbShowOriginSelect = findViewById(R.id.cbShowOriginSelect);
-        recyList = findViewById(R.id.recyList);
+        viewAcBar = findViewById(R.id.viewOpAcBar);
+        tvTitle = findViewById(R.id.tvOpTitle);
+        imgBtnback = findViewById(R.id.imgBtnOpback);
+        btnConfirm = findViewById(R.id.btnOpConfirm);
+        viewBottomOptions = findViewById(R.id.viewOpBottomOptions);
+        cbShowOriginPic = findViewById(R.id.cbOpShowOriginPic);
+        cbShowOriginSelect = findViewById(R.id.cbOpShowOriginSelect);
+        recyList = findViewById(R.id.recyOpList);
         recyList.setLayoutManager(new LinearLayoutManager(getApplicationContext(),LinearLayoutManager.HORIZONTAL,false));
 
         //初始话参数
@@ -311,7 +311,7 @@ public class PictureVideoPreviewActivity extends BasePictureVideoActivity {
         imgBtnback = null;
         tvTitle = null;
         viewAcBar = null;
-        setContentView(R.layout.activity_base_null);
+        setContentView(R.layout.activity_options_base_null);
         System.gc();
         super.onDestroy();
     }

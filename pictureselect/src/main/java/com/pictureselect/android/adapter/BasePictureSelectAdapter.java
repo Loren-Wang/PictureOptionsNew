@@ -26,7 +26,7 @@ public abstract class BasePictureSelectAdapter extends RecyclerView.Adapter<Base
 
     @Override
     public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new BaseViewHolder(context,inflater.inflate(R.layout.item_list_picture_select_options,null),selectY,selectN);
+        return new BaseViewHolder(context,inflater.inflate(R.layout.item_list_picture_and_video_select_options,null),selectY,selectN);
     }
 
 }

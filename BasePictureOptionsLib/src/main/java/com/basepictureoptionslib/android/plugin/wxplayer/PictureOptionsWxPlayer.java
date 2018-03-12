@@ -27,7 +27,7 @@ import java.util.Map;
  */
 
 
-public class WxPlayer extends FrameLayout implements WxMediaController.WxMediaControll{
+public class PictureOptionsWxPlayer extends FrameLayout implements PictureOptionsWxMediaController.WxMediaControll{
 
 
     private Context mContext;
@@ -60,7 +60,7 @@ public class WxPlayer extends FrameLayout implements WxMediaController.WxMediaCo
 
     private MediaPlayer mMediaPlayer = null;
     private TextureView mTextureView = null;
-    private WxMediaController mWxMediaController;
+    private PictureOptionsWxMediaController mWxMediaController;
     private SurfaceTexture mSurfaceTexture = null;
 
 
@@ -70,15 +70,15 @@ public class WxPlayer extends FrameLayout implements WxMediaController.WxMediaCo
     private int mVideoHeight;
      private RelativeLayout mRlTextueView;
 
-    public WxPlayer(Context context) {
+    public PictureOptionsWxPlayer(Context context) {
         this(context,null);
     }
 
-    public WxPlayer(Context context, AttributeSet attrs) {
+    public PictureOptionsWxPlayer(Context context, AttributeSet attrs) {
         this(context, attrs,0);
     }
 
-    public WxPlayer(Context context, AttributeSet attrs, int defStyleAttr) {
+    public PictureOptionsWxPlayer(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mContext = context;
         initContainer();
@@ -104,7 +104,7 @@ public class WxPlayer extends FrameLayout implements WxMediaController.WxMediaCo
      * 设置UI 控制器
      * @param controller
      */
-    public void setMediaController(WxMediaController controller){
+    public void setMediaController(PictureOptionsWxMediaController controller){
 
         Log.e("tag", " setMediaController ");
 
