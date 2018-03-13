@@ -29,6 +29,11 @@ public class StorePictureVideoItemDto implements Parcelable {
     private boolean isSelect = false;//是否选中
     private long duration = 0l;//时长
 
+    private String thumbPath;//缩略图地址
+    private Integer thumbWidth;//缩略图宽度
+    private Integer thumbHeight;//缩略图高度
+
+
     public Integer get_id() {
         return _id;
     }
@@ -155,12 +160,40 @@ public class StorePictureVideoItemDto implements Parcelable {
         return this;
     }
 
-    public StorePictureVideoItemDto setDuration(Long duration) {
+
+    public String getThumbPath() {
+        return thumbPath;
+    }
+
+    public StorePictureVideoItemDto setThumbPath(String thumbPath) {
+        this.thumbPath = thumbPath;
+        return this;
+    }
+
+    public Integer getThumbWidth() {
+        return thumbWidth;
+    }
+
+    public StorePictureVideoItemDto setThumbWidth(Integer thumbWidth) {
+        this.thumbWidth = thumbWidth;
+        return this;
+    }
+
+    public Integer getThumbHeight() {
+        return thumbHeight;
+    }
+
+    public StorePictureVideoItemDto setThumbHeight(Integer thumbHeight) {
+        this.thumbHeight = thumbHeight;
+        return this;
+    }
+
+    public StorePictureVideoItemDto setDuration(long duration) {
         this.duration = duration;
         return this;
     }
 
-    public Long getDuration() {
+    public long getDuration() {
         return duration;
     }
 
@@ -208,7 +241,10 @@ public class StorePictureVideoItemDto implements Parcelable {
         dest.writeValue(this.width);
         dest.writeValue(this.height);
         dest.writeByte(this.isSelect ? (byte) 1 : (byte) 0);
-        dest.writeValue(this.duration);
+        dest.writeLong(this.duration);
+        dest.writeString(this.thumbPath);
+        dest.writeValue(this.thumbWidth);
+        dest.writeValue(this.thumbHeight);
     }
 
     protected StorePictureVideoItemDto(Parcel in) {
@@ -226,7 +262,10 @@ public class StorePictureVideoItemDto implements Parcelable {
         this.width = (Integer) in.readValue(Integer.class.getClassLoader());
         this.height = (Integer) in.readValue(Integer.class.getClassLoader());
         this.isSelect = in.readByte() != 0;
-        this.duration = (Long) in.readValue(Long.class.getClassLoader());
+        this.duration = in.readLong();
+        this.thumbPath = in.readString();
+        this.thumbWidth = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.thumbHeight = (Integer) in.readValue(Integer.class.getClassLoader());
     }
 
     public static final Creator<StorePictureVideoItemDto> CREATOR = new Creator<StorePictureVideoItemDto>() {
