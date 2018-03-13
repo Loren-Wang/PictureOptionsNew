@@ -2,8 +2,10 @@ package com.pictureselect.android;
 
 import android.Manifest;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.provider.MediaStore;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
@@ -435,14 +437,38 @@ public class PictureVideoSelectActivity extends BasePictureVideoActivity impleme
      */
     private void resultData(int resultCode){
         ArrayList<String> selectPicturePathList = new ArrayList<>();
-        Iterator<StorePictureVideoItemDto> iterator = selectedPicturesList.iterator();
         StorePictureVideoItemDto dto;
-        while (iterator.hasNext()){
-            dto = iterator.next();
+        int size = selectedPicturesList.size();
+        Cursor thumbCursor = null;
+        for(int i = 0 ; i < size ; i++){
+            dto = selectedPicturesList.get(i);
             selectPicturePathList.add(dto.getAbsolutePath());
-            dto = null;
+
+            //获取缩略图
+            if(dto.getDuration() > 0){
+                thumbCursor = getContentResolver().query(MediaStore.Video.Thumbnails.EXTERNAL_CONTENT_URI
+                        ,null,MediaStore.Video.Thumbnails.VIDEO_ID + "=" + dto.get_id(),null,null);
+                if(thumbCursor.getCount() > 0 && thumbCursor.moveToNext()){
+                    dto.setThumbPath(thumbCursor.getString(thumbCursor.getColumnIndex(MediaStore.Video.Thumbnails.DATA)));
+                    dto.setThumbWidth(thumbCursor.getInt(thumbCursor.getColumnIndex(MediaStore.Video.Thumbnails.WIDTH)));
+                    dto.setThumbHeight(thumbCursor.getInt(thumbCursor.getColumnIndex(MediaStore.Video.Thumbnails.HEIGHT)));
+                    selectedPicturesList.set(i,dto);
+                }
+            }else {
+                thumbCursor = getContentResolver().query(MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI
+                        ,null,MediaStore.Images.Thumbnails.IMAGE_ID + "=" + dto.get_id(),null,null);
+                if(thumbCursor.getCount() > 0 && thumbCursor.moveToNext()){
+                    dto.setThumbPath(thumbCursor.getString(thumbCursor.getColumnIndex(MediaStore.Images.Thumbnails.DATA)));
+                    dto.setThumbWidth(thumbCursor.getInt(thumbCursor.getColumnIndex(MediaStore.Images.Thumbnails.WIDTH)));
+                    dto.setThumbHeight(thumbCursor.getInt(thumbCursor.getColumnIndex(MediaStore.Images.Thumbnails.HEIGHT)));
+                    selectedPicturesList.set(i,dto);
+                }
+            }
+            if(thumbCursor != null) {
+                thumbCursor.close();
+                thumbCursor = null;
+            }
         }
-        iterator = null;
 
         Intent intent = new Intent();
         Bundle bundle = new Bundle();

@@ -220,7 +220,6 @@ public class DbPhonePictureVideoList {
         StorePictureVideoItemDto storePictureItemDto;
         int pictureDegree;
         File absolutePathFile;
-        Cursor thumbCursor;
         while (cursor.moveToNext()){
             storePictureItemDto = new StorePictureVideoItemDto();
             absolutePathFile = new File(cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA)));
@@ -250,16 +249,6 @@ public class DbPhonePictureVideoList {
             storePictureItemDto.setDuration(0l);
             storePictureItemDto.setDirectoryPath(String.valueOf(storePictureItemDto.getAbsolutePath())
                     .replace(String.valueOf(storePictureItemDto.getFileName()), ""));//使用intern()方法防止原有数据被破坏，该方法会创建一个新的对象字符串
-
-            thumbCursor = mContentResolver.query(MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI
-                    ,null,MediaStore.Images.Thumbnails.IMAGE_ID + "=" + storePictureItemDto.get_id(),null,null);
-            if(thumbCursor.getCount() > 0 && thumbCursor.moveToNext()){
-                storePictureItemDto.setThumbPath(thumbCursor.getString(thumbCursor.getColumnIndex(MediaStore.Images.Thumbnails.DATA)));
-                storePictureItemDto.setThumbWidth(thumbCursor.getInt(thumbCursor.getColumnIndex(MediaStore.Images.Thumbnails.WIDTH)));
-                storePictureItemDto.setThumbHeight(thumbCursor.getInt(thumbCursor.getColumnIndex(MediaStore.Images.Thumbnails.HEIGHT)));
-            }
-            thumbCursor.close();
-            thumbCursor = null;
 
             list = map.get(storePictureItemDto.getDirectoryPath());
             if(list == null){
@@ -321,7 +310,6 @@ public class DbPhonePictureVideoList {
         StorePictureVideoItemDto storePictureItemDto;
         int pictureDegree;
         File absolutePathFile;
-        Cursor thumbCursor;
         while (cursor.moveToNext()){
             storePictureItemDto = new StorePictureVideoItemDto();
             absolutePathFile = new File(cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA)));
@@ -351,16 +339,6 @@ public class DbPhonePictureVideoList {
             storePictureItemDto.setDuration(cursor.getLong(cursor.getColumnIndex(MediaStore.Video.Media.DURATION)));
             storePictureItemDto.setDirectoryPath(String.valueOf(storePictureItemDto.getAbsolutePath())
                     .replace(String.valueOf(storePictureItemDto.getFileName()), ""));//使用intern()方法防止原有数据被破坏，该方法会创建一个新的对象字符串
-
-            thumbCursor = mContentResolver.query(MediaStore.Video.Thumbnails.EXTERNAL_CONTENT_URI
-                    ,null,MediaStore.Video.Thumbnails.VIDEO_ID + "=" + storePictureItemDto.get_id(),null,null);
-            if(thumbCursor.getCount() > 0 && thumbCursor.moveToNext()){
-                storePictureItemDto.setThumbPath(thumbCursor.getString(thumbCursor.getColumnIndex(MediaStore.Video.Thumbnails.DATA)));
-                storePictureItemDto.setThumbWidth(thumbCursor.getInt(thumbCursor.getColumnIndex(MediaStore.Video.Thumbnails.WIDTH)));
-                storePictureItemDto.setThumbHeight(thumbCursor.getInt(thumbCursor.getColumnIndex(MediaStore.Video.Thumbnails.HEIGHT)));
-            }
-            thumbCursor.close();
-            thumbCursor = null;
 
             list = map.get(storePictureItemDto.getDirectoryPath());
             if(list == null){
