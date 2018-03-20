@@ -55,8 +55,6 @@ public class PictureVideoPreviewActivity extends BasePictureVideoActivity {
     private int aBarAndBottomAlpha = (int) (255 * 0.5f);//标题栏以及底部操作栏透明度
     private int aBarAndBottomBgColor;//标题栏以及底部操作栏颜色
     private PicturePreviewAdapter picturePreviewAdapter;
-    private ArrayList<StorePictureVideoItemDto> allList;
-    private ArrayList<StorePictureVideoItemDto> selectedPicturesList;
     private ArrayList<StorePictureVideoItemDto> adapterShowList;//适配器显示列表
     private int windowWidth;
     private int windowHeight;

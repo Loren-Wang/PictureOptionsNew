@@ -327,82 +327,83 @@ public class PictureVideoSelectActivity extends BasePictureVideoActivity impleme
 
                     boolean isFinish = data.getExtras().getBoolean(getString(R.string.preview_end_result_for_is_finish_select_and_result), false);
                     ArrayList<StorePictureVideoItemDto> list = data.getExtras().getParcelableArrayList(getString(R.string.go_to_poreview_act_key_for_select_list));
+
+                    List<StorePictureVideoItemDto> previewSlectList = new ArrayList<>();
+                    Iterator<StorePictureVideoItemDto> iteratorAll = allList.iterator();
+                    Iterator<StorePictureVideoItemDto> iteratorPreview;
+                    StorePictureVideoItemDto dtoForAll;
+                    StorePictureVideoItemDto dtoForPreview;
+                    while (iteratorAll.hasNext()){
+                        dtoForAll = iteratorAll.next();
+                        if(list.size() <= 0){
+                            dtoForAll = null;
+                            break;
+                        }else {
+                            iteratorPreview = list.iterator();
+                            while (iteratorPreview.hasNext()) {
+                                dtoForPreview = iteratorPreview.next();
+                                if (dtoForAll.getAbsolutePath().equals(dtoForPreview.getAbsolutePath())) {
+                                    previewSlectList.add(dtoForAll);
+                                    list.remove(dtoForPreview);
+                                    dtoForPreview = null;
+                                    break;
+                                }
+                                dtoForPreview = null;
+                            }
+                        }
+                        dtoForAll = null;
+                    }
+                    list.clear();
+                    list = null;
+
+
+                    List<StorePictureVideoItemDto> removeList = new ArrayList<>();
+                    List<StorePictureVideoItemDto> addList = new ArrayList<>();
+                    StorePictureVideoItemDto dto;
+                    //获取被移除图片
+                    Iterator<StorePictureVideoItemDto> iterator = selectedPicturesList.iterator();
+                    while (iterator.hasNext()){
+                        dto = iterator.next();
+                        //在返回列表中没有该页面选中中的一个的话，代表该图片是被取消选中了
+                        if(!previewSlectList.contains(dto)){
+                            removeList.add(dto);
+                        }
+                        dto = null;
+                    }
+                    //获取被添加图片
+                    iterator = previewSlectList.iterator();
+                    while (iterator.hasNext()){
+                        dto = iterator.next();
+                        //在该页选中列表中不存在返回列表中的图片的话代表图片是新加的
+                        if(!selectedPicturesList.contains(dto)){
+                            addList.add(dto);
+                        }
+                        dto = null;
+                    }
+                    //在该页面选中中移除被移除图片
+                    iterator = removeList.iterator();
+                    int indexOf;
+                    while (iterator.hasNext()){
+                        dto = iterator.next();
+                        indexOf = allList.indexOf(dto);
+                        setSelectForNoCamera(dto,false,indexOf);
+                        pictureSelectsAdapter.modifySelectState(dto, indexOf);
+                        showSelectSize();
+                        dto = null;
+                    }
+                    //在该页面选中中添加预览中新添加的图片
+                    iterator = addList.iterator();
+                    while (iterator.hasNext()){
+                        dto = iterator.next();
+                        indexOf = allList.indexOf(dto);
+                        setSelectForNoCamera(dto,true,indexOf);
+                        pictureSelectsAdapter.modifySelectState(dto, indexOf);
+                        showSelectSize();
+                        dto = null;
+                    }
+
                     if(isFinish){
                         resultData(RESULT_OK);
-                    }else {
-                        List<StorePictureVideoItemDto> previewSlectList = new ArrayList<>();
-                        Iterator<StorePictureVideoItemDto> iteratorAll = allList.iterator();
-                        Iterator<StorePictureVideoItemDto> iteratorPreview;
-                        StorePictureVideoItemDto dtoForAll;
-                        StorePictureVideoItemDto dtoForPreview;
-                        while (iteratorAll.hasNext()){
-                            dtoForAll = iteratorAll.next();
-                            if(list.size() <= 0){
-                                dtoForAll = null;
-                                break;
-                            }else {
-                                iteratorPreview = list.iterator();
-                                while (iteratorPreview.hasNext()) {
-                                    dtoForPreview = iteratorPreview.next();
-                                    if (dtoForAll.getAbsolutePath().equals(dtoForPreview.getAbsolutePath())) {
-                                        previewSlectList.add(dtoForAll);
-                                        list.remove(dtoForPreview);
-                                        dtoForPreview = null;
-                                        break;
-                                    }
-                                    dtoForPreview = null;
-                                }
-                            }
-                            dtoForAll = null;
-                        }
-                        list.clear();
-                        list = null;
-
-
-                        List<StorePictureVideoItemDto> removeList = new ArrayList<>();
-                        List<StorePictureVideoItemDto> addList = new ArrayList<>();
-                        StorePictureVideoItemDto dto;
-                        //获取被移除图片
-                        Iterator<StorePictureVideoItemDto> iterator = selectedPicturesList.iterator();
-                        while (iterator.hasNext()){
-                            dto = iterator.next();
-                            //在返回列表中没有该页面选中中的一个的话，代表该图片是被取消选中了
-                            if(!previewSlectList.contains(dto)){
-                                removeList.add(dto);
-                            }
-                            dto = null;
-                        }
-                        //获取被添加图片
-                        iterator = previewSlectList.iterator();
-                        while (iterator.hasNext()){
-                            dto = iterator.next();
-                            //在该页选中列表中不存在返回列表中的图片的话代表图片是新加的
-                            if(!selectedPicturesList.contains(dto)){
-                                addList.add(dto);
-                            }
-                            dto = null;
-                        }
-                        //在该页面选中中移除被移除图片
-                        iterator = removeList.iterator();
-                        int indexOf;
-                        while (iterator.hasNext()){
-                            dto = iterator.next();
-                            indexOf = allList.indexOf(dto);
-                            setSelectForNoCamera(dto,false,indexOf);
-                            pictureSelectsAdapter.modifySelectState(dto, indexOf);
-                            showSelectSize();
-                            dto = null;
-                        }
-                        //在该页面选中中添加预览中新添加的图片
-                        iterator = addList.iterator();
-                        while (iterator.hasNext()){
-                            dto = iterator.next();
-                            indexOf = allList.indexOf(dto);
-                            setSelectForNoCamera(dto,true,indexOf);
-                            pictureSelectsAdapter.modifySelectState(dto, indexOf);
-                            showSelectSize();
-                            dto = null;
-                        }
                     }
                     break;
                 default:
@@ -420,8 +421,8 @@ public class PictureVideoSelectActivity extends BasePictureVideoActivity impleme
         Bundle bundle = new Bundle();
         bundle.putParcelable(AppCommon.OPTIONS_CONFIG_KEY,pictureSelectConfirg);
         bundle.putParcelableArrayList(getString(R.string.go_to_poreview_act_key_for_select_list),selectedPicturesList);
-        bundle.putParcelableArrayList(getString(R.string.go_to_poreview_act_key_for_all_list),allList);
         if(position != null) {
+            bundle.putParcelableArrayList(getString(R.string.go_to_poreview_act_key_for_all_list),allList);
             bundle.putInt(getString(R.string.go_to_poreview_act_key_for_all_list_show_posi), position);
         }
         bundle.putBoolean(getResources().getString(R.string.go_to_poreview_act_key_for_is_select_picture),isSelectPicture);
