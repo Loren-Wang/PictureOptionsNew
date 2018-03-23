@@ -3,7 +3,6 @@ package com.pictureselect.android.database;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
@@ -111,7 +110,8 @@ public class DbPhonePictureVideoList {
      * @return
      */
     public Map<String,List<StorePictureVideoItemDto>> getPictureAllMapList(){
-        Map<String, List<StorePictureVideoItemDto>> mapInfoList = getInfoListForPicture();
+        Map<String, List<StorePictureVideoItemDto>> mapInfoList =
+                getInfoListForPicture(new Cursor[]{getInfoListForPictureSystemCursor(), DbScanDirForPicture.getInstance(context).getCursor()});
         Map<String, List<StorePictureVideoItemDto>> mapList = new HashMap<>();
         Iterator<Map.Entry<String, List<StorePictureVideoItemDto>>> iterator = mapInfoList.entrySet().iterator();
         Map.Entry<String, List<StorePictureVideoItemDto>> next;
@@ -129,7 +129,8 @@ public class DbPhonePictureVideoList {
      * @return
      */
     public Map<String,List<StorePictureVideoItemDto>> getVideoAllMapList(Long minDuration,Long maxDuration){
-        Map<String, List<StorePictureVideoItemDto>> mapInfoList = getInfoListForVideo(minDuration,maxDuration);
+        Map<String, List<StorePictureVideoItemDto>> mapInfoList =
+                getInfoListForVideo(new Cursor[]{getInfoListForVideoSystemCursor(minDuration,maxDuration),DbScanDirForVideo.getInstance(context).getCursor()});
         Map<String, List<StorePictureVideoItemDto>> mapList = new HashMap<>();
         Iterator<Map.Entry<String, List<StorePictureVideoItemDto>>> iterator = mapInfoList.entrySet().iterator();
         Map.Entry<String, List<StorePictureVideoItemDto>> next;
@@ -148,8 +149,10 @@ public class DbPhonePictureVideoList {
      * @return
      */
     public Map<String,List<StorePictureVideoItemDto>> getAllMapList(Long minDuration,Long maxDuration){
-        Map<String, List<StorePictureVideoItemDto>> mapInfoList = getInfoListForPicture();
-        Map<String, List<StorePictureVideoItemDto>> mapVideoInfoList = getInfoListForVideo(minDuration,maxDuration);
+        Map<String, List<StorePictureVideoItemDto>> mapInfoList =
+                getInfoListForPicture(new Cursor[]{getInfoListForPictureSystemCursor(), DbScanDirForPicture.getInstance(context).getCursor()});
+        Map<String, List<StorePictureVideoItemDto>> mapVideoInfoList =
+                getInfoListForVideo(new Cursor[]{getInfoListForVideoSystemCursor(minDuration,maxDuration),DbScanDirForVideo.getInstance(context).getCursor()});
         Map<String, List<StorePictureVideoItemDto>> mapList = new HashMap<>();
         Iterator<Map.Entry<String, List<StorePictureVideoItemDto>>> iterator = mapInfoList.entrySet().iterator();
         Map.Entry<String, List<StorePictureVideoItemDto>> next;
@@ -204,91 +207,138 @@ public class DbPhonePictureVideoList {
      * 基方法，获取系统数据库图片列表并以map的形式存储
      * @return
      */
-    private Map<String,List<StorePictureVideoItemDto>> getInfoListForPicture(){
+    private Map<String,List<StorePictureVideoItemDto>> getInfoListForPicture(Cursor[] mImageCursors){
         Map<String,List<StorePictureVideoItemDto>> map = new HashMap<>();
 
-        Uri mImageUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+        for(Cursor cursor : mImageCursors){
+            List<StorePictureVideoItemDto> list = null;
+            StorePictureVideoItemDto storePictureItemDto;
+            int pictureDegree;
+            File absolutePathFile;
+            while (cursor.moveToNext()) {
+                storePictureItemDto = new StorePictureVideoItemDto();
+                absolutePathFile = new File(cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA)));
+                //先判定文件是否存在同时大小要不能小于0，不存在则不要管
+                if (absolutePathFile.getAbsolutePath() != null
+                        && absolutePathFile.isFile()
+                        && absolutePathFile.exists()
+                        && absolutePathFile.length() > 0
+                        && cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME)) != null) {
+                    storePictureItemDto.setAbsolutePath(absolutePathFile.getAbsolutePath());
+                    absolutePathFile = null;
+                } else {
+                    continue;
+                }
+
+                storePictureItemDto.set_id(cursor.getInt(cursor.getColumnIndex(MediaStore.Images.Media._ID)));
+                storePictureItemDto.setSize(cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media.SIZE)));
+                storePictureItemDto.setFileName(cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME)));
+                storePictureItemDto.setMimeType(cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.MIME_TYPE)));
+                storePictureItemDto.setTimeAdd(cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media.DATE_ADDED)));
+                storePictureItemDto.setTimeModify(cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media.DATE_MODIFIED)));
+                storePictureItemDto.setLat(cursor.getDouble(cursor.getColumnIndex(MediaStore.Images.Media.LATITUDE)));
+                storePictureItemDto.setLng(cursor.getDouble(cursor.getColumnIndex(MediaStore.Images.Media.LONGITUDE)));
+                storePictureItemDto.setWidth(cursor.getInt(cursor.getColumnIndex(MediaStore.Images.Media.WIDTH)));
+                storePictureItemDto.setHeight(cursor.getInt(cursor.getColumnIndex(MediaStore.Images.Media.HEIGHT)));
+                storePictureItemDto.setOrientation(cursor.getInt(cursor.getColumnIndex(MediaStore.Images.Media.ORIENTATION)));
+                storePictureItemDto.setDuration(0l);
+                storePictureItemDto.setDirectoryPath(String.valueOf(storePictureItemDto.getAbsolutePath())
+                        .replace(String.valueOf(storePictureItemDto.getFileName()), ""));//使用intern()方法防止原有数据被破坏，该方法会创建一个新的对象字符串
+
+                list = map.get(storePictureItemDto.getDirectoryPath());
+                if (list == null) {
+                    list = new ArrayList<>();
+                }
+                list.add(storePictureItemDto);
+                map.put(storePictureItemDto.getDirectoryPath(), list);
+            }
+            cursor.close();
+        }
+        return map;
+    }
+
+    private Cursor getInfoListForPictureSystemCursor(){
         ContentResolver mContentResolver = context.getContentResolver();
-        //查询图片
-        Cursor cursor = mContentResolver.query(mImageUri, null,
+        return mContentResolver.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null,
                 MediaStore.Images.Media.MIME_TYPE + "=? or "
                         + MediaStore.Images.Media.MIME_TYPE + "=? or "
                         + MediaStore.Images.Media.MIME_TYPE + "=?",
                 new String[]{"image/jpeg", "image/png", "image/bmp"}, MediaStore.Images.Media.DATE_MODIFIED);
-
-        List<StorePictureVideoItemDto> list = null;
-        StorePictureVideoItemDto storePictureItemDto;
-        int pictureDegree;
-        File absolutePathFile;
-        while (cursor.moveToNext()){
-            storePictureItemDto = new StorePictureVideoItemDto();
-            absolutePathFile = new File(cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA)));
-            //先判定文件是否存在同时大小要不能小于0，不存在则不要管
-            if(absolutePathFile.getAbsolutePath() != null
-                    && absolutePathFile.isFile()
-                    && absolutePathFile.exists()
-                    && absolutePathFile.length() > 0
-                    && cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME)) != null){
-                storePictureItemDto.setAbsolutePath(absolutePathFile.getAbsolutePath());
-                absolutePathFile = null;
-            }else {
-                continue;
-            }
-
-            storePictureItemDto.set_id(cursor.getInt(cursor.getColumnIndex(MediaStore.Images.Media._ID)));
-            storePictureItemDto.setSize(cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media.SIZE)));
-            storePictureItemDto.setFileName(cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME)));
-            storePictureItemDto.setMimeType(cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.MIME_TYPE)));
-            storePictureItemDto.setTimeAdd(cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media.DATE_ADDED)));
-            storePictureItemDto.setTimeModify(cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media.DATE_MODIFIED)));
-            storePictureItemDto.setLat(cursor.getDouble(cursor.getColumnIndex(MediaStore.Images.Media.LATITUDE)));
-            storePictureItemDto.setLng(cursor.getDouble(cursor.getColumnIndex(MediaStore.Images.Media.LONGITUDE)));
-            storePictureItemDto.setWidth(cursor.getInt(cursor.getColumnIndex(MediaStore.Images.Media.WIDTH)));
-            storePictureItemDto.setHeight(cursor.getInt(cursor.getColumnIndex(MediaStore.Images.Media.HEIGHT)));
-            storePictureItemDto.setOrientation(cursor.getInt(cursor.getColumnIndex(MediaStore.Images.Media.ORIENTATION)));
-            storePictureItemDto.setDuration(0l);
-            storePictureItemDto.setDirectoryPath(String.valueOf(storePictureItemDto.getAbsolutePath())
-                    .replace(String.valueOf(storePictureItemDto.getFileName()), ""));//使用intern()方法防止原有数据被破坏，该方法会创建一个新的对象字符串
-
-            list = map.get(storePictureItemDto.getDirectoryPath());
-            if(list == null){
-                list = new ArrayList<>();
-            }
-            list.add(storePictureItemDto);
-            map.put(storePictureItemDto.getDirectoryPath(),list);
-        }
-        cursor.close();
-        return map;
     }
 
     /**
      * 基方法，获取系统数据库图片列表并以map的形式存储
      * @return
      */
-    private Map<String,List<StorePictureVideoItemDto>> getInfoListForVideo(Long minDuration,Long maxDuration){
+    private Map<String,List<StorePictureVideoItemDto>> getInfoListForVideo(Cursor[] mVideoCursors){
         Map<String,List<StorePictureVideoItemDto>> map = new HashMap<>();
+        for(Cursor cursor : mVideoCursors){
+            List<StorePictureVideoItemDto> list = null;
+            StorePictureVideoItemDto storePictureItemDto;
+            int pictureDegree;
+            File absolutePathFile;
+            while (cursor.moveToNext()) {
+                storePictureItemDto = new StorePictureVideoItemDto();
+                absolutePathFile = new File(cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA)));
+                //先判定文件是否存在同时大小要不能小于0，不存在则不要管
+                if (absolutePathFile.getAbsolutePath() != null
+                        && absolutePathFile.isFile()
+                        && absolutePathFile.exists()
+                        && absolutePathFile.length() > 0
+                        && cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME)) != null) {
+                    storePictureItemDto.setAbsolutePath(absolutePathFile.getAbsolutePath());
+                    absolutePathFile = null;
+                } else {
+                    continue;
+                }
 
-        Uri mImageUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+                storePictureItemDto.set_id(cursor.getInt(cursor.getColumnIndex(MediaStore.Video.Media._ID)));
+                storePictureItemDto.setSize(cursor.getLong(cursor.getColumnIndex(MediaStore.Video.Media.SIZE)));
+                storePictureItemDto.setFileName(cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DISPLAY_NAME)));
+                storePictureItemDto.setMimeType(cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.MIME_TYPE)));
+                storePictureItemDto.setTimeAdd(cursor.getLong(cursor.getColumnIndex(MediaStore.Video.Media.DATE_ADDED)));
+                storePictureItemDto.setTimeModify(cursor.getLong(cursor.getColumnIndex(MediaStore.Video.Media.DATE_MODIFIED)));
+                storePictureItemDto.setLat(cursor.getDouble(cursor.getColumnIndex(MediaStore.Video.Media.LATITUDE)));
+                storePictureItemDto.setLng(cursor.getDouble(cursor.getColumnIndex(MediaStore.Video.Media.LONGITUDE)));
+                storePictureItemDto.setWidth(cursor.getInt(cursor.getColumnIndex(MediaStore.Video.Media.WIDTH)));
+                storePictureItemDto.setHeight(cursor.getInt(cursor.getColumnIndex(MediaStore.Video.Media.HEIGHT)));
+                storePictureItemDto.setOrientation(0);
+                storePictureItemDto.setDuration(cursor.getLong(cursor.getColumnIndex(MediaStore.Video.Media.DURATION)));
+                storePictureItemDto.setDirectoryPath(String.valueOf(storePictureItemDto.getAbsolutePath())
+                        .replace(String.valueOf(storePictureItemDto.getFileName()), ""));//使用intern()方法防止原有数据被破坏，该方法会创建一个新的对象字符串
+
+                list = map.get(storePictureItemDto.getDirectoryPath());
+                if (list == null) {
+                    list = new ArrayList<>();
+                }
+                list.add(storePictureItemDto);
+                map.put(storePictureItemDto.getDirectoryPath(), list);
+            }
+            cursor.close();
+        }
+        return map;
+    }
+
+    private Cursor getInfoListForVideoSystemCursor(Long minDuration,Long maxDuration){
         ContentResolver mContentResolver = context.getContentResolver();
-
         StringBuffer selection = new StringBuffer(MediaStore.Video.Media.MIME_TYPE).append("=?");
         String[] selectionArgs;
-        if(minDuration != null && maxDuration == null){
-            selectionArgs = new String[]{"video/mp4",String.valueOf(minDuration)};
+        if (minDuration != null && maxDuration == null) {
+            selectionArgs = new String[]{"video/mp4", String.valueOf(minDuration)};
 
             selection.append(" and ")
                     .append(MediaStore.Video.Media.DURATION)
                     .append(">=?");
 
-        }else if(minDuration == null && maxDuration != null){
-            selectionArgs = new String[]{"video/mp4",String.valueOf(maxDuration)};
+        } else if (minDuration == null && maxDuration != null) {
+            selectionArgs = new String[]{"video/mp4", String.valueOf(maxDuration)};
 
             selection.append(" and ")
                     .append(MediaStore.Video.Media.DURATION)
                     .append("<?");
 
-        }else if(minDuration != null && maxDuration != null){
-            selectionArgs = new String[]{"video/mp4",String.valueOf(minDuration),String.valueOf(maxDuration)};
+        } else if (minDuration != null && maxDuration != null) {
+            selectionArgs = new String[]{"video/mp4", String.valueOf(minDuration), String.valueOf(maxDuration)};
 
             selection.append(" and ")
                     .append(MediaStore.Video.Media.DURATION)
@@ -297,58 +347,13 @@ public class DbPhonePictureVideoList {
                     .append(MediaStore.Video.Media.DURATION)
                     .append("<?");
 
-        }else {
-            selectionArgs =  new String[]{"video/mp4"};
+        } else {
+            selectionArgs = new String[]{"video/mp4"};
         }
 
-        //查询图片
-        Cursor cursor = mContentResolver.query(mImageUri, null,
+        return mContentResolver.query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, null,
                 selection.toString(), selectionArgs
                 , MediaStore.Images.Media.DATE_MODIFIED);
-
-        List<StorePictureVideoItemDto> list = null;
-        StorePictureVideoItemDto storePictureItemDto;
-        int pictureDegree;
-        File absolutePathFile;
-        while (cursor.moveToNext()){
-            storePictureItemDto = new StorePictureVideoItemDto();
-            absolutePathFile = new File(cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA)));
-            //先判定文件是否存在同时大小要不能小于0，不存在则不要管
-            if(absolutePathFile.getAbsolutePath() != null
-                    && absolutePathFile.isFile()
-                    && absolutePathFile.exists()
-                    && absolutePathFile.length() > 0
-                    && cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME)) != null){
-                storePictureItemDto.setAbsolutePath(absolutePathFile.getAbsolutePath());
-                absolutePathFile = null;
-            }else {
-                continue;
-            }
-
-            storePictureItemDto.set_id(cursor.getInt(cursor.getColumnIndex(MediaStore.Video.Media._ID)));
-            storePictureItemDto.setSize(cursor.getLong(cursor.getColumnIndex(MediaStore.Video.Media.SIZE)));
-            storePictureItemDto.setFileName(cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DISPLAY_NAME)));
-            storePictureItemDto.setMimeType(cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.MIME_TYPE)));
-            storePictureItemDto.setTimeAdd(cursor.getLong(cursor.getColumnIndex(MediaStore.Video.Media.DATE_ADDED)));
-            storePictureItemDto.setTimeModify(cursor.getLong(cursor.getColumnIndex(MediaStore.Video.Media.DATE_MODIFIED)));
-            storePictureItemDto.setLat(cursor.getDouble(cursor.getColumnIndex(MediaStore.Video.Media.LATITUDE)));
-            storePictureItemDto.setLng(cursor.getDouble(cursor.getColumnIndex(MediaStore.Video.Media.LONGITUDE)));
-            storePictureItemDto.setWidth(cursor.getInt(cursor.getColumnIndex(MediaStore.Video.Media.WIDTH)));
-            storePictureItemDto.setHeight(cursor.getInt(cursor.getColumnIndex(MediaStore.Video.Media.HEIGHT)));
-            storePictureItemDto.setOrientation(0);
-            storePictureItemDto.setDuration(cursor.getLong(cursor.getColumnIndex(MediaStore.Video.Media.DURATION)));
-            storePictureItemDto.setDirectoryPath(String.valueOf(storePictureItemDto.getAbsolutePath())
-                    .replace(String.valueOf(storePictureItemDto.getFileName()), ""));//使用intern()方法防止原有数据被破坏，该方法会创建一个新的对象字符串
-
-            list = map.get(storePictureItemDto.getDirectoryPath());
-            if(list == null){
-                list = new ArrayList<>();
-            }
-            list.add(storePictureItemDto);
-            map.put(storePictureItemDto.getDirectoryPath(),list);
-        }
-        cursor.close();
-        return map;
     }
 
     /**

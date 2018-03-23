@@ -2,6 +2,7 @@ package com.pictureoptions.android;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -14,6 +15,7 @@ import com.basepictureoptionslib.android.AppCommon;
 import com.basepictureoptionslib.android.utils.LogUtils;
 import com.pictureselect.android.PictureVideoSelectActivity;
 import com.pictureselect.android.PictureVideoSelectConfirg;
+import com.pictureselect.android.utils.SdCardFileChangeUtils;
 
 import java.util.ArrayList;
 
@@ -45,6 +47,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         lvList = findViewById(R.id.lvList);
 
         btnBegin.setOnClickListener(this);
+        String PROJECT_FILE_DIR = Environment.getExternalStorageDirectory().getPath() + "/Android/data/com.ve_link.androids/cache/file/";
+        String PROJECT_FILE_DIR_VIDEO = PROJECT_FILE_DIR +  "video/";
+        String PROJECT_FILE_DIR_CAMERA_IMAGE = PROJECT_FILE_DIR +  "ydCameraImages/";
+        SdCardFileChangeUtils.geInstance(getApplicationContext()).startWatching(new String[]{
+                PROJECT_FILE_DIR_VIDEO,
+        });
+
+
     }
 
     /**
