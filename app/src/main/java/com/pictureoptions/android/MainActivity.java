@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String PROJECT_FILE_DIR_VIDEO = PROJECT_FILE_DIR +  "video/";
         String PROJECT_FILE_DIR_CAMERA_IMAGE = PROJECT_FILE_DIR +  "ydCameraImages/";
         SdCardFileChangeUtils.geInstance(getApplicationContext()).startWatching(new String[]{
-                PROJECT_FILE_DIR_VIDEO,
+                PROJECT_FILE_DIR_VIDEO,PROJECT_FILE_DIR_CAMERA_IMAGE
         });
 
 

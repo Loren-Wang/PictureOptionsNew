@@ -234,6 +234,7 @@ public class PictureVideoSelectActivity extends BasePictureVideoActivity impleme
                         int posi;//记录在所有图片当中位置的
                         Iterator<String> selectIterator = finalSelectPathList.iterator();
                         Iterator<StorePictureVideoItemDto> allIterator;
+                        List<StorePictureVideoItemDto> newList = new ArrayList<>();
                         while (selectIterator.hasNext()){
                             nowSelectPicturePath = selectIterator.next();
                             isHave = false;
@@ -256,12 +257,17 @@ public class PictureVideoSelectActivity extends BasePictureVideoActivity impleme
                             if(!isHave){
                                 itemDto = new StorePictureVideoItemDto();
                                 itemDto.setAbsolutePath(nowSelectPicturePath);
-                                pictureSelectsAdapter.addItemDto(itemDto, 0);
-                                setSelectForNoCamera(itemDto, true, 0);
-                                pictureSelectsAdapter.modifySelectState(itemDto, posi);
-                                showSelectSize();
+                                newList.add(itemDto);
                             }
                         }
+
+                        Iterator<StorePictureVideoItemDto> iterator = newList.iterator();
+                        while (iterator.hasNext()){
+                            itemDto = iterator.next();
+                            pictureSelectsAdapter.addItemDto(itemDto, 0);
+                            setSelectForNoCamera(itemDto, true, 0);
+                        }
+                        showSelectSize();
                     }
                 });
 
