@@ -256,7 +256,6 @@ public class PictureVideoSelectActivity extends BasePictureVideoActivity impleme
                             if(!isHave){
                                 itemDto = new StorePictureVideoItemDto();
                                 itemDto.setAbsolutePath(nowSelectPicturePath);
-                                allList.add(0, itemDto);
                                 pictureSelectsAdapter.addItemDto(itemDto, 0);
                                 setSelectForNoCamera(itemDto, true, 0);
                                 pictureSelectsAdapter.modifySelectState(itemDto, posi);
