@@ -19,6 +19,8 @@ import com.basepictureoptionslib.android.plugin.image.ImageLoadingUtis;
 import com.basepictureoptionslib.android.utils.ParamsAndJudgeUtils;
 import com.pictureselect.android.adapter.PictureSelectNoCameraAdapter;
 import com.pictureselect.android.database.DbPhonePictureVideoList;
+import com.pictureselect.android.database.DbScanDirForPicture;
+import com.pictureselect.android.database.DbScanDirForVideo;
 import com.pictureselect.android.dto.StorePictureVideoItemDto;
 import com.pictureselect.android.recycleViewHolder.BaseViewHolder;
 import com.pictureselect.android.view.DividerGridItemDecoration;
@@ -264,6 +266,8 @@ public class PictureVideoSelectActivity extends BasePictureVideoActivity impleme
                         Iterator<StorePictureVideoItemDto> iterator = newList.iterator();
                         while (iterator.hasNext()){
                             itemDto = iterator.next();
+                            DbScanDirForPicture.getInstance(getApplicationContext()).insert(itemDto.getAbsolutePath());
+                            DbScanDirForVideo.getInstance(getApplicationContext()).insert(itemDto.getAbsolutePath());
                             pictureSelectsAdapter.addItemDto(itemDto, 0);
                             setSelectForNoCamera(itemDto, true, 0);
                         }

@@ -149,28 +149,54 @@ public class DbPhonePictureVideoList {
      * @return
      */
     public Map<String,List<StorePictureVideoItemDto>> getAllMapList(Long minDuration,Long maxDuration){
-        Map<String, List<StorePictureVideoItemDto>> mapInfoList =
+        Map<String, List<StorePictureVideoItemDto>> mapPictureInfoList =
                 getInfoListForPicture(new Cursor[]{getInfoListForPictureSystemCursor(), DbScanDirForPicture.getInstance(context).getCursor()});
         Map<String, List<StorePictureVideoItemDto>> mapVideoInfoList =
                 getInfoListForVideo(new Cursor[]{getInfoListForVideoSystemCursor(minDuration,maxDuration),DbScanDirForVideo.getInstance(context).getCursor()});
-        Map<String, List<StorePictureVideoItemDto>> mapList = new HashMap<>();
-        Iterator<Map.Entry<String, List<StorePictureVideoItemDto>>> iterator = mapInfoList.entrySet().iterator();
-        Map.Entry<String, List<StorePictureVideoItemDto>> next;
+        Map<String, List<StorePictureVideoItemDto>> resultMap = new HashMap<>();
+        String key;
         List<StorePictureVideoItemDto> list;
-        List<StorePictureVideoItemDto> videoList;
-        while (iterator.hasNext()){
-            next = iterator.next();
-            videoList = mapVideoInfoList.get(next.getKey());
-            if(videoList != null){
-                videoList.addAll(next.getValue());
-                list = wipeOffRepetitionDto(videoList);
-            }else {
-                list = wipeOffRepetitionDto(next.getValue());
+        List<StorePictureVideoItemDto> resultMapList;
+
+        //图片列表
+        Iterator<String> pictureMapKeyListIterator = mapPictureInfoList.keySet().iterator();
+        while (pictureMapKeyListIterator.hasNext()){
+            key = pictureMapKeyListIterator.next();
+            list = mapPictureInfoList.get(key);
+            resultMapList = resultMap.get(key);
+            if(resultMapList == null){
+                resultMapList = new ArrayList<>();
             }
-            Collections.sort(list,sortList);
-            mapList.put(next.getKey(),list);
+            if(list != null) {
+                resultMapList.addAll(list);
+                //去重
+                wipeOffRepetitionDto(resultMapList);
+                //排序
+                Collections.sort(list,sortList);
+            }
+            resultMap.put(key,resultMapList);
         }
-        return mapList;
+        //视频列表
+        Iterator<String> videoMapKeyListIterator = mapVideoInfoList.keySet().iterator();
+        while (videoMapKeyListIterator.hasNext()){
+            key = videoMapKeyListIterator.next();
+            list = mapVideoInfoList.get(key);
+            resultMapList = resultMap.get(key);
+            if(resultMapList == null){
+                resultMapList = new ArrayList<>();
+            }
+            if(list != null) {
+                resultMapList.addAll(list);
+                //去重
+                wipeOffRepetitionDto(resultMapList);
+                //排序
+                Collections.sort(list,sortList);
+            }
+            resultMap.put(key,resultMapList);
+        }
+
+
+        return resultMap;
     }
 
     //排序方法
