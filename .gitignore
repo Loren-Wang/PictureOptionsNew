@@ -41,3 +41,4 @@ build/
 *.bat
 .gradle/
 /.idea/
+!maven-release-aar.gradle
