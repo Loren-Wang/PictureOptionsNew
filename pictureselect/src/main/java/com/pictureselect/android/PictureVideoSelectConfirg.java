@@ -21,11 +21,13 @@ import java.util.List;
  *         4、已选择列表
  *         5、显示列数
  *         6、选择类型 0-仅图片，1-仅视频，2-图片视频一起选择
- *         7、视频选择的最长时间
- *         8、视频选择的最短时间
+// *         7、视频选择的最长时间
+// *         8、视频选择的最短时间
  *         9、选中状态图片
  *         10、非选中状态图片
  *         11、是否允许图片视频同时选择
+ *         12、设置图片筛选类型（模式，可变参数）
+ *         13、设置视频筛选类型（模式，可变参数）
  * 思路：
  * 修改人：
  * 修改时间：
@@ -36,6 +38,21 @@ public class PictureVideoSelectConfirg extends BaseConfig{
     public static final int SELECT_TYPE_FOR_VIDEO = 1;//仅选择视频
     public static final int SELECT_TYPE_FOR_PICTURE_AND_VIDEO = 2;//图片视频一起选择
 
+    //图片的与FILTER_PICTURE_FOR_NONE为0
+    public static final int FILTER_PICTURE_FOR_NONE = 0x0001;//筛选图片无限制
+    public static final int FILTER_PICTURE_FOR_SIZE = 0x0010;//根据图片大小限制图片选择
+    public static final int FILTER_PICTURE_FOR_WIDTH_HEIGHT = 0x0100;//根据图片宽高分辨率限制图片选择
+    public static final int FILTER_PICTURE_FOR_SIZE_AND_WIDTH_HEIGHT = 0x1000;//根据图片大小以及宽高分辨率限制图片选择
+    //视频的与FILTER_VIDEO_FOR_NONE为0
+    public static final int FILTER_VIDEO_FOR_NONE = 0x11111110;//筛选视频无限制
+    public static final int FILTER_VIDEO_FOR_SIZE = 0x11111101;//根据视频大小限制选择
+    public static final int FILTER_VIDEO_FOR_DURATION = 0x11111011;//根据视频时长限制选择
+    public static final int FILTER_VIDEO_FOR_WIDTH_HEIGHT = 0x11110111;//根据视频宽高分辨率限制选择
+    public static final int FILTER_VIDEO_FOR_SIZE_AND_DURATION = 0x11101111;//根据视频大小和时长限制选择
+    public static final int FILTER_VIDEO_FOR_SIZE_AND_WIDTH_HEIGHT = 0x11011111;//根据视频大小和宽高分辨率限制选择
+    public static final int FILTER_VIDEO_FOR_DURATION_AND_WIDTH_HEIGHT = 0x10111111;//根据视频时长和宽高分辨率限制选择
+    public static final int FILTER_VIDEO_FOR_SIZE_AND_DURATION_AND_WIDTH_HEIGHT = 0x01111111;//根据视频大小、时长和宽高分辨率限制选择
+
     private int maxSelectPictureNum = 9;//最大选择张数
     private int maxSelectVideoNum = 1;//最大选择视频的数量
     private int showRowCount = 3;//显示的列数
@@ -44,8 +61,30 @@ public class PictureVideoSelectConfirg extends BaseConfig{
     private boolean isShowOriginPicSelect = false;//是否需要显示原图选择
     private boolean isAllowConcurrentSelection = false;//是否允许图片视频同时选择
     private int selectType = SELECT_TYPE_FOR_PICTURE_AND_VIDEO;//选择类型
-    private Long videoMaxDuration;//视频选择最长时间
-    private Long videoMinDuration;//视频选择最短时间
+    private int filterPictureType = FILTER_PICTURE_FOR_NONE;//图片筛选模式类型
+    private Long pictureMinSize;//图片最小大小
+    private Long pictureMaxSize;//图片最大大小
+    private Integer pictureMinWidth;//图片选择最低宽度
+    private Integer pictureMinHeight;//图片选择最低高度
+    private Integer pictureMaxWidth;//图片选择最高宽度
+    private Integer pictureMaxHeight;//图片选择最高高度
+    private boolean pictureNoSizeIsResult = true;//未获取到图片大小的时候是否要返回该图片
+    private boolean pictureNoWidthHeightIsResult = true;//未获取到图片宽高分辨率的时候是否要返回该图片
+    private int filterVideoType = FILTER_VIDEO_FOR_NONE;//视频筛选模式类型
+    private Long videoMinSize;//视频最小大小
+    private Long videoMaxSize;//视频最大大小
+    private Integer videoMinWidth;//视频最小分辨率宽度
+    private Integer videoMinHeight;//视频最小分辨率高度
+    private Integer videoMaxWidth;//视频最大分辨率高度
+    private Integer videoMaxHeight;//视频最大分辨率高度
+    private Long videoMinDuration;//视频最小大小
+    private Long videoMaxDuration;//视频最大大小
+    private boolean videoNoSizeIsResult = true;//未获取到视频大小的时候是否要返回该图片
+    private boolean videoNoWidthHeightIsResult = true;//未获取到视频宽高分辨率的时候是否要返回该图片
+    private boolean videoNoDurationIsResult = true;//未获取到视频时长的时候是否要返回该图片
+
+
+
     @ColorRes
     private int bottomOptionsBackground;//底部操作栏背景颜色
     @DimenRes
@@ -167,24 +206,6 @@ public class PictureVideoSelectConfirg extends BaseConfig{
         return selectType;
     }
 
-    public Long getVideoMaxDuration() {
-        return videoMaxDuration;
-    }
-
-    //最大值为3000的时候，实际上查询的是3秒以下不包括3s的
-    public PictureVideoSelectConfirg setVideoMaxDuration(Long videoMaxDuration) {
-        this.videoMaxDuration = videoMaxDuration;
-        return this;
-    }
-
-    public Long getVideoMinDuration() {
-        return videoMinDuration;
-    }
-
-    public PictureVideoSelectConfirg setVideoMinDuration(Long videoMinDuration) {
-        this.videoMinDuration = videoMinDuration;
-        return this;
-    }
 
     public int getMaxSelectPictureNum() {
         return maxSelectPictureNum;
