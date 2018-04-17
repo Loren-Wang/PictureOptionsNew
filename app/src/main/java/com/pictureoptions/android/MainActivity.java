@@ -93,6 +93,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         pictureVideoSelectConfirg.setSelectType(PictureVideoSelectConfirg.SELECT_TYPE_FOR_VIDEO);
                     }
 
+                    try {
+                        pictureVideoSelectConfirg.setPictureFilter(PictureVideoSelectConfirg.FILTER_PICTURE_FOR_WIDTH_HEIGHT,200,null,200,null);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        pictureVideoSelectConfirg.setVideoFilter(PictureVideoSelectConfirg.FILTER_VIDEO_FOR_SIZE_AND_DURATION,null,3065964,2000,null);
+
+//                        pictureVideoSelectConfirg.setVideoFilter(PictureVideoSelectConfirg.FILTER_VIDEO_FOR_SIZE_AND_DURATION_AND_WIDTH_HEIGHT
+//                                ,null,3065964,2000,null,321,null,177,null);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
                     Intent intent = new Intent(this, PictureVideoSelectActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putParcelable(AppCommon.OPTIONS_CONFIG_KEY, pictureVideoSelectConfirg);

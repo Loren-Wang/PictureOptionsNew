@@ -76,8 +76,8 @@ public class DbScanDirForVideo extends DbBase{
         }
     }
 
-    public synchronized Cursor getCursor(){
-        return DbUtils.getInstance(context).select2(property.TB_SCAN_DIR_FOR_VIDEO,null,null,null,null,null,null);
+    public synchronized Cursor getCursor(String selection, String[] selectionArgs){
+        return DbUtils.getInstance(context).select2(property.TB_SCAN_DIR_FOR_VIDEO,null,selection,selectionArgs,null,null,MediaStore.Video.Media.DATE_MODIFIED);
     }
 
 

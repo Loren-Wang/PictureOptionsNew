@@ -109,9 +109,10 @@ public class DbPhonePictureVideoList {
      * 获取所有的图片
      * @return
      */
-    public Map<String,List<StorePictureVideoItemDto>> getPictureAllMapList(){
+    public Map<String,List<StorePictureVideoItemDto>> getPictureAllMapList(String selection, String[] selectionArgs){
         Map<String, List<StorePictureVideoItemDto>> mapInfoList =
-                getInfoListForPicture(new Cursor[]{getInfoListForPictureSystemCursor(), DbScanDirForPicture.getInstance(context).getCursor()});
+                getInfoListForPicture(new Cursor[]{getInfoListForPictureSystemCursor(selection,selectionArgs)
+                        , DbScanDirForPicture.getInstance(context).getCursor(selection,selectionArgs)});
         Map<String, List<StorePictureVideoItemDto>> mapList = new HashMap<>();
         Iterator<Map.Entry<String, List<StorePictureVideoItemDto>>> iterator = mapInfoList.entrySet().iterator();
         Map.Entry<String, List<StorePictureVideoItemDto>> next;
@@ -127,10 +128,13 @@ public class DbPhonePictureVideoList {
     /**
      * 获取所有的视频
      * @return
+     * @param minDuration
+     * @param maxDuration
      */
-    public Map<String,List<StorePictureVideoItemDto>> getVideoAllMapList(Long minDuration,Long maxDuration){
+    public Map<String,List<StorePictureVideoItemDto>> getVideoAllMapList(String selection, String[] selectionArgs){
         Map<String, List<StorePictureVideoItemDto>> mapInfoList =
-                getInfoListForVideo(new Cursor[]{getInfoListForVideoSystemCursor(minDuration,maxDuration),DbScanDirForVideo.getInstance(context).getCursor()});
+                getInfoListForVideo(new Cursor[]{getInfoListForVideoSystemCursor(selection,selectionArgs)
+                        ,DbScanDirForVideo.getInstance(context).getCursor(selection,selectionArgs)});
         Map<String, List<StorePictureVideoItemDto>> mapList = new HashMap<>();
         Iterator<Map.Entry<String, List<StorePictureVideoItemDto>>> iterator = mapInfoList.entrySet().iterator();
         Map.Entry<String, List<StorePictureVideoItemDto>> next;
@@ -147,12 +151,17 @@ public class DbPhonePictureVideoList {
     /**
      * 获取所有的数据集合，以map的形式返回
      * @return
+     * @param minDuration
+     * @param maxDuration
      */
-    public Map<String,List<StorePictureVideoItemDto>> getAllMapList(Long minDuration,Long maxDuration){
+    public Map<String,List<StorePictureVideoItemDto>> getAllMapList(String pictureSelection
+            , String[] pictureSelectionArgs,String videoSelection, String[] videoSelectionArgs){
         Map<String, List<StorePictureVideoItemDto>> mapPictureInfoList =
-                getInfoListForPicture(new Cursor[]{getInfoListForPictureSystemCursor(), DbScanDirForPicture.getInstance(context).getCursor()});
+                getInfoListForPicture(new Cursor[]{getInfoListForPictureSystemCursor(pictureSelection,pictureSelectionArgs),
+                        DbScanDirForPicture.getInstance(context).getCursor(pictureSelection, pictureSelectionArgs)});
         Map<String, List<StorePictureVideoItemDto>> mapVideoInfoList =
-                getInfoListForVideo(new Cursor[]{getInfoListForVideoSystemCursor(minDuration,maxDuration),DbScanDirForVideo.getInstance(context).getCursor()});
+                getInfoListForVideo(new Cursor[]{getInfoListForVideoSystemCursor(videoSelection,videoSelectionArgs)
+                        ,DbScanDirForVideo.getInstance(context).getCursor(videoSelection, videoSelectionArgs)});
         Map<String, List<StorePictureVideoItemDto>> resultMap = new HashMap<>();
         String key;
         List<StorePictureVideoItemDto> list;
@@ -283,13 +292,10 @@ public class DbPhonePictureVideoList {
         return map;
     }
 
-    private Cursor getInfoListForPictureSystemCursor(){
+    private Cursor getInfoListForPictureSystemCursor(String selection, String[] selectionArgs){
         ContentResolver mContentResolver = context.getContentResolver();
         return mContentResolver.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null,
-                MediaStore.Images.Media.MIME_TYPE + "=? or "
-                        + MediaStore.Images.Media.MIME_TYPE + "=? or "
-                        + MediaStore.Images.Media.MIME_TYPE + "=?",
-                new String[]{"image/jpeg", "image/png", "image/bmp"}, MediaStore.Images.Media.DATE_MODIFIED);
+                selection,selectionArgs, MediaStore.Images.Media.DATE_MODIFIED);
     }
 
     /**
@@ -345,41 +351,10 @@ public class DbPhonePictureVideoList {
         return map;
     }
 
-    private Cursor getInfoListForVideoSystemCursor(Long minDuration,Long maxDuration){
+    private Cursor getInfoListForVideoSystemCursor(String selection, String[] selectionArgs){
         ContentResolver mContentResolver = context.getContentResolver();
-        StringBuffer selection = new StringBuffer(MediaStore.Video.Media.MIME_TYPE).append("=?");
-        String[] selectionArgs;
-        if (minDuration != null && maxDuration == null) {
-            selectionArgs = new String[]{"video/mp4", String.valueOf(minDuration)};
-
-            selection.append(" and ")
-                    .append(MediaStore.Video.Media.DURATION)
-                    .append(">=?");
-
-        } else if (minDuration == null && maxDuration != null) {
-            selectionArgs = new String[]{"video/mp4", String.valueOf(maxDuration)};
-
-            selection.append(" and ")
-                    .append(MediaStore.Video.Media.DURATION)
-                    .append("<?");
-
-        } else if (minDuration != null && maxDuration != null) {
-            selectionArgs = new String[]{"video/mp4", String.valueOf(minDuration), String.valueOf(maxDuration)};
-
-            selection.append(" and ")
-                    .append(MediaStore.Video.Media.DURATION)
-                    .append(">=?");
-            selection.append(" and ")
-                    .append(MediaStore.Video.Media.DURATION)
-                    .append("<?");
-
-        } else {
-            selectionArgs = new String[]{"video/mp4"};
-        }
-
         return mContentResolver.query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, null,
-                selection.toString(), selectionArgs
-                , MediaStore.Images.Media.DATE_MODIFIED);
+                selection, selectionArgs, MediaStore.Images.Media.DATE_MODIFIED);
     }
 
     /**

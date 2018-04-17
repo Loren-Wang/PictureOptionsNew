@@ -191,16 +191,19 @@ public class PictureVideoSelectActivity extends BasePictureVideoActivity impleme
                 switch (pictureSelectConfirg.getSelectType()){
                     case 0://仅图片
                         allList = DbPhonePictureVideoList.getInstance(getApplicationContext())
-                                .getAllList(DbPhonePictureVideoList.getInstance(getApplicationContext()).getPictureAllMapList());
+                                .getAllList(DbPhonePictureVideoList.getInstance(getApplicationContext()).getPictureAllMapList(pictureSelectConfirg.getPictureFilterSelection()
+                                        ,pictureSelectConfirg.getPictureFilterSelectionArgs()));
                         break;
                     case 1://仅视频
                         allList = DbPhonePictureVideoList.getInstance(getApplicationContext())
-                                .getAllList(DbPhonePictureVideoList.getInstance(getApplicationContext()).getVideoAllMapList(pictureSelectConfirg.getVideoMinDuration(),pictureSelectConfirg.getVideoMaxDuration()));
+                                .getAllList(DbPhonePictureVideoList.getInstance(getApplicationContext()).getVideoAllMapList(pictureSelectConfirg.getVideoFilterSelection(),pictureSelectConfirg.getVideoFilterSelectionArgs()));
                         break;
                     case 2://两者都有
                     default:
                         allList = DbPhonePictureVideoList.getInstance(getApplicationContext())
-                                .getAllList(DbPhonePictureVideoList.getInstance(getApplicationContext()).getAllMapList(pictureSelectConfirg.getVideoMinDuration(),pictureSelectConfirg.getVideoMaxDuration()));
+                                .getAllList(DbPhonePictureVideoList.getInstance(getApplicationContext()).getAllMapList(pictureSelectConfirg.getPictureFilterSelection()
+                                        ,pictureSelectConfirg.getPictureFilterSelectionArgs(),pictureSelectConfirg.getVideoFilterSelection()
+                                        ,pictureSelectConfirg.getVideoFilterSelectionArgs()));
                         break;
                 }
                 //获取已选择的列表

@@ -73,8 +73,8 @@ public class DbScanDirForPicture  extends DbBase{
         }
     }
 
-    public synchronized Cursor getCursor(){
-        return DbUtils.getInstance(context).select2(property.TB_SCAN_DIR_FOR_PICTURE,null,null,null,null,null,null);
+    public synchronized Cursor getCursor(String selection, String[] selectionArgs){
+        return DbUtils.getInstance(context).select2(property.TB_SCAN_DIR_FOR_PICTURE,null,selection,selectionArgs,null,null,MediaStore.Images.Media.DATE_MODIFIED);
     }
 
 

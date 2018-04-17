@@ -2,6 +2,7 @@ package com.pictureselect.android;
 
 import android.graphics.Color;
 import android.os.Parcel;
+import android.provider.MediaStore;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DimenRes;
 import android.support.annotation.DrawableRes;
@@ -39,19 +40,19 @@ public class PictureVideoSelectConfirg extends BaseConfig{
     public static final int SELECT_TYPE_FOR_PICTURE_AND_VIDEO = 2;//图片视频一起选择
 
     //图片的与FILTER_PICTURE_FOR_NONE为0
-    public static final int FILTER_PICTURE_FOR_NONE = 0x0001;//筛选图片无限制
-    public static final int FILTER_PICTURE_FOR_SIZE = 0x0010;//根据图片大小限制图片选择
-    public static final int FILTER_PICTURE_FOR_WIDTH_HEIGHT = 0x0100;//根据图片宽高分辨率限制图片选择
-    public static final int FILTER_PICTURE_FOR_SIZE_AND_WIDTH_HEIGHT = 0x1000;//根据图片大小以及宽高分辨率限制图片选择
-    //视频的与FILTER_VIDEO_FOR_NONE为0
-    public static final int FILTER_VIDEO_FOR_NONE = 0x11111110;//筛选视频无限制
-    public static final int FILTER_VIDEO_FOR_SIZE = 0x11111101;//根据视频大小限制选择
-    public static final int FILTER_VIDEO_FOR_DURATION = 0x11111011;//根据视频时长限制选择
-    public static final int FILTER_VIDEO_FOR_WIDTH_HEIGHT = 0x11110111;//根据视频宽高分辨率限制选择
-    public static final int FILTER_VIDEO_FOR_SIZE_AND_DURATION = 0x11101111;//根据视频大小和时长限制选择
-    public static final int FILTER_VIDEO_FOR_SIZE_AND_WIDTH_HEIGHT = 0x11011111;//根据视频大小和宽高分辨率限制选择
-    public static final int FILTER_VIDEO_FOR_DURATION_AND_WIDTH_HEIGHT = 0x10111111;//根据视频时长和宽高分辨率限制选择
-    public static final int FILTER_VIDEO_FOR_SIZE_AND_DURATION_AND_WIDTH_HEIGHT = 0x01111111;//根据视频大小、时长和宽高分辨率限制选择
+    public static final int FILTER_PICTURE_FOR_NONE = 1;//筛选图片无限制
+    public static final int FILTER_PICTURE_FOR_SIZE = 2;//根据图片大小限制图片选择
+    public static final int FILTER_PICTURE_FOR_WIDTH_HEIGHT = 4;//根据图片宽高分辨率限制图片选择
+    public static final int FILTER_PICTURE_FOR_SIZE_AND_WIDTH_HEIGHT = 8;//根据图片大小以及宽高分辨率限制图片选择
+    //视频的或FILTER_VIDEO_FOR_NONE为255
+    public static final int FILTER_VIDEO_FOR_NONE = 255;//筛选视频无限制
+    public static final int FILTER_VIDEO_FOR_SIZE = 254;//根据视频大小限制选择
+    public static final int FILTER_VIDEO_FOR_DURATION = 252;//根据视频时长限制选择
+    public static final int FILTER_VIDEO_FOR_WIDTH_HEIGHT = 248;//根据视频宽高分辨率限制选择
+    public static final int FILTER_VIDEO_FOR_SIZE_AND_DURATION = 240;//根据视频大小和时长限制选择
+    public static final int FILTER_VIDEO_FOR_SIZE_AND_WIDTH_HEIGHT = 224;//根据视频大小和宽高分辨率限制选择
+    public static final int FILTER_VIDEO_FOR_DURATION_AND_WIDTH_HEIGHT = 192;//根据视频时长和宽高分辨率限制选择
+    public static final int FILTER_VIDEO_FOR_SIZE_AND_DURATION_AND_WIDTH_HEIGHT = 128;//根据视频大小、时长和宽高分辨率限制选择
 
     private int maxSelectPictureNum = 9;//最大选择张数
     private int maxSelectVideoNum = 1;//最大选择视频的数量
@@ -61,27 +62,38 @@ public class PictureVideoSelectConfirg extends BaseConfig{
     private boolean isShowOriginPicSelect = false;//是否需要显示原图选择
     private boolean isAllowConcurrentSelection = false;//是否允许图片视频同时选择
     private int selectType = SELECT_TYPE_FOR_PICTURE_AND_VIDEO;//选择类型
-    private int filterPictureType = FILTER_PICTURE_FOR_NONE;//图片筛选模式类型
-    private Long pictureMinSize;//图片最小大小
-    private Long pictureMaxSize;//图片最大大小
-    private Integer pictureMinWidth;//图片选择最低宽度
-    private Integer pictureMinHeight;//图片选择最低高度
-    private Integer pictureMaxWidth;//图片选择最高宽度
-    private Integer pictureMaxHeight;//图片选择最高高度
-    private boolean pictureNoSizeIsResult = true;//未获取到图片大小的时候是否要返回该图片
-    private boolean pictureNoWidthHeightIsResult = true;//未获取到图片宽高分辨率的时候是否要返回该图片
-    private int filterVideoType = FILTER_VIDEO_FOR_NONE;//视频筛选模式类型
-    private Long videoMinSize;//视频最小大小
-    private Long videoMaxSize;//视频最大大小
-    private Integer videoMinWidth;//视频最小分辨率宽度
-    private Integer videoMinHeight;//视频最小分辨率高度
-    private Integer videoMaxWidth;//视频最大分辨率高度
-    private Integer videoMaxHeight;//视频最大分辨率高度
-    private Long videoMinDuration;//视频最小大小
-    private Long videoMaxDuration;//视频最大大小
-    private boolean videoNoSizeIsResult = true;//未获取到视频大小的时候是否要返回该图片
-    private boolean videoNoWidthHeightIsResult = true;//未获取到视频宽高分辨率的时候是否要返回该图片
-    private boolean videoNoDurationIsResult = true;//未获取到视频时长的时候是否要返回该图片
+//    private int filterPictureType = FILTER_PICTURE_FOR_NONE;//图片筛选模式类型
+//    private Long pictureMinSize;//图片最小大小
+//    private Long pictureMaxSize;//图片最大大小
+//    private Integer pictureMinWidth;//图片选择最低宽度
+//    private Integer pictureMinHeight;//图片选择最低高度
+//    private Integer pictureMaxWidth;//图片选择最高宽度
+//    private Integer pictureMaxHeight;//图片选择最高高度
+//    private boolean pictureNoSizeIsResult = true;//未获取到图片大小的时候是否要返回该图片
+//    private boolean pictureNoWidthHeightIsResult = true;//未获取到图片宽高分辨率的时候是否要返回该图片
+//    private int filterVideoType = FILTER_VIDEO_FOR_NONE;//视频筛选模式类型
+//    private Long videoMinSize;//视频最小大小
+//    private Long videoMaxSize;//视频最大大小
+//    private Integer videoMinWidth;//视频最小分辨率宽度
+//    private Integer videoMinHeight;//视频最小分辨率高度
+//    private Integer videoMaxWidth;//视频最大分辨率高度
+//    private Integer videoMaxHeight;//视频最大分辨率高度
+//    private Long videoMinDuration;//视频最小大小
+//    private Long videoMaxDuration;//视频最大大小
+//    private boolean videoNoSizeIsResult = true;//未获取到视频大小的时候是否要返回该图片
+//    private boolean videoNoWidthHeightIsResult = true;//未获取到视频宽高分辨率的时候是否要返回该图片
+//    private boolean videoNoDurationIsResult = true;//未获取到视频时长的时候是否要返回该图片
+
+    //图片数据库读取条件
+    private StringBuffer pictureFilterSelection = new StringBuffer(MediaStore.Images.Media.MIME_TYPE).append("=? or ")
+            .append(MediaStore.Images.Media.MIME_TYPE).append("=? or ")
+            .append(MediaStore.Images.Media.MIME_TYPE).append("=?");
+    private List<String> pictureFilterSelectionArgs = new ArrayList<>();
+    private String[] pictureFilterSelectionArg;
+    //视频数据库读取条件
+    private StringBuffer videoFilterSelection = new StringBuffer(MediaStore.Images.Media.MIME_TYPE).append("=?");
+    private List<String> videoFilterSelectionArgs = new ArrayList<>();
+    private String[] videoFilterSelectionArg;
 
 
 
@@ -104,6 +116,16 @@ public class PictureVideoSelectConfirg extends BaseConfig{
         bottomOptionsTextColor = Color.WHITE;
         bottomOptionsHeight = 44;
         bottomOptionsTextSize = 14;
+        try {
+            setPictureFilter(FILTER_PICTURE_FOR_NONE);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            setVideoFilter(FILTER_VIDEO_FOR_NONE);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public Integer getSelectStateY() {
@@ -234,6 +256,271 @@ public class PictureVideoSelectConfirg extends BaseConfig{
         return this;
     }
 
+
+
+    /**
+     * 图片筛选条件
+     * @param filterType
+     * @param filters filterType 为 FILTER_PICTURE_FOR_NONE时参数：无限制，多出的属性不记录
+     *                filterType 为 FILTER_PICTURE_FOR_SIZE时参数：必须有最大最小或最小其中一个，否则抛出异常，多出的属性不记录
+     *                filterType 为 FILTER_PICTURE_FOR_WIDTH_HEIGHT时参数：必须有最大最小宽高或最小其中一个，否则抛出异常，多出的属性不记录
+     *                filterType 为 FILTER_PICTURE_FOR_SIZE_AND_WIDTH_HEIGHT时参数：必须有最大最小宽高或最小其中一个以及最大最小或最小其中一个，否则抛出异常，多出的属性不记录
+     * @return
+     */
+    public PictureVideoSelectConfirg setPictureFilter(int filterType,Object... filters) throws Exception {
+        if(Integer.compare(filterType,FILTER_PICTURE_FOR_NONE) != 0 && (filterType & FILTER_PICTURE_FOR_NONE) != 0){
+            return this;
+        }
+
+        pictureFilterSelection = new StringBuffer("(")
+                .append(MediaStore.Images.Media.MIME_TYPE).append("=? or ")
+                .append(MediaStore.Images.Media.MIME_TYPE).append("=? or ")
+                .append(MediaStore.Images.Media.MIME_TYPE).append("=?)");
+        pictureFilterSelectionArgs.clear();
+        pictureFilterSelectionArgs.add("image/jpeg");
+        pictureFilterSelectionArgs.add("image/png");
+        pictureFilterSelectionArgs.add("image/bmp");
+
+        Integer minSize;
+        Integer maxSize;
+        Integer minWidth;
+        Integer maxWidth;
+        Integer minHeight;
+        Integer maxHeight;
+
+        switch (filterType){
+            case FILTER_PICTURE_FOR_SIZE://只取0,1位置，为最大最小值，必须有参，可以为空
+                minSize = (Integer) filters[0];
+                maxSize = (Integer) filters[1];
+                filterSizeAndDuration(minSize,maxSize,pictureFilterSelection,pictureFilterSelectionArgs,MediaStore.Images.Media.SIZE);
+                break;
+            case FILTER_PICTURE_FOR_WIDTH_HEIGHT://只取0,1,2,3位置，为最大最小值，必须有参，可以为空
+                minWidth = (Integer) filters[0];
+                maxWidth = (Integer) filters[1];
+                minHeight = (Integer) filters[2];
+                maxHeight = (Integer) filters[3];
+                //检测是否同时为空
+                if(minWidth == null && maxWidth == null && minHeight == null && maxHeight == null){
+                    throw new Exception("传入的图片宽高分辨率筛选参数数据异常");
+                }
+                //宽度判定及新增
+                filterWidthHeight(minWidth,maxWidth,pictureFilterSelection,pictureFilterSelectionArgs,MediaStore.Images.Media.WIDTH);
+                filterWidthHeight(minHeight,maxHeight,pictureFilterSelection,pictureFilterSelectionArgs,MediaStore.Images.Media.HEIGHT);
+
+                break;
+            case FILTER_PICTURE_FOR_SIZE_AND_WIDTH_HEIGHT:
+                minSize = (Integer) filters[0];
+                maxSize = (Integer) filters[1];
+                minWidth = (Integer) filters[2];
+                maxWidth = (Integer) filters[3];
+                minHeight = (Integer) filters[4];
+                maxHeight = (Integer) filters[5];
+                //检测是否同时为空
+                if(minWidth == null && maxWidth == null && minHeight == null && maxHeight == null){
+                    throw new Exception("传入的图片宽高分辨率筛选参数数据异常");
+                }
+                //大小判定及新增
+                filterSizeAndDuration(minSize,maxSize,pictureFilterSelection,pictureFilterSelectionArgs,MediaStore.Images.Media.SIZE);
+                //宽度判定及新增
+                filterWidthHeight(minWidth,maxWidth,pictureFilterSelection,pictureFilterSelectionArgs,MediaStore.Images.Media.WIDTH);
+                filterWidthHeight(minHeight,maxHeight,pictureFilterSelection,pictureFilterSelectionArgs,MediaStore.Images.Media.HEIGHT);
+                break;
+            case FILTER_PICTURE_FOR_NONE:
+                default:
+                break;
+        }
+        pictureFilterSelectionArg = new String[pictureFilterSelectionArgs.size()];
+        pictureFilterSelectionArgs.toArray(pictureFilterSelectionArg);
+
+        return this;
+    }
+    /**
+     * 视频筛选条件
+     * @param filterType
+     * @param filters
+     * @return
+     * @throws Exception
+     */
+    public PictureVideoSelectConfirg setVideoFilter(int filterType,Object... filters) throws Exception{
+        if(Integer.compare(filterType,FILTER_VIDEO_FOR_NONE) != 0 && (filterType | FILTER_VIDEO_FOR_NONE) != 255){
+            return this;
+        }
+
+        videoFilterSelection = new StringBuffer(MediaStore.Images.Media.MIME_TYPE).append("=?");
+        videoFilterSelectionArgs.clear();
+        videoFilterSelectionArgs.add("video/mp4");
+
+        Integer minSize;
+        Integer maxSize;
+        Integer minWidth;
+        Integer maxWidth;
+        Integer minHeight;
+        Integer maxHeight;
+        Integer minDuration;
+        Integer maxDuration;
+
+        switch (filterType){
+            case FILTER_VIDEO_FOR_SIZE://根据视频大小限制选择
+                minSize = (Integer) filters[0];
+                maxSize = (Integer) filters[1];
+                filterSizeAndDuration(minSize,maxSize,videoFilterSelection,videoFilterSelectionArgs,MediaStore.Video.Media.SIZE);
+                break;
+            case FILTER_VIDEO_FOR_DURATION://根据视频时长限制选择
+                minDuration = (Integer) filters[0];
+                maxDuration = (Integer) filters[1];
+                filterSizeAndDuration(minDuration,maxDuration,videoFilterSelection,videoFilterSelectionArgs,MediaStore.Video.Media.DURATION);
+                break;
+            case FILTER_VIDEO_FOR_WIDTH_HEIGHT://根据视频宽高分辨率限制选择
+                minWidth = (Integer) filters[0];
+                maxWidth = (Integer) filters[1];
+                minHeight = (Integer) filters[2];
+                maxHeight = (Integer) filters[3];
+                //检测是否同时为空
+                if(minWidth == null && maxWidth == null && minHeight == null && maxHeight == null){
+                    throw new Exception("传入的视频宽高分辨率筛选参数数据异常");
+                }
+                //宽度判定及新增
+                filterWidthHeight(minWidth,maxWidth,videoFilterSelection,videoFilterSelectionArgs,MediaStore.Video.Media.WIDTH);
+                filterWidthHeight(minHeight,maxHeight,videoFilterSelection,videoFilterSelectionArgs,MediaStore.Video.Media.HEIGHT);
+                break;
+            case FILTER_VIDEO_FOR_SIZE_AND_DURATION://根据视频大小和时长限制选择
+                minSize = (Integer) filters[0];
+                maxSize = (Integer) filters[1];
+                minDuration = (Integer) filters[2];
+                maxDuration = (Integer) filters[3];
+                filterSizeAndDuration(minDuration,maxDuration,videoFilterSelection,videoFilterSelectionArgs,MediaStore.Video.Media.DURATION);
+                filterSizeAndDuration(minSize,maxSize,videoFilterSelection,videoFilterSelectionArgs,MediaStore.Video.Media.SIZE);
+                break;
+            case FILTER_VIDEO_FOR_SIZE_AND_WIDTH_HEIGHT://根据视频大小和宽高分辨率限制选择
+                minSize = (Integer) filters[0];
+                maxSize = (Integer) filters[1];
+                minWidth = (Integer) filters[2];
+                maxWidth = (Integer) filters[3];
+                minHeight = (Integer) filters[4];
+                maxHeight = (Integer) filters[5];
+                //检测是否同时为空
+                if(minWidth == null && maxWidth == null && minHeight == null && maxHeight == null){
+                    throw new Exception("传入的视频宽高分辨率筛选参数数据异常");
+                }
+                filterSizeAndDuration(minSize,maxSize,videoFilterSelection,videoFilterSelectionArgs,MediaStore.Video.Media.SIZE);
+                //宽度判定及新增
+                filterWidthHeight(minWidth,maxWidth,videoFilterSelection,videoFilterSelectionArgs,MediaStore.Video.Media.WIDTH);
+                filterWidthHeight(minHeight,maxHeight,videoFilterSelection,videoFilterSelectionArgs,MediaStore.Video.Media.HEIGHT);
+                break;
+            case FILTER_VIDEO_FOR_DURATION_AND_WIDTH_HEIGHT://根据视频时长和宽高分辨率限制选择
+                minDuration = (Integer) filters[0];
+                maxDuration = (Integer) filters[1];
+                minWidth = (Integer) filters[2];
+                maxWidth = (Integer) filters[3];
+                minHeight = (Integer) filters[4];
+                maxHeight = (Integer) filters[5];
+                //检测是否同时为空
+                if(minWidth == null && maxWidth == null && minHeight == null && maxHeight == null){
+                    throw new Exception("传入的视频宽高分辨率筛选参数数据异常");
+                }
+                filterSizeAndDuration(minDuration,maxDuration,videoFilterSelection,videoFilterSelectionArgs,MediaStore.Video.Media.DURATION);
+                //宽度判定及新增
+                filterWidthHeight(minWidth,maxWidth,videoFilterSelection,videoFilterSelectionArgs,MediaStore.Video.Media.WIDTH);
+                filterWidthHeight(minHeight,maxHeight,videoFilterSelection,videoFilterSelectionArgs,MediaStore.Video.Media.HEIGHT);
+                break;
+            case FILTER_VIDEO_FOR_SIZE_AND_DURATION_AND_WIDTH_HEIGHT://根据视频大小、时长和宽高分辨率限制选择
+                minSize = (Integer) filters[0];
+                maxSize = (Integer) filters[1];
+                minDuration = (Integer) filters[2];
+                maxDuration = (Integer) filters[3];
+                minWidth = (Integer) filters[4];
+                maxWidth = (Integer) filters[5];
+                minHeight = (Integer) filters[6];
+                maxHeight = (Integer) filters[7];
+                //检测是否同时为空
+                if(minWidth == null && maxWidth == null && minHeight == null && maxHeight == null){
+                    throw new Exception("传入的视频宽高分辨率筛选参数数据异常");
+                }
+                filterSizeAndDuration(minSize,maxSize,videoFilterSelection,videoFilterSelectionArgs,MediaStore.Video.Media.SIZE);
+                filterSizeAndDuration(minDuration,maxDuration,videoFilterSelection,videoFilterSelectionArgs,MediaStore.Video.Media.DURATION);
+                //宽度判定及新增
+                filterWidthHeight(minWidth,maxWidth,videoFilterSelection,videoFilterSelectionArgs,MediaStore.Video.Media.WIDTH);
+                filterWidthHeight(minHeight,maxHeight,videoFilterSelection,videoFilterSelectionArgs,MediaStore.Video.Media.HEIGHT);
+                break;
+            case FILTER_VIDEO_FOR_NONE:
+            default:
+                break;
+        }
+        videoFilterSelectionArg = new String[videoFilterSelectionArgs.size()];
+        videoFilterSelectionArgs.toArray(videoFilterSelectionArg);
+        return this;
+    }
+    /**
+     * 大小筛选条件判定以及新增
+     * @param min
+     * @param max
+     * @param selection
+     * @param selectionArgs
+     * @param column 字段名
+     * @return
+     * @throws Exception
+     */
+    private PictureVideoSelectConfirg filterSizeAndDuration(Integer min,Integer max,StringBuffer selection,List selectionArgs,String column) throws Exception{
+        //检测是否同时为空
+        if(min == null && max == null){
+            throw new Exception("传入的图片大小或者时长筛选参数数据异常");
+        }
+        //检测最小最大值是否符合规则
+        if((min != null && min < 0) || (max != null && max < 0) || (min != null && max != null && min > max)){
+            throw new Exception("传入的图片大小或者时长筛选参数数据异常");
+        }
+        //设置字符串
+        if(min != null){
+            selection.append(" and ").append(column).append(">=?");
+            selectionArgs.add(String.valueOf(min));
+        }
+        if(max != null){
+            selection.append(" and ").append(column).append("<?");
+            selectionArgs.add(String.valueOf(max));
+        }
+        return this;
+    }
+    /**
+     * 宽高分辨率筛选条件判定以及新增
+     * @param min
+     * @param max
+     * @param selection
+     * @param selectionArgs
+     * @param column 字段名
+     * @return
+     * @throws Exception
+     */
+    private PictureVideoSelectConfirg filterWidthHeight(Integer min,Integer max,StringBuffer selection,List selectionArgs,String column) throws Exception {
+        //检测是否宽度符合规则、
+        if((min != null && min < 0) || (max != null && max < 0) || (min != null && max != null && min > max)){
+            throw new Exception("传入的宽高分辨率筛选参数数据异常");
+        }
+        //设置字符串
+        if(min != null){
+            selection.append(" and ").append(column).append(">=?");
+            selectionArgs.add(String.valueOf(min));
+        }
+        if(max != null){
+            selection.append(" and ").append(column).append("<?");
+            selectionArgs.add(String.valueOf(max));
+        }
+        return this;
+    }
+    public String getPictureFilterSelection() {
+        return pictureFilterSelection.toString();
+    }
+    public String[] getPictureFilterSelectionArgs() {
+        return pictureFilterSelectionArg;
+    }
+    public String getVideoFilterSelection() {
+        return videoFilterSelection.toString();
+    }
+    public String[] getVideoFilterSelectionArgs() {
+        return videoFilterSelectionArg;
+    }
+
+
+
     @Override
     public int describeContents() {
         return 0;
@@ -249,8 +536,12 @@ public class PictureVideoSelectConfirg extends BaseConfig{
         dest.writeByte(this.isShowOriginPicSelect ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isAllowConcurrentSelection ? (byte) 1 : (byte) 0);
         dest.writeInt(this.selectType);
-        dest.writeValue(this.videoMaxDuration);
-        dest.writeValue(this.videoMinDuration);
+        dest.writeSerializable(this.pictureFilterSelection);
+        dest.writeStringList(this.pictureFilterSelectionArgs);
+        dest.writeStringArray(this.pictureFilterSelectionArg);
+        dest.writeSerializable(this.videoFilterSelection);
+        dest.writeStringList(this.videoFilterSelectionArgs);
+        dest.writeStringArray(this.videoFilterSelectionArg);
         dest.writeInt(this.bottomOptionsBackground);
         dest.writeInt(this.bottomOptionsHeight);
         dest.writeInt(this.bottomOptionsTextColor);
@@ -275,8 +566,12 @@ public class PictureVideoSelectConfirg extends BaseConfig{
         this.isShowOriginPicSelect = in.readByte() != 0;
         this.isAllowConcurrentSelection = in.readByte() != 0;
         this.selectType = in.readInt();
-        this.videoMaxDuration = (Long) in.readValue(Long.class.getClassLoader());
-        this.videoMinDuration = (Long) in.readValue(Long.class.getClassLoader());
+        this.pictureFilterSelection = (StringBuffer) in.readSerializable();
+        this.pictureFilterSelectionArgs = in.createStringArrayList();
+        this.pictureFilterSelectionArg = in.createStringArray();
+        this.videoFilterSelection = (StringBuffer) in.readSerializable();
+        this.videoFilterSelectionArgs = in.createStringArrayList();
+        this.videoFilterSelectionArg = in.createStringArray();
         this.bottomOptionsBackground = in.readInt();
         this.bottomOptionsHeight = in.readInt();
         this.bottomOptionsTextColor = in.readInt();
