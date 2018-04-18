@@ -42,7 +42,7 @@ public class DbScanDirForPicture  extends DbBase{
                 values.put(MediaStore.Images.Media.SIZE,exifInterface.getAttribute(ExifInterface.TAG_DEFAULT_CROP_SIZE));
                 values.put(MediaStore.Images.Media.DATA,path);
                 values.put(MediaStore.Images.Media.DISPLAY_NAME,path.substring(path.lastIndexOf("/") + 1));
-                values.put(MediaStore.Images.Media.MIME_TYPE,"image" + path.substring(path.lastIndexOf("/")));
+                values.put(MediaStore.Images.Media.MIME_TYPE,"image/" + path.substring(path.lastIndexOf(".") + 1));
                 values.put(MediaStore.Images.Media.DATE_ADDED, ParamsAndJudgeUtils.getMillisecond());
                 values.put(MediaStore.Images.Media.DATE_MODIFIED, ParamsAndJudgeUtils.getMillisecond());
                 values.put(MediaStore.Images.Media.LATITUDE,exifInterface.getAttribute(ExifInterface.TAG_GPS_LATITUDE));

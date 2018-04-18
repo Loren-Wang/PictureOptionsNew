@@ -11,6 +11,8 @@ import com.basepictureoptionslib.android.utils.CheckUtils;
 import com.basepictureoptionslib.android.utils.DbUtils;
 import com.basepictureoptionslib.android.utils.ParamsAndJudgeUtils;
 
+import java.io.File;
+
 public class DbScanDirForVideo extends DbBase{
     private static DbScanDirForVideo dbScanDirForVideo;
     private Context context;
@@ -39,10 +41,12 @@ public class DbScanDirForVideo extends DbBase{
             try {
                 MediaMetadataRetriever retr = new MediaMetadataRetriever();
                 retr.setDataSource(path);
+                File file = new File(path);
                 ContentValues values = new ContentValues();
                 values.put(MediaStore.Video.Media.DATA,path);
+                values.put(MediaStore.Video.Media.SIZE,file.length());
                 values.put(MediaStore.Video.Media.DISPLAY_NAME,path.substring(path.lastIndexOf("/") + 1));
-                values.put(MediaStore.Video.Media.MIME_TYPE,"video" + path.substring(path.lastIndexOf("/")));
+                values.put(MediaStore.Video.Media.MIME_TYPE,"video/" + path.substring(path.lastIndexOf(".") + 1));
                 values.put(MediaStore.Video.Media.DATE_ADDED, ParamsAndJudgeUtils.getMillisecond());
                 values.put(MediaStore.Video.Media.DATE_MODIFIED, ParamsAndJudgeUtils.getMillisecond());
                 String loc = retr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_LOCATION);
@@ -77,7 +81,7 @@ public class DbScanDirForVideo extends DbBase{
     }
 
     public synchronized Cursor getCursor(String selection, String[] selectionArgs){
-        return DbUtils.getInstance(context).select2(property.TB_SCAN_DIR_FOR_VIDEO,null,selection,selectionArgs,null,null,MediaStore.Video.Media.DATE_MODIFIED);
+        return DbUtils.getInstance(context).select2(property.TB_SCAN_DIR_FOR_VIDEO,null,selection,selectionArgs,null,null,null);
     }
 
 
@@ -92,12 +96,12 @@ public class DbScanDirForVideo extends DbBase{
         createTbBUffer.append("(");
         createTbBUffer.append(MediaStore.Video.Media._ID).append(" INTEGER PRIMARY KEY,");
         createTbBUffer.append(MediaStore.Video.Media.DATA).append(" text,");
+        createTbBUffer.append(MediaStore.Video.Media.MIME_TYPE).append(" varchar(50),");
         createTbBUffer.append(MediaStore.Video.Media.SIZE).append(" long,");
         createTbBUffer.append(MediaStore.Video.Media.DISPLAY_NAME).append(" text,");
-        createTbBUffer.append(MediaStore.Video.Media.MIME_TYPE).append(" text,");
         createTbBUffer.append(MediaStore.Video.Media.DATE_ADDED).append(" long,");
         createTbBUffer.append(MediaStore.Video.Media.DATE_MODIFIED).append(" long,");
-        createTbBUffer.append(MediaStore.Video.Media.LATITUDE).append(" double,");
+        createTbBUffer.append(MediaStore.Video.Media.LATITUDE).append(" double," );
         createTbBUffer.append(MediaStore.Video.Media.LONGITUDE).append(" double,");
         createTbBUffer.append(MediaStore.Video.Media.WIDTH).append(" int,");
         createTbBUffer.append(MediaStore.Video.Media.HEIGHT).append(" int,");

@@ -99,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         e.printStackTrace();
                     }
                     try {
+//                        pictureVideoSelectConfirg.setVideoFilter(PictureVideoSelectConfirg.FILTER_VIDEO_FOR_NONE);
                         pictureVideoSelectConfirg.setVideoFilter(PictureVideoSelectConfirg.FILTER_VIDEO_FOR_SIZE_AND_DURATION,null,3065964,2000,null);
 
 //                        pictureVideoSelectConfirg.setVideoFilter(PictureVideoSelectConfirg.FILTER_VIDEO_FOR_SIZE_AND_DURATION_AND_WIDTH_HEIGHT

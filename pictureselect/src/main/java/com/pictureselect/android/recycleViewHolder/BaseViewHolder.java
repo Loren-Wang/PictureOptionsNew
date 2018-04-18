@@ -58,9 +58,6 @@ public class BaseViewHolder extends RecyclerView.ViewHolder {
             showTime.append(":");
         }
 
-        if(hour < 10){
-            showTime.append("0");
-        }
         showTime.append(minute);
         showTime.append(":");
 
