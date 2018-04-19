@@ -48,7 +48,7 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<PicturePreviewVi
     @Override
     public void onBindViewHolder(PicturePreviewViewHolder holder, int position) {
         final StorePictureVideoItemDto storePictureItemDto = list.get(position);
-        holder.setImageInfo(storePictureItemDto);
+        holder.setImageInfo(storePictureItemDto,windowWidth,windowHeight);
 
         holder.imgBtnPlay.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -35,7 +35,7 @@ public class BaseViewHolder extends RecyclerView.ViewHolder {
      * @param path
      */
     public void setImageInfo(StorePictureVideoItemDto imageInfo){
-        ImageLoadingUtis.getInstance(context).loadingPictureListItemImage(imageInfo.getAbsolutePath(),imgPic);
+        ImageLoadingUtis.getInstance(context).loadingPictureListItemImage(imageInfo.getAbsolutePath(),imgPic,null);
         if(imageInfo.getDuration() > 0){
             tvVideoTime.setVisibility(View.VISIBLE);
             tvVideoTime.setText(getTvVideoTime(imageInfo.getDuration()));
