@@ -3,6 +3,7 @@ package com.pictureselect.android;
 import android.Manifest;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.MediaStore;
@@ -23,6 +24,7 @@ import com.pictureselect.android.database.DbScanDirForPicture;
 import com.pictureselect.android.database.DbScanDirForVideo;
 import com.pictureselect.android.dto.StorePictureVideoItemDto;
 import com.pictureselect.android.recycleViewHolder.BaseViewHolder;
+import com.pictureselect.android.setting.AppConfigSetting;
 import com.pictureselect.android.view.DividerGridItemDecoration;
 
 import java.util.ArrayList;
@@ -71,6 +73,12 @@ public class PictureVideoSelectActivity extends BasePictureVideoActivity impleme
             pictureSelectConfirg = new PictureVideoSelectConfirg();
         }
         setTheme(pictureSelectConfirg.getThemeId());
+
+        //初始化全局配置文件
+        AppConfigSetting.CHANGE_PICTURE_SELECT_STATE_VIEW_PAINT_STATE = new Paint();
+        AppConfigSetting.CHANGE_PICTURE_SELECT_STATE_VIEW_PAINT_STATE.setAntiAlias(true);
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_picture_and_video_select);
 
@@ -88,7 +96,8 @@ public class PictureVideoSelectActivity extends BasePictureVideoActivity impleme
         recyList.setLayoutManager(new GridLayoutManager(getApplicationContext(),pictureSelectConfirg.getShowRowCount()));
         recyList.addItemDecoration(new DividerGridItemDecoration(getApplicationContext(),null));
         //初始化适配器
-        pictureSelectsAdapter = new PictureSelectNoCameraAdapter(getApplicationContext(),pictureSelectConfirg.getSelectStateY(),pictureSelectConfirg.getSelectStateN()) {
+        pictureSelectsAdapter = new PictureSelectNoCameraAdapter(getApplicationContext(),windowWidth / 3,windowWidth / 3
+                ,pictureSelectConfirg.getSelectStateY(),pictureSelectConfirg.getSelectStateN()) {
             @Override
             public void onSelceChangeClick(BaseViewHolder holder, StorePictureVideoItemDto storePictureItemDto, int position) {
                 //设置选中
@@ -499,6 +508,31 @@ public class PictureVideoSelectActivity extends BasePictureVideoActivity impleme
 
     @Override
     protected void onDestroy() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ImageLoadingUtis.getInstance(PictureVideoSelectActivity.this).clearImageMemoryCache();
+            }
+        });
+
+        AppConfigSetting.CHANGE_PICTURE_SELECT_STATE_VIEW_PAINT_STATE = null;
+        //释放bitmap
+        if( AppConfigSetting.CHANGE_PICTURE_SELECT_STATE_VIEW_SELECT_Y_BITMAP != null
+                && !AppConfigSetting.CHANGE_PICTURE_SELECT_STATE_VIEW_SELECT_Y_BITMAP.isRecycled()){
+            AppConfigSetting.CHANGE_PICTURE_SELECT_STATE_VIEW_SELECT_Y_BITMAP.recycle();
+            AppConfigSetting.CHANGE_PICTURE_SELECT_STATE_VIEW_SELECT_Y_BITMAP = null;
+        }
+        //释放bitmap
+        if( AppConfigSetting.CHANGE_PICTURE_SELECT_STATE_VIEW_SELECT_N_BITMAP != null
+                && !AppConfigSetting.CHANGE_PICTURE_SELECT_STATE_VIEW_SELECT_N_BITMAP.isRecycled()){
+            AppConfigSetting.CHANGE_PICTURE_SELECT_STATE_VIEW_SELECT_N_BITMAP.recycle();
+            AppConfigSetting.CHANGE_PICTURE_SELECT_STATE_VIEW_SELECT_N_BITMAP = null;
+        }
+
+        AppConfigSetting.CHANGE_PICTURE_SELECT_STATE_VIEW_SELECT_N_SRCRECT = null;
+        AppConfigSetting.CHANGE_PICTURE_SELECT_STATE_VIEW_SELECT_Y_SRCRECT = null;
+        AppConfigSetting.CHANGE_PICTURE_SELECT_STATE_VIEW_SELECT_DST_RECT = null;
+
         pictureSelectsAdapter = null;
         selectedPicturesList.clear();
         selectedPicturesList = null;

@@ -99,6 +99,9 @@ public class DbPhonePictureVideoList {
             while (iterator.hasNext()){
                 list.addAll(iterator.next().getValue());
             }
+            map.clear();
+            map = null;
+            iterator = null;
         }
         list = wipeOffRepetitionDto(list);
         Collections.sort(list,sortList);
@@ -122,7 +125,11 @@ public class DbPhonePictureVideoList {
             list = wipeOffRepetitionDto(next.getValue());
             Collections.sort(list,sortList);
             mapList.put(next.getKey(),list);
+            next = null;
         }
+        mapInfoList.clear();
+        mapInfoList = null;
+        iterator = null;
         return mapList;
     }
     /**
@@ -144,7 +151,11 @@ public class DbPhonePictureVideoList {
             list = wipeOffRepetitionDto(next.getValue());
             Collections.sort(list,sortList);
             mapList.put(next.getKey(),list);
+            next = null;
         }
+        mapInfoList.clear();
+        mapInfoList = null;
+        iterator = null;
         return mapList;
     }
 
@@ -177,14 +188,16 @@ public class DbPhonePictureVideoList {
                 resultMapList = new ArrayList<>();
             }
             if(list != null) {
-                resultMapList.addAll(list);
                 //去重
                 wipeOffRepetitionDto(resultMapList);
                 //排序
                 Collections.sort(list,sortList);
+                resultMapList.addAll(list);
             }
             resultMap.put(key,resultMapList);
+            key = null;
         }
+        pictureMapKeyListIterator = null;
         //视频列表
         Iterator<String> videoMapKeyListIterator = mapVideoInfoList.keySet().iterator();
         while (videoMapKeyListIterator.hasNext()){
@@ -195,15 +208,21 @@ public class DbPhonePictureVideoList {
                 resultMapList = new ArrayList<>();
             }
             if(list != null) {
-                resultMapList.addAll(list);
                 //去重
                 wipeOffRepetitionDto(resultMapList);
                 //排序
                 Collections.sort(list,sortList);
+                resultMapList.addAll(list);
             }
             resultMap.put(key,resultMapList);
+            key = null;
         }
+        videoMapKeyListIterator = null;
 
+        mapPictureInfoList.clear();
+        mapPictureInfoList = null;
+        mapVideoInfoList.clear();
+        mapVideoInfoList = null;
 
         return resultMap;
     }
@@ -235,6 +254,11 @@ public class DbPhonePictureVideoList {
             map.put(itemDto.getAbsolutePath(),itemDto);
         }
         list.addAll(map.values());
+        searchList.clear();
+        searchList = null;
+        map.clear();
+        map = null;
+
         return list;
     }
 
@@ -248,7 +272,6 @@ public class DbPhonePictureVideoList {
         for(Cursor cursor : mImageCursors){
             List<StorePictureVideoItemDto> list = null;
             StorePictureVideoItemDto storePictureItemDto;
-            int pictureDegree;
             File absolutePathFile;
             while (cursor.moveToNext()) {
                 storePictureItemDto = new StorePictureVideoItemDto();
@@ -288,7 +311,10 @@ public class DbPhonePictureVideoList {
                 map.put(storePictureItemDto.getDirectoryPath(), list);
             }
             cursor.close();
+            cursor = null;
+            storePictureItemDto = null;
         }
+        mImageCursors = null;
         return map;
     }
 
@@ -307,7 +333,6 @@ public class DbPhonePictureVideoList {
         for(Cursor cursor : mVideoCursors){
             List<StorePictureVideoItemDto> list = null;
             StorePictureVideoItemDto storePictureItemDto;
-            int pictureDegree;
             File absolutePathFile;
             while (cursor.moveToNext()) {
                 storePictureItemDto = new StorePictureVideoItemDto();
@@ -347,7 +372,10 @@ public class DbPhonePictureVideoList {
                 map.put(storePictureItemDto.getDirectoryPath(), list);
             }
             cursor.close();
+            cursor = null;
+            storePictureItemDto = null;
         }
+        mVideoCursors = null;
         return map;
     }
 

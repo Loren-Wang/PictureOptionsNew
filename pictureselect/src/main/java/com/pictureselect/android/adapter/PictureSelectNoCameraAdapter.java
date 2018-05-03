@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.DrawableRes;
 import android.view.View;
 
+import com.bumptech.glide.request.RequestOptions;
 import com.pictureselect.android.dto.StorePictureVideoItemDto;
 import com.pictureselect.android.interfaces_abstract.ChangeSelectStateViewCallback;
 import com.pictureselect.android.recycleViewHolder.BaseViewHolder;
@@ -14,8 +15,11 @@ import java.util.List;
 public abstract class PictureSelectNoCameraAdapter extends BasePictureSelectAdapter {
 
     private List<StorePictureVideoItemDto> list = new ArrayList<>();
-    public PictureSelectNoCameraAdapter(Context context, @DrawableRes Integer selectY, @DrawableRes Integer selectN) {
+    private RequestOptions requestOptions;
+    public PictureSelectNoCameraAdapter(Context context, int width, int heigt, @DrawableRes Integer selectY, @DrawableRes Integer selectN) {
         super(context,selectY,selectN);
+        requestOptions = new RequestOptions();
+        requestOptions.override(width,heigt);
     }
 
     public PictureSelectNoCameraAdapter setList(List<StorePictureVideoItemDto> list) {
@@ -48,7 +52,7 @@ public abstract class PictureSelectNoCameraAdapter extends BasePictureSelectAdap
     @Override
     public void onBindViewHolder(final BaseViewHolder holder, int position) {
         final StorePictureVideoItemDto storePictureItemDto = list.get(position);
-        holder.setImageInfo(storePictureItemDto);
+        holder.setImageInfo(storePictureItemDto,requestOptions);
         holder.setSelectState(storePictureItemDto.isSelect());
 
         holder.viewSelect.setChangeSelectStateViewCallback(new ChangeSelectStateViewCallback() {

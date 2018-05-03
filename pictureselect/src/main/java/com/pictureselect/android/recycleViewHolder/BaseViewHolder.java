@@ -8,6 +8,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.basepictureoptionslib.android.plugin.image.ImageLoadingUtis;
+import com.bumptech.glide.request.RequestOptions;
 import com.pictureselect.android.R;
 import com.pictureselect.android.dto.StorePictureVideoItemDto;
 import com.pictureselect.android.view.ChangePictureSelectStateView;
@@ -34,8 +35,8 @@ public class BaseViewHolder extends RecyclerView.ViewHolder {
      * 设置图片显示
      * @param path
      */
-    public void setImageInfo(StorePictureVideoItemDto imageInfo){
-        ImageLoadingUtis.getInstance(context).loadingPictureListItemImage(imageInfo.getAbsolutePath(),imgPic,null);
+    public void setImageInfo(StorePictureVideoItemDto imageInfo, RequestOptions requestOptions){
+        ImageLoadingUtis.getInstance(context).loadingPictureListItemImage(imageInfo.getAbsolutePath(),imgPic,requestOptions);
         if(imageInfo.getDuration() > 0){
             tvVideoTime.setVisibility(View.VISIBLE);
             tvVideoTime.setText(getTvVideoTime(imageInfo.getDuration()));

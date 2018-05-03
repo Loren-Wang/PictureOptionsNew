@@ -161,6 +161,19 @@ public class BaseActivity extends AppCompatActivity {
     protected void onDestroy() {
         setContentView(R.layout.activity_options_base_null);
         System.gc();
+        viewAcBar = null;
+        tvTitle = null;
+        btnCancel = null;
+        btnConfirm = null;
+        //退出looper
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            handlerThread.quitSafely();
+        }else {
+            handlerThread.quit();
+        }
+        handlerThread = null;
+        handlerChild = null;
+        handlerUi = null;
         super.onDestroy();
     }
 }

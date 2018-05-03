@@ -29,6 +29,7 @@ public class PicturePreviewViewHolder extends RecyclerView.ViewHolder {
         relItem.setLayoutParams(new ViewGroup.LayoutParams(windowWidth,windowHeight));
         //加载图片
         requestOptions = new RequestOptions();
+        requestOptions.override(windowWidth,windowHeight);
         requestOptions.fitCenter();
     }
 

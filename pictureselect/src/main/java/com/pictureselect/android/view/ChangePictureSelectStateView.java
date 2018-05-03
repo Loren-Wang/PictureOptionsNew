@@ -1,11 +1,9 @@
 package com.pictureselect.android.view;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.support.annotation.DrawableRes;
@@ -17,6 +15,7 @@ import android.view.View;
 
 import com.pictureselect.android.R;
 import com.pictureselect.android.interfaces_abstract.ChangeSelectStateViewCallback;
+import com.pictureselect.android.setting.AppConfigSetting;
 
 
 /**
@@ -41,12 +40,6 @@ public class ChangePictureSelectStateView extends View {
     private float endPosiForHeightPercent = 1f;//结束位置所处高度百分比
     private ChangeSelectStateViewCallback changeSelectStateViewCallback;//触摸点击回调
 
-    private Paint paintState;
-    private Bitmap  selectYBitmap;
-    private Bitmap  selectNBitmap;
-    private Rect selectNSrcRect;
-    private Rect selectYSrcRect;
-    private Rect selectDstRect;
     private boolean isSelect = false;
 
     public ChangePictureSelectStateView(Context context) {
@@ -65,23 +58,35 @@ public class ChangePictureSelectStateView extends View {
     }
 
     private void init(@DrawableRes Integer selectY,@DrawableRes Integer selectN){
+
+        //释放bitmap
+        if( AppConfigSetting.CHANGE_PICTURE_SELECT_STATE_VIEW_SELECT_Y_BITMAP != null
+                && !AppConfigSetting.CHANGE_PICTURE_SELECT_STATE_VIEW_SELECT_Y_BITMAP.isRecycled()){
+            AppConfigSetting.CHANGE_PICTURE_SELECT_STATE_VIEW_SELECT_Y_BITMAP.recycle();
+            AppConfigSetting.CHANGE_PICTURE_SELECT_STATE_VIEW_SELECT_Y_BITMAP = null;
+        }
+        //释放bitmap
+        if( AppConfigSetting.CHANGE_PICTURE_SELECT_STATE_VIEW_SELECT_N_BITMAP != null
+                && !AppConfigSetting.CHANGE_PICTURE_SELECT_STATE_VIEW_SELECT_N_BITMAP.isRecycled()){
+            AppConfigSetting.CHANGE_PICTURE_SELECT_STATE_VIEW_SELECT_N_BITMAP.recycle();
+            AppConfigSetting.CHANGE_PICTURE_SELECT_STATE_VIEW_SELECT_N_BITMAP = null;
+        }
+
         if(selectY == null){
-            selectYBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.icon_picture_select_y);
+            AppConfigSetting.CHANGE_PICTURE_SELECT_STATE_VIEW_SELECT_Y_BITMAP = BitmapFactory.decodeResource(getResources(), R.drawable.icon_picture_select_y);
         }else {
-            selectYBitmap = BitmapFactory.decodeResource(getResources(), selectY);
+            AppConfigSetting.CHANGE_PICTURE_SELECT_STATE_VIEW_SELECT_Y_BITMAP = BitmapFactory.decodeResource(getResources(), selectY);
         }
         if(selectN == null){
-            selectNBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.icon_picture_select_n);
+            AppConfigSetting.CHANGE_PICTURE_SELECT_STATE_VIEW_SELECT_N_BITMAP = BitmapFactory.decodeResource(getResources(), R.drawable.icon_picture_select_n);
         }else {
-            selectNBitmap = BitmapFactory.decodeResource(getResources(), selectN);
+            AppConfigSetting.CHANGE_PICTURE_SELECT_STATE_VIEW_SELECT_N_BITMAP = BitmapFactory.decodeResource(getResources(), selectN);
         }
 
 
-        selectNSrcRect = new Rect(0,0,selectNBitmap.getWidth(),selectNBitmap.getHeight());
-        selectYSrcRect = new Rect(0,0,selectYBitmap.getWidth(),selectYBitmap.getHeight());
+        AppConfigSetting.CHANGE_PICTURE_SELECT_STATE_VIEW_SELECT_N_SRCRECT = new Rect(0,0,AppConfigSetting.CHANGE_PICTURE_SELECT_STATE_VIEW_SELECT_N_BITMAP.getWidth(),AppConfigSetting.CHANGE_PICTURE_SELECT_STATE_VIEW_SELECT_N_BITMAP.getHeight());
+        AppConfigSetting.CHANGE_PICTURE_SELECT_STATE_VIEW_SELECT_Y_SRCRECT = new Rect(0,0,AppConfigSetting.CHANGE_PICTURE_SELECT_STATE_VIEW_SELECT_Y_BITMAP.getWidth(),AppConfigSetting.CHANGE_PICTURE_SELECT_STATE_VIEW_SELECT_Y_BITMAP.getHeight());
 
-        paintState = new Paint();
-        paintState.setAntiAlias(true);
     }
 
     @Override
@@ -118,14 +123,22 @@ public class ChangePictureSelectStateView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if(selectDstRect == null || selectDstRect.width() == 0 || selectDstRect.height() == 0){
-            selectDstRect = new Rect(getWidth() / 4 * 3,0,getWidth(),getWidth() / 4);
+        if(AppConfigSetting.CHANGE_PICTURE_SELECT_STATE_VIEW_SELECT_DST_RECT == null
+                || AppConfigSetting.CHANGE_PICTURE_SELECT_STATE_VIEW_SELECT_DST_RECT.width() == 0
+                || AppConfigSetting.CHANGE_PICTURE_SELECT_STATE_VIEW_SELECT_DST_RECT.height() == 0){
+            AppConfigSetting.CHANGE_PICTURE_SELECT_STATE_VIEW_SELECT_DST_RECT = new Rect(getWidth() / 4 * 3,0,getWidth(),getWidth() / 4);
         }
 
         if(isSelect){
-            canvas.drawBitmap(selectYBitmap,selectYSrcRect,selectDstRect,paintState);
+            canvas.drawBitmap(AppConfigSetting.CHANGE_PICTURE_SELECT_STATE_VIEW_SELECT_Y_BITMAP
+                    ,AppConfigSetting.CHANGE_PICTURE_SELECT_STATE_VIEW_SELECT_Y_SRCRECT
+                    ,AppConfigSetting.CHANGE_PICTURE_SELECT_STATE_VIEW_SELECT_DST_RECT
+                    , AppConfigSetting.CHANGE_PICTURE_SELECT_STATE_VIEW_PAINT_STATE);
         }else {
-            canvas.drawBitmap(selectNBitmap,selectNSrcRect,selectDstRect,paintState);
+            canvas.drawBitmap(AppConfigSetting.CHANGE_PICTURE_SELECT_STATE_VIEW_SELECT_N_BITMAP
+                    ,AppConfigSetting.CHANGE_PICTURE_SELECT_STATE_VIEW_SELECT_N_SRCRECT
+                    ,AppConfigSetting.CHANGE_PICTURE_SELECT_STATE_VIEW_SELECT_DST_RECT
+                    ,AppConfigSetting.CHANGE_PICTURE_SELECT_STATE_VIEW_PAINT_STATE);
         }
     }
 

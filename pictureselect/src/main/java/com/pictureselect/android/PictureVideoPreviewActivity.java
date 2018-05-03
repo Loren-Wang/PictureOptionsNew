@@ -1,6 +1,9 @@
 package com.pictureselect.android;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.basepictureoptionslib.android.AppCommon;
@@ -286,6 +290,14 @@ public class PictureVideoPreviewActivity extends BasePictureVideoActivity {
 
     @Override
     protected void onDestroy() {
+        recycleBitmap((ViewGroup) findViewById(R.id.relBase));
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ImageLoadingUtis.getInstance(PictureVideoPreviewActivity.this).clearImageMemoryCache();
+            }
+        });
+
         if(adapterShowList != null){
             adapterShowList.clear();
             adapterShowList = null;
@@ -312,5 +324,31 @@ public class PictureVideoPreviewActivity extends BasePictureVideoActivity {
         setContentView(R.layout.activity_options_base_null);
         System.gc();
         super.onDestroy();
+    }
+
+    private void recycleBitmap(ViewGroup viewGroup) {
+        if(viewGroup != null) {
+            int count =  viewGroup.getChildCount();
+            for(int i=0; i <count; i++) {
+                View view = viewGroup.getChildAt(i);
+                if(view != null) {
+                    if (view instanceof ViewGroup) {
+                        recycleBitmap((ViewGroup) view);
+                    } else {
+                        if (view instanceof ImageView) {
+                            Drawable drawable = ((ImageView)view).getDrawable();
+                            if (drawable != null) {
+                                if (drawable instanceof BitmapDrawable) {
+                                    BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
+                                    Bitmap bitmap = bitmapDrawable.getBitmap();
+                                    if (bitmap != null)
+                                        bitmap.recycle();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
