@@ -60,7 +60,7 @@ public class PictureVideoSelectActivity extends BasePictureVideoActivity impleme
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         //获取配置
         if(getIntent().getExtras() != null){
             Parcelable parcelable = getIntent().getExtras().getParcelable(AppCommon.OPTIONS_CONFIG_KEY);
@@ -108,7 +108,11 @@ public class PictureVideoSelectActivity extends BasePictureVideoActivity impleme
 
             @Override
             public void onImgClick(BaseViewHolder holder, StorePictureVideoItemDto storePictureItemDto, int position) {
-                goToPreview(position);
+                if(storePictureItemDto.isSelect()) {
+                    goToPreview(null,false);
+                }else {
+                    goToPreview(position,true);
+                }
             }
 
         };
@@ -319,7 +323,7 @@ public class PictureVideoSelectActivity extends BasePictureVideoActivity impleme
     public void onClick(View v) {
         if (Integer.compare(v.getId(),R.id.btnOpPreview) == 0) {
             if(selectedPicturesList.size() > 0) {
-                goToPreview(null);
+                goToPreview(null,false);
             }
         } else if(Integer.compare(v.getId(),R.id.btnOpCancel) == 0){
             finish();
@@ -437,14 +441,14 @@ public class PictureVideoSelectActivity extends BasePictureVideoActivity impleme
      * 跳转到预览界面
      * @param position
      */
-    private void goToPreview(Integer position){
+    private void goToPreview(Integer allListShowPosi,boolean isShowAllList){
         Intent intent = new Intent(getApplicationContext(), PictureVideoPreviewActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(AppCommon.OPTIONS_CONFIG_KEY,pictureSelectConfirg);
         bundle.putParcelableArrayList(getString(R.string.go_to_poreview_act_key_for_select_list),selectedPicturesList);
-        if(position != null) {
+        if(allListShowPosi != null && isShowAllList) {
             bundle.putParcelableArrayList(getString(R.string.go_to_poreview_act_key_for_all_list),allList);
-            bundle.putInt(getString(R.string.go_to_poreview_act_key_for_all_list_show_posi), position);
+            bundle.putInt(getString(R.string.go_to_poreview_act_key_for_all_list_show_posi), allListShowPosi);
         }
         bundle.putBoolean(getResources().getString(R.string.go_to_poreview_act_key_for_is_select_picture),isSelectPicture);
         bundle.putBoolean(getResources().getString(R.string.go_to_poreview_act_key_for_is_select_video),isSelectVideo);

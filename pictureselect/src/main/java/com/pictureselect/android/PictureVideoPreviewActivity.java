@@ -289,14 +289,13 @@ public class PictureVideoPreviewActivity extends BasePictureVideoActivity {
     }
 
     @Override
+    public void finish() {
+        ImageLoadingUtis.getInstance(PictureVideoPreviewActivity.this).clearImageMemoryCache();
+        super.finish();
+    }
+
+    @Override
     protected void onDestroy() {
-        recycleBitmap((ViewGroup) findViewById(R.id.relBase));
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                ImageLoadingUtis.getInstance(PictureVideoPreviewActivity.this).clearImageMemoryCache();
-            }
-        });
 
         if(adapterShowList != null){
             adapterShowList.clear();
