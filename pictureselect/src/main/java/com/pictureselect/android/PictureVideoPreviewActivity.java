@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
@@ -17,12 +16,12 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.basepictureoptionslib.android.AppCommon;
 import com.basepictureoptionslib.android.plugin.image.ImageLoadingUtis;
 import com.basepictureoptionslib.android.utils.ParamsAndJudgeUtils;
 import com.pictureselect.android.adapter.PicturePreviewAdapter;
 import com.pictureselect.android.dto.StorePictureVideoItemDto;
 import com.pictureselect.android.interfaces_abstract.RecycleviewViewPageOnPageChangeListener;
+import com.pictureselect.android.setting.AppConfigSetting;
 import com.pictureselect.android.view.RecycleViewViewpager;
 
 import java.util.ArrayList;
@@ -65,14 +64,8 @@ public class PictureVideoPreviewActivity extends BasePictureVideoActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if(getIntent().getExtras() != null){
-            Parcelable parcelable = getIntent().getExtras().getParcelable(AppCommon.OPTIONS_CONFIG_KEY);
-            if(parcelable == null){
-                pictureSelectConfirg = new PictureVideoSelectConfirg();
-            }else {
-                pictureSelectConfirg = (PictureVideoSelectConfirg) parcelable;
-            }
-        }else {
+        pictureSelectConfirg = AppConfigSetting.pictureVideoSelectConfirg;
+        if(pictureSelectConfirg == null){
             pictureSelectConfirg = new PictureVideoSelectConfirg();
         }
         super.onCreate(savedInstanceState);
@@ -237,14 +230,14 @@ public class PictureVideoPreviewActivity extends BasePictureVideoActivity {
      */
     private void initShowList(){
         if (getIntent().getExtras() != null){
-            allList = getIntent().getExtras().getParcelableArrayList(getString(R.string.go_to_poreview_act_key_for_all_list));
-            selectedPicturesList = getIntent().getExtras().getParcelableArrayList(getString(R.string.go_to_poreview_act_key_for_select_list));
+            allList = AppConfigSetting.showAllList;//getIntent().getExtras().getParcelableArrayList(getString(R.string.go_to_poreview_act_key_for_all_list));
+            selectedPicturesList = AppConfigSetting.showSelectList;
             isSelectPicture = getIntent().getExtras().getBoolean(getResources().getString(R.string.go_to_poreview_act_key_for_is_select_picture),isSelectPicture);
             isSelectVideo = getIntent().getExtras().getBoolean(getResources().getString(R.string.go_to_poreview_act_key_for_is_select_video),isSelectVideo);
             if(selectedPicturesList == null){
                 selectedPicturesList = new ArrayList();
             }
-            if(allList == null) {
+            if(allList == null || allList.size() == 0) {
                 adapterShowList = new ArrayList<>(selectedPicturesList);
             }else {
                 adapterShowList = new ArrayList<>(allList);
@@ -289,13 +282,16 @@ public class PictureVideoPreviewActivity extends BasePictureVideoActivity {
     }
 
     @Override
-    public void finish() {
-        ImageLoadingUtis.getInstance(PictureVideoPreviewActivity.this).clearImageMemoryCache();
-        super.finish();
-    }
-
-    @Override
     protected void onDestroy() {
+        AppConfigSetting.showAllList.clear();
+        AppConfigSetting.showSelectList.clear();
+        AppConfigSetting.pictureVideoSelectConfirg = null;
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ImageLoadingUtis.getInstance(PictureVideoPreviewActivity.this).clearImageMemoryCache();
+            }
+        });
 
         if(adapterShowList != null){
             adapterShowList.clear();

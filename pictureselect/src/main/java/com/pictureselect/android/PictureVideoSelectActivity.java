@@ -33,6 +33,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import static com.pictureselect.android.setting.AppConfigSetting.showSelectList;
+
 /**
  * 创建时间： 0026/2018/2/26 下午 3:02
  * 创建人：王亮（Loren wang）
@@ -56,6 +58,7 @@ public class PictureVideoSelectActivity extends BasePictureVideoActivity impleme
     protected int windowWidth;//屏幕宽度
     private final int PERMISSTION_REQUEST_FOR_EXTERNAL_STORAGE = 0;//请求存储卡权限
     private final int GO_TO_PREVIEW_ACT_REQUES_CODE = 1;//跳转到预览界面的请求码
+    private boolean isAllowGoToPreview = true;//是否允许去预览
 
 
 
@@ -442,19 +445,24 @@ public class PictureVideoSelectActivity extends BasePictureVideoActivity impleme
      * @param position
      */
     private void goToPreview(Integer allListShowPosi,boolean isShowAllList){
-        Intent intent = new Intent(getApplicationContext(), PictureVideoPreviewActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(AppCommon.OPTIONS_CONFIG_KEY,pictureSelectConfirg);
-        bundle.putParcelableArrayList(getString(R.string.go_to_poreview_act_key_for_select_list),selectedPicturesList);
-        if(allListShowPosi != null && isShowAllList) {
-            bundle.putParcelableArrayList(getString(R.string.go_to_poreview_act_key_for_all_list),allList);
-            bundle.putInt(getString(R.string.go_to_poreview_act_key_for_all_list_show_posi), allListShowPosi);
+        if(isAllowGoToPreview) {
+            Intent intent = new Intent(getApplicationContext(), PictureVideoPreviewActivity.class);
+            Bundle bundle = new Bundle();
+            AppConfigSetting.pictureVideoSelectConfirg = pictureSelectConfirg;
+            showSelectList.clear();
+            showSelectList.addAll(selectedPicturesList);
+            if (allListShowPosi != null && isShowAllList) {
+                AppConfigSetting.showAllList.clear();
+                AppConfigSetting.showAllList.addAll(allList);
+                bundle.putInt(getString(R.string.go_to_poreview_act_key_for_all_list_show_posi), allListShowPosi);
+            }
+            bundle.putBoolean(getResources().getString(R.string.go_to_poreview_act_key_for_is_select_picture), isSelectPicture);
+            bundle.putBoolean(getResources().getString(R.string.go_to_poreview_act_key_for_is_select_video), isSelectVideo);
+            intent.putExtras(bundle);
+            startActivityForResult(intent, GO_TO_PREVIEW_ACT_REQUES_CODE);
+            overridePendingTransition(R.anim.anim_from_center, 0);
+            isAllowGoToPreview = false;
         }
-        bundle.putBoolean(getResources().getString(R.string.go_to_poreview_act_key_for_is_select_picture),isSelectPicture);
-        bundle.putBoolean(getResources().getString(R.string.go_to_poreview_act_key_for_is_select_video),isSelectVideo);
-        intent.putExtras(bundle);
-        startActivityForResult(intent, GO_TO_PREVIEW_ACT_REQUES_CODE);
-        overridePendingTransition(R.anim.anim_from_center,0);
     }
 
     /**
@@ -549,5 +557,11 @@ public class PictureVideoSelectActivity extends BasePictureVideoActivity impleme
         recyList = null;
 
         super.onDestroy();
+    }
+
+    @Override
+    protected void onResume() {
+        isAllowGoToPreview = true;
+        super.onResume();
     }
 }
