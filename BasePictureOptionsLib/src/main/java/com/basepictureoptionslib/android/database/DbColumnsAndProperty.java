@@ -27,6 +27,10 @@ public class DbColumnsAndProperty {
     public final String TB_SCAN_DIR_FOR_PICTURE = "scanDirForPicture";//被扫描文件夹图片记录表
     public final String TB_SCAN_DIR_FOR_VIDEO = "scanDirForVideo";//被扫描文件夹视频记录表
 
+    //仅通过扫描而非数据库进行图片视频数据获取
+    public final String TB_SCAN_SD_CARD_FOR_PICTURE = "scanSdCardForPicture";//扫描sd卡图片记录表
+    public final String TB_SCAN_SD_CARD_FOR_VIDEO = "scanSdCardForVideo";//扫描sd卡视频记录表
+
 
 
 }

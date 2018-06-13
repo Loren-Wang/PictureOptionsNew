@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String PROJECT_FILE_DIR = Environment.getExternalStorageDirectory().getPath() + "/Android/data/com.ve_link.androids/cache/file/";
         String PROJECT_FILE_DIR_VIDEO = PROJECT_FILE_DIR +  "video/";
         String PROJECT_FILE_DIR_CAMERA_IMAGE = PROJECT_FILE_DIR +  "ydCameraImages/";
-        SdCardFileChangeUtils.geInstance(getApplicationContext()).startWatching(new String[]{
+        SdCardFileChangeUtils.geInstance(getApplicationContext()).startScanSdCard( new String[]{
                 PROJECT_FILE_DIR_VIDEO,PROJECT_FILE_DIR_CAMERA_IMAGE
         });
 

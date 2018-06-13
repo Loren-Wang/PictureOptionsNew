@@ -22,6 +22,7 @@ import com.pictureselect.android.adapter.PictureSelectNoCameraAdapter;
 import com.pictureselect.android.database.DbPhonePictureVideoList;
 import com.pictureselect.android.database.DbScanDirForPicture;
 import com.pictureselect.android.database.DbScanDirForVideo;
+import com.pictureselect.android.database.DbSdCardPictureVideoList;
 import com.pictureselect.android.dto.StorePictureVideoItemDto;
 import com.pictureselect.android.recycleViewHolder.BaseViewHolder;
 import com.pictureselect.android.setting.AppConfigSetting;
@@ -206,17 +207,17 @@ public class PictureVideoSelectActivity extends BasePictureVideoActivity impleme
             public void run() {
                 switch (pictureSelectConfirg.getSelectType()){
                     case 0://仅图片
-                        allList = DbPhonePictureVideoList.getInstance(getApplicationContext())
+                        allList = DbSdCardPictureVideoList.getInstance(getApplicationContext())
                                 .getAllList(DbPhonePictureVideoList.getInstance(getApplicationContext()).getPictureAllMapList(pictureSelectConfirg.getPictureFilterSelection()
                                         ,pictureSelectConfirg.getPictureFilterSelectionArgs()));
                         break;
                     case 1://仅视频
-                        allList = DbPhonePictureVideoList.getInstance(getApplicationContext())
+                        allList = DbSdCardPictureVideoList.getInstance(getApplicationContext())
                                 .getAllList(DbPhonePictureVideoList.getInstance(getApplicationContext()).getVideoAllMapList(pictureSelectConfirg.getVideoFilterSelection(),pictureSelectConfirg.getVideoFilterSelectionArgs()));
                         break;
                     case 2://两者都有
                     default:
-                        allList = DbPhonePictureVideoList.getInstance(getApplicationContext())
+                        allList = DbSdCardPictureVideoList.getInstance(getApplicationContext())
                                 .getAllList(DbPhonePictureVideoList.getInstance(getApplicationContext()).getAllMapList(pictureSelectConfirg.getPictureFilterSelection()
                                         ,pictureSelectConfirg.getPictureFilterSelectionArgs(),pictureSelectConfirg.getVideoFilterSelection()
                                         ,pictureSelectConfirg.getVideoFilterSelectionArgs()));

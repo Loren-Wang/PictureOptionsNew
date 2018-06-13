@@ -1,6 +1,7 @@
 package com.pictureselect.android.utils;
 
 import android.content.Context;
+import android.os.Environment;
 import android.os.FileObserver;
 import android.support.annotation.Nullable;
 
@@ -9,10 +10,14 @@ import com.basepictureoptionslib.android.utils.DbUtils;
 import com.basepictureoptionslib.android.utils.LogUtils;
 import com.pictureselect.android.database.DbScanDirForPicture;
 import com.pictureselect.android.database.DbScanDirForVideo;
+import com.pictureselect.android.database.DbScanSdCardForPicture;
+import com.pictureselect.android.database.DbScanSdCardForVideo;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 public class SdCardFileChangeUtils {
@@ -73,6 +78,63 @@ public class SdCardFileChangeUtils {
         }
     }
 
+    /**
+     * 开启扫描
+     * @param observerPaths 额外扫描
+     */
+    public void startScanSdCard(@Nullable String[] observerPaths){
+        if(observerPaths == null){
+            return;
+        }
+        List<String> pathList = new ArrayList<>();
+        for(String observerPath : observerPaths) {
+            pathList.add(observerPath);
+        }
+        //添加相册扫描
+        String absPath = Environment.getExternalStorageDirectory().getPath();
+        File absFile = new File(absPath);
+        for(File file : absFile.listFiles()){
+            if(file.isDirectory() && file.getName().toUpperCase().equals("dcim")){
+                pathList.add(file.getAbsolutePath());
+                break;
+            }
+        }
+
+        //清空数据库
+        DbUtils.getInstance(context).deleteDatabaseTableData(DbColumnsAndProperty.getInstance().TB_SCAN_SD_CARD_FOR_PICTURE);
+        DbUtils.getInstance(context).deleteDatabaseTableData(DbColumnsAndProperty.getInstance().TB_SCAN_SD_CARD_FOR_VIDEO);
+        //开始扫描
+        for(String observerPath : pathList) {
+            //检测网址是否为空
+            if (observerPath == null || observerPath.isEmpty()) {
+                LogUtils.logD(TAG, "需要监控的文件地址为空");
+                continue;
+            }
+
+            //检测监听地址和之前的地址是否相同，如果不相同则将就文件或文件夹监听取消
+            ChildFileObserver childFileObserver;
+            if (this.observerPath != null && !this.observerPath.equals(observerPath)) {
+                Iterator<ChildFileObserver> iterator = childFileObserverMap.values().iterator();
+                while (iterator.hasNext()) {
+                    childFileObserver = iterator.next();
+                    childFileObserver.stopWatching();
+                    childFileObserver = null;
+                }
+                iterator = null;
+                childFileObserverMap.clear();
+            }
+            this.observerPath = observerPath;
+            File file = new File(observerPath);
+            if (file.isFile()) {
+                childFileObserver = new ChildFileObserver(file);
+                childFileObserver.startWatching();
+                childFileObserverMap.put(file.getAbsolutePath(), childFileObserver);
+            } else if (file.isDirectory()) {
+                putFileDir(file);
+            }
+        }
+    }
+
     private void putFileDir(File dirFile){
         if(dirFile.isDirectory()){
             //将这个文件夹监听加入
@@ -88,6 +150,8 @@ public class SdCardFileChangeUtils {
         }else if(dirFile.isFile()){
             DbScanDirForPicture.getInstance(context).insert(dirFile.getAbsolutePath());
             DbScanDirForVideo.getInstance(context).insert(dirFile.getAbsolutePath());
+            DbScanSdCardForPicture.getInstance(context).insert(dirFile.getAbsolutePath());
+            DbScanDirForVideo.getInstance(context).insert(dirFile.getAbsolutePath());
         }
     }
 
@@ -101,16 +165,22 @@ public class SdCardFileChangeUtils {
                 LogUtils.logD(TAG,"创建文件:::" + path);
                 DbScanDirForPicture.getInstance(context).insert(dir + path);
                 DbScanDirForVideo.getInstance(context).insert(dir + path);
+                DbScanSdCardForPicture.getInstance(context).insert(dir + path);
+                DbScanSdCardForVideo.getInstance(context).insert(dir + path);
                 break;
             case FileObserver.DELETE:
                 LogUtils.logD(TAG,"删除文件:::" + path);
                 DbScanDirForPicture.getInstance(context).delete(dir + path);
                 DbScanDirForVideo.getInstance(context).delete(dir + path);
+                DbScanSdCardForPicture.getInstance(context).delete(dir + path);
+                DbScanSdCardForVideo.getInstance(context).delete(dir + path);
                 break;
             case FileObserver.DELETE_SELF:
                 LogUtils.logD(TAG,"自删除文件:::" + path);
                 DbScanDirForPicture.getInstance(context).delete(dir + path);
                 DbScanDirForVideo.getInstance(context).delete(dir + path);
+                DbScanSdCardForPicture.getInstance(context).delete(dir + path);
+                DbScanSdCardForVideo.getInstance(context).delete(dir + path);
                 break;
             case FileObserver.MODIFY:
                 LogUtils.logD(TAG,"修改文件:::" + path);
@@ -122,11 +192,15 @@ public class SdCardFileChangeUtils {
                 LogUtils.logD(TAG,"文件移出:::" + path);
                 DbScanDirForPicture.getInstance(context).delete(dir + path);
                 DbScanDirForVideo.getInstance(context).delete(dir + path);
+                DbScanSdCardForPicture.getInstance(context).delete(dir + path);
+                DbScanSdCardForVideo.getInstance(context).delete(dir + path);
                 break;
             case FileObserver.MOVED_TO:
                 LogUtils.logD(TAG,"文件移入:::" + path);
                 DbScanDirForPicture.getInstance(context).insert(dir + path);
                 DbScanDirForVideo.getInstance(context).insert(dir + path);
+                DbScanSdCardForPicture.getInstance(context).insert(dir + path);
+                DbScanSdCardForVideo.getInstance(context).insert(dir + path);
                 break;
             case FileObserver.ATTRIB:
             default:
