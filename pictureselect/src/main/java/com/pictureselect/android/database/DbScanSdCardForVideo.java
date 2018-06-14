@@ -9,7 +9,6 @@ import android.provider.MediaStore;
 import com.basepictureoptionslib.android.database.DbBase;
 import com.basepictureoptionslib.android.utils.CheckUtils;
 import com.basepictureoptionslib.android.utils.DbUtils;
-import com.basepictureoptionslib.android.utils.ParamsAndJudgeUtils;
 
 import java.io.File;
 
@@ -41,22 +40,36 @@ public class DbScanSdCardForVideo extends DbBase{
             try {
                 MediaMetadataRetriever retr = new MediaMetadataRetriever();
                 retr.setDataSource(path);
+                //有些数据是通过file进行获取的
                 File file = new File(path);
                 ContentValues values = new ContentValues();
                 values.put(MediaStore.Video.Media.DATA,path);
+                //获取文件大小
                 values.put(MediaStore.Video.Media.SIZE,file.length());
+                //获取文件名
                 values.put(MediaStore.Video.Media.DISPLAY_NAME,path.substring(path.lastIndexOf("/") + 1));
+                //获取文件类型
                 values.put(MediaStore.Video.Media.MIME_TYPE,"video/" + path.substring(path.lastIndexOf(".") + 1));
-                values.put(MediaStore.Video.Media.DATE_ADDED, ParamsAndJudgeUtils.getMillisecond());
-                values.put(MediaStore.Video.Media.DATE_MODIFIED, ParamsAndJudgeUtils.getMillisecond());
+                //获取文件添加时间
+                values.put(MediaStore.Video.Media.DATE_ADDED,file.lastModified());
+                //获取文件修改时间
+                values.put(MediaStore.Video.Media.DATE_MODIFIED,file.lastModified());
+                //获取文件坐标
                 String loc = retr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_LOCATION);
                 if(loc != null && !loc.isEmpty() && loc.split("\\+").length == 2) {
                     values.put(MediaStore.Video.Media.LATITUDE,Double.valueOf(loc.substring(loc.indexOf("\\+"))));
                     values.put(MediaStore.Video.Media.LONGITUDE,Double.valueOf(loc.substring(0,loc.indexOf("\\+"))));
                 }
+                //获取文件宽高
                 values.put(MediaStore.Video.Media.WIDTH,Integer.valueOf(retr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)));
                 values.put(MediaStore.Video.Media.HEIGHT,Integer.valueOf(retr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)));
+                //获取文件旋转角度
                 values.put(MediaStore.Video.Media.DURATION,Long.valueOf(retr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)));
+
+                //释放数据
+                retr.release();
+                retr = null;
+                file = null;
                 return DbUtils.getInstance(context).insert(property.TB_SCAN_SD_CARD_FOR_VIDEO,values) > 0;
             } catch (Exception e) {
                 return false;

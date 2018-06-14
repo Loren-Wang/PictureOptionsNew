@@ -1,8 +1,12 @@
 package com.pictureoptions.android;
 
 import android.content.Intent;
+import android.database.ContentObserver;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -50,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String PROJECT_FILE_DIR = Environment.getExternalStorageDirectory().getPath() + "/Android/data/com.ve_link.androids/cache/file/";
         String PROJECT_FILE_DIR_VIDEO = PROJECT_FILE_DIR +  "video/";
         String PROJECT_FILE_DIR_CAMERA_IMAGE = PROJECT_FILE_DIR +  "ydCameraImages/";
-        SdCardFileChangeUtils.geInstance(getApplicationContext()).startScanSdCard( new String[]{
+        SdCardFileChangeUtils.geInstance(getApplicationContext()).init( new String[]{
                 PROJECT_FILE_DIR_VIDEO,PROJECT_FILE_DIR_CAMERA_IMAGE
         });
 
@@ -59,7 +63,58 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         catchHandler.init(getApplicationContext());
 
 
+
+        //注册短信变化监听
+//        this.getContentResolver().registerContentObserver(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, true, new SmsContent(new Handler()));
+
+
+
     }
+
+    class SmsContent extends ContentObserver {
+        private Cursor cursor = null;
+
+        /**
+         * Creates a content observer.
+         *
+         * @param handler The handler to run {@link #onChange} on, or null if none.
+         */
+        public SmsContent(Handler handler) {
+            super(handler);
+        }
+
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            super.onChange(selfChange, uri);
+        }
+//
+//        /**
+//         * @Description 当短信表发送改变时，调用该方法
+//         * 需要两种权限
+//         * android.permission.READ_SMS 读取短信
+//         * android.permission.WRITE_SMS 写短信
+//         * @Author Snake
+//         * @Date 2010-1-12
+//         */
+//        @Override
+//        public void onChange(boolean selfChange) {
+//            // TODO Auto-generated method stub
+//            super.onChange(selfChange);
+////            // 读取收件箱中指定号码的短信
+////            cursor = managedQuery(Uri.parse("content://sms/inbox"), new String[]{"_id", "address", "read"}, " address=? and read=?", new String[]{"12345678901", "0"}, "date desc");
+////            if (cursor != null) {
+////                ContentValues values = new ContentValues();
+////                values.put("read", "1"); //修改短信为已读模式
+////                cursor.moveToFirst();
+////                while (cursor.isLast()){
+////                    //更新当前未读短信状态为已读
+////                    getContentResolver().update(Uri.parse("content://sms/inbox"), values, " _id=?", new String[]{""+cursor.getInt(0)});
+////                    cursor.moveToNext();
+////                }
+////            }
+//        }
+    }
+
 
     /**
      * 设置点击事件

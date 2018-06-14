@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.basepictureoptionslib.android.config.BaseConfig;
 import com.basepictureoptionslib.android.utils.LogUtils;
-import com.basepictureoptionslib.android.utils.ParamsAndJudgeUtils;
+import com.lorenwang.tools.android.ParamsAndJudgeUtils;
 
 import java.util.ArrayList;
 import java.util.List;

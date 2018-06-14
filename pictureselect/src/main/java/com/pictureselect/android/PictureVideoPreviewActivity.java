@@ -17,7 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.basepictureoptionslib.android.plugin.image.ImageLoadingUtis;
-import com.basepictureoptionslib.android.utils.ParamsAndJudgeUtils;
+import com.lorenwang.tools.android.ParamsAndJudgeUtils;
 import com.pictureselect.android.adapter.PicturePreviewAdapter;
 import com.pictureselect.android.dto.StorePictureVideoItemDto;
 import com.pictureselect.android.interfaces_abstract.RecycleviewViewPageOnPageChangeListener;

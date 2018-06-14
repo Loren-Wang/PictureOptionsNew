@@ -48,6 +48,57 @@ public class DbSdCardPictureVideoList {
      * 获取所有的图片
      * @return
      */
+    public Map<String,List<StorePictureVideoItemDto>> getPictureAllMapList(String selection, String[] selectionArgs){
+        Map<String, List<StorePictureVideoItemDto>> mapInfoList =
+                getInfoListForPicture(new Cursor[]{getInfoListForPictureSystemCursor(selection,selectionArgs)
+                        , DbScanSdCardForPicture.getInstance(context).getCursor(selection,selectionArgs)});
+        Map<String, List<StorePictureVideoItemDto>> mapList = new HashMap<>();
+        Iterator<Map.Entry<String, List<StorePictureVideoItemDto>>> iterator = mapInfoList.entrySet().iterator();
+        Map.Entry<String, List<StorePictureVideoItemDto>> next;
+        List<StorePictureVideoItemDto> list;
+        while (iterator.hasNext()){
+            next = iterator.next();
+            list = wipeOffRepetitionDto(next.getValue());
+            Collections.sort(list,sortList);
+            mapList.put(next.getKey(),list);
+            next = null;
+        }
+        mapInfoList.clear();
+        mapInfoList = null;
+        iterator = null;
+        return mapList;
+    }
+    /**
+     * 获取所有的视频
+     * @return
+     * @param minDuration
+     * @param maxDuration
+     */
+    public Map<String,List<StorePictureVideoItemDto>> getVideoAllMapList(String selection, String[] selectionArgs){
+        Map<String, List<StorePictureVideoItemDto>> mapInfoList =
+                getInfoListForVideo(new Cursor[]{getInfoListForVideoSystemCursor(selection,selectionArgs)
+                        ,DbScanSdCardForVideo.getInstance(context).getCursor(selection,selectionArgs)});
+        Map<String, List<StorePictureVideoItemDto>> mapList = new HashMap<>();
+        Iterator<Map.Entry<String, List<StorePictureVideoItemDto>>> iterator = mapInfoList.entrySet().iterator();
+        Map.Entry<String, List<StorePictureVideoItemDto>> next;
+        List<StorePictureVideoItemDto> list;
+        while (iterator.hasNext()){
+            next = iterator.next();
+            list = wipeOffRepetitionDto(next.getValue());
+            Collections.sort(list,sortList);
+            mapList.put(next.getKey(),list);
+            next = null;
+        }
+        mapInfoList.clear();
+        mapInfoList = null;
+        iterator = null;
+        return mapList;
+    }
+
+    /**
+     * 获取所有的图片
+     * @return
+     */
     public ArrayList<StorePictureVideoItemDto> getAllList(Map<String, List<StorePictureVideoItemDto>> map){
         ArrayList<StorePictureVideoItemDto> list = new ArrayList<>();
         if(map != null){
@@ -93,7 +144,7 @@ public class DbSdCardPictureVideoList {
             }
             if(list != null) {
                 //去重
-                wipeOffRepetitionDto(resultMapList);
+                list = wipeOffRepetitionDto(list);
                 //排序
                 Collections.sort(list,sortList);
                 resultMapList.addAll(list);
@@ -113,7 +164,7 @@ public class DbSdCardPictureVideoList {
             }
             if(list != null) {
                 //去重
-                wipeOffRepetitionDto(resultMapList);
+                list = wipeOffRepetitionDto(list);
                 //排序
                 Collections.sort(list,sortList);
                 resultMapList.addAll(list);

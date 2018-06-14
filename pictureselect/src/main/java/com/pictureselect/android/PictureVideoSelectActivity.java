@@ -17,15 +17,15 @@ import android.widget.CheckBox;
 
 import com.basepictureoptionslib.android.AppCommon;
 import com.basepictureoptionslib.android.plugin.image.ImageLoadingUtis;
-import com.basepictureoptionslib.android.utils.ParamsAndJudgeUtils;
+import com.lorenwang.tools.android.ParamsAndJudgeUtils;
 import com.pictureselect.android.adapter.PictureSelectNoCameraAdapter;
-import com.pictureselect.android.database.DbPhonePictureVideoList;
-import com.pictureselect.android.database.DbScanDirForPicture;
-import com.pictureselect.android.database.DbScanDirForVideo;
+import com.pictureselect.android.database.DbScanSdCardForPicture;
+import com.pictureselect.android.database.DbScanSdCardForVideo;
 import com.pictureselect.android.database.DbSdCardPictureVideoList;
 import com.pictureselect.android.dto.StorePictureVideoItemDto;
 import com.pictureselect.android.recycleViewHolder.BaseViewHolder;
 import com.pictureselect.android.setting.AppConfigSetting;
+import com.pictureselect.android.utils.SdCardFileChangeUtils;
 import com.pictureselect.android.view.DividerGridItemDecoration;
 
 import java.util.ArrayList;
@@ -60,7 +60,6 @@ public class PictureVideoSelectActivity extends BasePictureVideoActivity impleme
     private final int PERMISSTION_REQUEST_FOR_EXTERNAL_STORAGE = 0;//请求存储卡权限
     private final int GO_TO_PREVIEW_ACT_REQUES_CODE = 1;//跳转到预览界面的请求码
     private boolean isAllowGoToPreview = true;//是否允许去预览
-
 
 
     @Override
@@ -150,6 +149,7 @@ public class PictureVideoSelectActivity extends BasePictureVideoActivity impleme
         btnCancel.setOnClickListener(this);
         btnConfirm.setOnClickListener(this);
 
+
     }
 
     @Override
@@ -201,28 +201,33 @@ public class PictureVideoSelectActivity extends BasePictureVideoActivity impleme
     /**
      * 初始化图片列表
       */
-    private void initPictureList(){
+    public void initPictureList(){
         handlerChild.post(new Runnable() {
             @Override
             public void run() {
                 switch (pictureSelectConfirg.getSelectType()){
                     case 0://仅图片
                         allList = DbSdCardPictureVideoList.getInstance(getApplicationContext())
-                                .getAllList(DbPhonePictureVideoList.getInstance(getApplicationContext()).getPictureAllMapList(pictureSelectConfirg.getPictureFilterSelection()
+                                .getAllList(DbSdCardPictureVideoList.getInstance(getApplicationContext()).getPictureAllMapList(pictureSelectConfirg.getPictureFilterSelection()
                                         ,pictureSelectConfirg.getPictureFilterSelectionArgs()));
                         break;
                     case 1://仅视频
                         allList = DbSdCardPictureVideoList.getInstance(getApplicationContext())
-                                .getAllList(DbPhonePictureVideoList.getInstance(getApplicationContext()).getVideoAllMapList(pictureSelectConfirg.getVideoFilterSelection(),pictureSelectConfirg.getVideoFilterSelectionArgs()));
+                                .getAllList(DbSdCardPictureVideoList.getInstance(getApplicationContext()).getVideoAllMapList(pictureSelectConfirg.getVideoFilterSelection(),pictureSelectConfirg.getVideoFilterSelectionArgs()));
                         break;
                     case 2://两者都有
                     default:
                         allList = DbSdCardPictureVideoList.getInstance(getApplicationContext())
-                                .getAllList(DbPhonePictureVideoList.getInstance(getApplicationContext()).getAllMapList(pictureSelectConfirg.getPictureFilterSelection()
+                                .getAllList(DbSdCardPictureVideoList.getInstance(getApplicationContext()).getAllMapList(pictureSelectConfirg.getPictureFilterSelection()
                                         ,pictureSelectConfirg.getPictureFilterSelectionArgs(),pictureSelectConfirg.getVideoFilterSelection()
                                         ,pictureSelectConfirg.getVideoFilterSelectionArgs()));
                         break;
                 }
+                if(allList.size() == 0){
+                    //重新扫描文件夹
+                    SdCardFileChangeUtils.geInstance(getApplicationContext()).startScanSdCard();
+                }
+
                 //获取已选择的列表
                 List<String> selectPathList = pictureSelectConfirg.getSelectedPicList();
                 //移除重复项
@@ -286,8 +291,8 @@ public class PictureVideoSelectActivity extends BasePictureVideoActivity impleme
                         Iterator<StorePictureVideoItemDto> iterator = newList.iterator();
                         while (iterator.hasNext()){
                             itemDto = iterator.next();
-                            DbScanDirForPicture.getInstance(getApplicationContext()).insert(itemDto.getAbsolutePath());
-                            DbScanDirForVideo.getInstance(getApplicationContext()).insert(itemDto.getAbsolutePath());
+                            DbScanSdCardForPicture.getInstance(getApplicationContext()).insert(itemDto.getAbsolutePath());
+                            DbScanSdCardForVideo.getInstance(getApplicationContext()).insert(itemDto.getAbsolutePath());
                             pictureSelectsAdapter.addItemDto(itemDto, 0);
                             setSelectForNoCamera(itemDto, true, 0);
                         }
@@ -563,6 +568,15 @@ public class PictureVideoSelectActivity extends BasePictureVideoActivity impleme
     @Override
     protected void onResume() {
         isAllowGoToPreview = true;
+        AppConfigSetting.pictureVideoSelectActivity = this;
         super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        if(isFinishing()){
+            AppConfigSetting.pictureVideoSelectActivity = null;
+        }
+        super.onPause();
     }
 }

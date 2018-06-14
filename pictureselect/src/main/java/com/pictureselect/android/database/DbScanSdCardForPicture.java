@@ -5,11 +5,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.media.ExifInterface;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 
 import com.basepictureoptionslib.android.database.DbBase;
 import com.basepictureoptionslib.android.utils.CheckUtils;
 import com.basepictureoptionslib.android.utils.DbUtils;
-import com.basepictureoptionslib.android.utils.ParamsAndJudgeUtils;
+import com.lorenwang.tools.android.ParamsAndJudgeUtils;
+
+import java.io.File;
 
 public class DbScanSdCardForPicture extends DbBase{
     private static DbScanSdCardForPicture dbScanDirForPicture;
@@ -42,14 +45,38 @@ public class DbScanSdCardForPicture extends DbBase{
                 values.put(MediaStore.Images.Media.SIZE,exifInterface.getAttribute(ExifInterface.TAG_DEFAULT_CROP_SIZE));
                 values.put(MediaStore.Images.Media.DATA,path);
                 values.put(MediaStore.Images.Media.DISPLAY_NAME,path.substring(path.lastIndexOf("/") + 1));
-                values.put(MediaStore.Images.Media.MIME_TYPE,"image/" + path.substring(path.lastIndexOf(".") + 1));
-                values.put(MediaStore.Images.Media.DATE_ADDED, ParamsAndJudgeUtils.getMillisecond());
-                values.put(MediaStore.Images.Media.DATE_MODIFIED, ParamsAndJudgeUtils.getMillisecond());
+                //有些数据是通过file进行获取的
+                File file = new File(path);
+
+                //设置类型
+                String mimeType = path.substring(path.lastIndexOf(".") + 1);
+                if(mimeType.toLowerCase().equals("jpg")){
+                    mimeType = "jpeg";
+                }
+                values.put(MediaStore.Images.Media.MIME_TYPE,"image/" + mimeType);
+
+                //设置添加时间
+                String addTime = exifInterface.getAttribute(ExifInterface.TAG_DATETIME_ORIGINAL);
+                if(TextUtils.isEmpty(addTime)){
+                    return false;
+                }
+                values.put(MediaStore.Images.Media.DATE_ADDED, ParamsAndJudgeUtils.getMillisecond(addTime,"yyyy:MM:dd HH:mm:ss"));
+                addTime = null;
+
+                //设置修改时间
+                values.put(MediaStore.Images.Media.DATE_MODIFIED, file.lastModified());
+
+                //设置坐标
                 values.put(MediaStore.Images.Media.LATITUDE,exifInterface.getAttribute(ExifInterface.TAG_GPS_LATITUDE));
                 values.put(MediaStore.Images.Media.LONGITUDE,exifInterface.getAttribute(ExifInterface.TAG_GPS_LONGITUDE));
+
+                //设置宽高
                 values.put(MediaStore.Images.Media.WIDTH,exifInterface.getAttribute(ExifInterface.TAG_IMAGE_WIDTH));
                 values.put(MediaStore.Images.Media.HEIGHT,exifInterface.getAttribute(ExifInterface.TAG_IMAGE_LENGTH));
+
+                //设置旋转角度
                 values.put(MediaStore.Images.Media.ORIENTATION,exifInterface.getAttribute(ExifInterface.TAG_ORIENTATION));
+                file = null;
                 return DbUtils.getInstance(context).insert(property.TB_SCAN_SD_CARD_FOR_PICTURE,values) > 0;
             } catch (Exception e) {
                 return false;

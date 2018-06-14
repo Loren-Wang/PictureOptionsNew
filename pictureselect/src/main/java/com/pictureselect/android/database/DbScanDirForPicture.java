@@ -1,15 +1,10 @@
 package com.pictureselect.android.database;
 
-import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
-import android.media.ExifInterface;
 import android.provider.MediaStore;
 
 import com.basepictureoptionslib.android.database.DbBase;
-import com.basepictureoptionslib.android.utils.CheckUtils;
 import com.basepictureoptionslib.android.utils.DbUtils;
-import com.basepictureoptionslib.android.utils.ParamsAndJudgeUtils;
 
 public class DbScanDirForPicture  extends DbBase{
     private static DbScanDirForPicture dbScanDirForPicture;
@@ -29,54 +24,54 @@ public class DbScanDirForPicture  extends DbBase{
     }
 
 
-    /**
-     * 插入數據
-     * @param path
-     * @return
-     */
-    public synchronized boolean insert(String path){
-        if(CheckUtils.checkIsImage(path)){
-            try {
-                ExifInterface exifInterface = new ExifInterface(path);
-                ContentValues values = new ContentValues();
-                values.put(MediaStore.Images.Media.SIZE,exifInterface.getAttribute(ExifInterface.TAG_DEFAULT_CROP_SIZE));
-                values.put(MediaStore.Images.Media.DATA,path);
-                values.put(MediaStore.Images.Media.DISPLAY_NAME,path.substring(path.lastIndexOf("/") + 1));
-                values.put(MediaStore.Images.Media.MIME_TYPE,"image/" + path.substring(path.lastIndexOf(".") + 1));
-                values.put(MediaStore.Images.Media.DATE_ADDED, ParamsAndJudgeUtils.getMillisecond());
-                values.put(MediaStore.Images.Media.DATE_MODIFIED, ParamsAndJudgeUtils.getMillisecond());
-                values.put(MediaStore.Images.Media.LATITUDE,exifInterface.getAttribute(ExifInterface.TAG_GPS_LATITUDE));
-                values.put(MediaStore.Images.Media.LONGITUDE,exifInterface.getAttribute(ExifInterface.TAG_GPS_LONGITUDE));
-                values.put(MediaStore.Images.Media.WIDTH,exifInterface.getAttribute(ExifInterface.TAG_IMAGE_WIDTH));
-                values.put(MediaStore.Images.Media.HEIGHT,exifInterface.getAttribute(ExifInterface.TAG_IMAGE_LENGTH));
-                values.put(MediaStore.Images.Media.ORIENTATION,exifInterface.getAttribute(ExifInterface.TAG_ORIENTATION));
-                return DbUtils.getInstance(context).insert(property.TB_SCAN_DIR_FOR_PICTURE,values) > 0;
-            } catch (Exception e) {
-                return false;
-            }
-        }else {
-            return false;
-        }
-    }
-
-    /**
-     * 刪除圖片
-     * @param path
-     * @return
-     */
-    public synchronized boolean delete(String path){
-        if(CheckUtils.checkIsImage(path)){
-            return DbUtils.getInstance(context).delete(property.TB_SCAN_DIR_FOR_PICTURE,
-                    MediaStore.Images.Media.DATA + "=?",new String[]{path}) > 0;
-        }else {
-            return false;
-        }
-    }
-
-    public synchronized Cursor getCursor(String selection, String[] selectionArgs){
-        return DbUtils.getInstance(context).select2(property.TB_SCAN_DIR_FOR_PICTURE,null,selection,selectionArgs,null,null,MediaStore.Images.Media.DATE_MODIFIED);
-    }
-
+//    /**
+//     * 插入數據
+//     * @param path
+//     * @return
+//     */
+//    public synchronized boolean insert(String path){
+//        if(CheckUtils.checkIsImage(path)){
+//            try {
+//                ExifInterface exifInterface = new ExifInterface(path);
+//                ContentValues values = new ContentValues();
+//                values.put(MediaStore.Images.Media.SIZE,exifInterface.getAttribute(ExifInterface.TAG_DEFAULT_CROP_SIZE));
+//                values.put(MediaStore.Images.Media.DATA,path);
+//                values.put(MediaStore.Images.Media.DISPLAY_NAME,path.substring(path.lastIndexOf("/") + 1));
+//                values.put(MediaStore.Images.Media.MIME_TYPE,"image/" + path.substring(path.lastIndexOf(".") + 1));
+//                values.put(MediaStore.Images.Media.DATE_ADDED, ParamsAndJudgeUtils.getMillisecond());
+//                values.put(MediaStore.Images.Media.DATE_MODIFIED, ParamsAndJudgeUtils.getMillisecond());
+//                values.put(MediaStore.Images.Media.LATITUDE,exifInterface.getAttribute(ExifInterface.TAG_GPS_LATITUDE));
+//                values.put(MediaStore.Images.Media.LONGITUDE,exifInterface.getAttribute(ExifInterface.TAG_GPS_LONGITUDE));
+//                values.put(MediaStore.Images.Media.WIDTH,exifInterface.getAttribute(ExifInterface.TAG_IMAGE_WIDTH));
+//                values.put(MediaStore.Images.Media.HEIGHT,exifInterface.getAttribute(ExifInterface.TAG_IMAGE_LENGTH));
+//                values.put(MediaStore.Images.Media.ORIENTATION,exifInterface.getAttribute(ExifInterface.TAG_ORIENTATION));
+//                return DbUtils.getInstance(context).insert(property.TB_SCAN_DIR_FOR_PICTURE,values) > 0;
+//            } catch (Exception e) {
+//                return false;
+//            }
+//        }else {
+//            return false;
+//        }
+//    }
+//
+//    /**
+//     * 刪除圖片
+//     * @param path
+//     * @return
+//     */
+//    public synchronized boolean delete(String path){
+//        if(CheckUtils.checkIsImage(path)){
+//            return DbUtils.getInstance(context).delete(property.TB_SCAN_DIR_FOR_PICTURE,
+//                    MediaStore.Images.Media.DATA + "=?",new String[]{path}) > 0;
+//        }else {
+//            return false;
+//        }
+//    }
+//
+//    public synchronized Cursor getCursor(String selection, String[] selectionArgs){
+//        return DbUtils.getInstance(context).select2(property.TB_SCAN_DIR_FOR_PICTURE,null,selection,selectionArgs,null,null,MediaStore.Images.Media.DATE_MODIFIED);
+//    }
+//
 
 
 

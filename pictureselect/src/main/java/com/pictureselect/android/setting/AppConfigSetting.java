@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.Paint;
 import android.graphics.Rect;
 
+import com.pictureselect.android.PictureVideoSelectActivity;
 import com.pictureselect.android.PictureVideoSelectConfirg;
 import com.pictureselect.android.dto.StorePictureVideoItemDto;
 
@@ -30,4 +31,6 @@ public class AppConfigSetting {
     public static ArrayList<StorePictureVideoItemDto> showAllList = new ArrayList<>();//要显示的所有的列表
     public static ArrayList<StorePictureVideoItemDto> showSelectList = new ArrayList<>();//要显示的所有的列表
     public static PictureVideoSelectConfirg pictureVideoSelectConfirg;//配置文件
+
+    public static PictureVideoSelectActivity pictureVideoSelectActivity;
 }
