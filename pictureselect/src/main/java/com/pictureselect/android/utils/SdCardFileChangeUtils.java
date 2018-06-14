@@ -175,5 +175,13 @@ public class SdCardFileChangeUtils {
         context.startService(intent);
     }
 
+    /**
+     * 通过地址去扫描视频
+     * @param path
+     */
+    public void scanVideoForPath(String path){
+        DbScanSdCardForVideo.getInstance(context).insert(path);
+    }
+
 
 }

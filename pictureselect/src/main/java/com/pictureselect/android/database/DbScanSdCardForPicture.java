@@ -42,11 +42,11 @@ public class DbScanSdCardForPicture extends DbBase{
             try {
                 ExifInterface exifInterface = new ExifInterface(path);
                 ContentValues values = new ContentValues();
-                values.put(MediaStore.Images.Media.SIZE,exifInterface.getAttribute(ExifInterface.TAG_DEFAULT_CROP_SIZE));
-                values.put(MediaStore.Images.Media.DATA,path);
-                values.put(MediaStore.Images.Media.DISPLAY_NAME,path.substring(path.lastIndexOf("/") + 1));
                 //有些数据是通过file进行获取的
                 File file = new File(path);
+                values.put(MediaStore.Images.Media.SIZE,file.length());
+                values.put(MediaStore.Images.Media.DATA,path);
+                values.put(MediaStore.Images.Media.DISPLAY_NAME,path.substring(path.lastIndexOf("/") + 1));
 
                 //设置类型
                 String mimeType = path.substring(path.lastIndexOf(".") + 1);
@@ -58,9 +58,10 @@ public class DbScanSdCardForPicture extends DbBase{
                 //设置添加时间
                 String addTime = exifInterface.getAttribute(ExifInterface.TAG_DATETIME_ORIGINAL);
                 if(TextUtils.isEmpty(addTime)){
-                    return false;
+                    values.put(MediaStore.Images.Media.DATE_ADDED,  file.lastModified());
+                }else {
+                    values.put(MediaStore.Images.Media.DATE_ADDED, ParamsAndJudgeUtils.getMillisecond(addTime, "yyyy:MM:dd HH:mm:ss"));
                 }
-                values.put(MediaStore.Images.Media.DATE_ADDED, ParamsAndJudgeUtils.getMillisecond(addTime,"yyyy:MM:dd HH:mm:ss"));
                 addTime = null;
 
                 //设置修改时间
