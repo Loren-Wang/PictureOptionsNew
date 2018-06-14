@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import com.basepictureoptionslib.android.utils.LogUtils;
 import com.pictureselect.android.contentobserver.SystemPictureVideoContentObserver;
@@ -19,6 +20,7 @@ import com.pictureselect.android.service.SdCardDirService;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class SdCardFileChangeUtils {
     private final String TAG = getClass().getName() + hashCode();
@@ -47,28 +49,40 @@ public class SdCardFileChangeUtils {
             LogUtils.logD(TAG,"hhh");
             Uri uri = (Uri) msg.obj;
             Cursor cursor;
+            String displayName;
+            String path;
+            Iterator<String> iterator;
+            boolean isHave;//是否在扫描文件夹中
             switch (msg.what){
                 case SYS_DATABASE_CHANGE_FOR_PICTURE:
-                    cursor = context.getContentResolver().query(uri,
-                            new String[]{MediaStore.Images.ImageColumns.DATA},//
+                    cursor = context.getContentResolver().query(uri,null,
                             null, null, null);
                     if(cursor != null){
                         if(cursor.moveToNext()) {
-                            DbScanSdCardForPicture.getInstance(context).insert
-                                    (cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA)));
+                            //判断是否在扫描的文件夹里
+                            displayName = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME));
+                            path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
+                            if(isHaveScanDirList(path,displayName)) {
+                                DbScanSdCardForPicture.getInstance(context).insert(path);
+                            }
+                            path = null;
                         }
                     }
                     cursor.close();
                     cursor = null;
                     break;
                 case SYS_DATABASE_CHANGE_FOR_VIDEO:
-                    cursor = context.getContentResolver().query(uri,
-                            new String[]{MediaStore.Video.Media.DATA},//
+                    cursor = context.getContentResolver().query(uri,null,
                             null, null, null);
                     if(cursor != null){
                         if(cursor.moveToNext()) {
-                            DbScanSdCardForVideo.getInstance(context).insert
-                                    (cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA)));
+                            //判断是否在扫描的文件夹里
+                            displayName = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DISPLAY_NAME));
+                            path = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DATA));
+                            if(isHaveScanDirList(path,displayName)) {
+                                DbScanSdCardForVideo.getInstance(context).insert(path);
+                            }
+                            path = null;
                         }
                     }
                     cursor.close();
@@ -78,6 +92,32 @@ public class SdCardFileChangeUtils {
                     break;
             }
 
+        }
+
+        /**
+         * 判断是否在扫描文件夹下
+         * @param path
+         * @param displayName
+         * @return
+         */
+        private boolean isHaveScanDirList(String path,String displayName){
+            //判断是否存在于被扫描文件夹中
+            if(!TextUtils.isEmpty(displayName)){
+                Iterator<String> iterator = scanDirList.iterator();
+                path = path.replace(displayName,"");
+                displayName = null;
+                while (iterator.hasNext()){
+                    if(path.indexOf(iterator.next()) == 0){
+                        iterator = null;
+                        return true;
+                    }
+                }
+                iterator = null;
+                //如果没有存在
+                return false;
+            }else {
+                return false;
+            }
         }
     };
 
@@ -92,14 +132,18 @@ public class SdCardFileChangeUtils {
         //开启扫描
         scanDirList.clear();
         for(String observerPath : observerPaths) {
-            scanDirList.add(observerPath);
+            if(observerPath.trim().lastIndexOf("/") == observerPath.trim().length() - 1) {
+                scanDirList.add(observerPath);
+            }else {
+                scanDirList.add(observerPath.trim() + "/");
+            }
         }
         //添加相册扫描
         String absPath = Environment.getExternalStorageDirectory().getPath();
         File absFile = new File(absPath);
         for(File file : absFile.listFiles()){
             if(file.isDirectory() && file.getName().toLowerCase().equals("dcim")){
-                scanDirList.add(file.getAbsolutePath());
+                scanDirList.add(file.getAbsolutePath() + "/");
                 break;
             }
         }
