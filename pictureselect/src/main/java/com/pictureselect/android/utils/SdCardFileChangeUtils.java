@@ -67,8 +67,8 @@ public class SdCardFileChangeUtils {
                             }
                             path = null;
                         }
+                        cursor.close();
                     }
-                    cursor.close();
                     cursor = null;
                     break;
                 case SYS_DATABASE_CHANGE_FOR_VIDEO:
@@ -84,8 +84,8 @@ public class SdCardFileChangeUtils {
                             }
                             path = null;
                         }
+                        cursor.close();
                     }
-                    cursor.close();
                     cursor = null;
                     break;
                 default:
