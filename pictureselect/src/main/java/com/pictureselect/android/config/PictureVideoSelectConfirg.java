@@ -1,4 +1,4 @@
-package com.pictureselect.android;
+package com.pictureselect.android.config;
 
 import android.graphics.Color;
 import android.os.Parcel;
@@ -34,7 +34,7 @@ import java.util.List;
  * 修改时间：
  * 备注：
  */
-public class PictureVideoSelectConfirg extends BaseConfig{
+public class PictureVideoSelectConfirg{
     public static final int SELECT_TYPE_FOR_PICTURE = 0;//仅选择图片
     public static final int SELECT_TYPE_FOR_VIDEO = 1;//仅选择视频
     public static final int SELECT_TYPE_FOR_PICTURE_AND_VIDEO = 2;//图片视频一起选择

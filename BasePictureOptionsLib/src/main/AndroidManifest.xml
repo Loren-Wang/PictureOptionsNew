@@ -9,7 +9,7 @@
         tools:ignore="ProtectedPermissions" />
     <application>
         <activity
-            android:name=".PictureOptionsVideoPlayActivity"
+            android:name="com.pictureselect.android.activity.PictureOptionsVideoPlayActivity"
             android:launchMode="singleTop"
             android:theme="@style/AppTheme.TranslucentTheme"></activity>
     </application>

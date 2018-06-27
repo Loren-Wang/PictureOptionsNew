@@ -14,10 +14,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.TextView;
 
 import com.basepictureoptionslib.android.AppCommon;
 import com.basepictureoptionslib.android.plugin.image.ImageLoadingUtis;
 import com.lorenwang.tools.android.ParamsAndJudgeUtils;
+import com.pictureselect.android.activity.BasePictureVideoActivity;
 import com.pictureselect.android.adapter.PictureSelectNoCameraAdapter;
 import com.pictureselect.android.database.DbScanSdCardForPicture;
 import com.pictureselect.android.database.DbScanSdCardForVideo;
@@ -89,6 +91,17 @@ public class PictureVideoSelectActivity extends BasePictureVideoActivity impleme
         viewBottomOptions = findViewById(R.id.viewOpBottomOptions);
         cbShowOriginPic = findViewById(R.id.cbOpShowOriginPic);
         btnPreview = findViewById(R.id.btnOpPreview);
+
+        //根据主题配置文件设置主题
+        PictureSelectThemeConfig instance = PictureSelectThemeConfig.getInstance();
+        findViewById(R.id.viewOpAcBar).setLayoutParams(new ViewGroup.LayoutParams
+                (ViewGroup.LayoutParams.MATCH_PARENT,instance.getAcBarHeight()));
+        findViewById(R.id.viewOpAcBar).setBackgroundColor(instance.getThemeColor());
+        //设置标题
+        ((TextView)findViewById(R.id.tvOpTitle)).setTextColor(instance.getAcBarTitleColor());
+        ((TextView)findViewById(R.id.tvOpTitle)).setTextSize(instance.getAcBarTitleSize());
+
+
 
         //初始话参数
         DisplayMetrics dm = new DisplayMetrics();

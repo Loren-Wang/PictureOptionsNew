@@ -1,7 +1,8 @@
-package com.pictureselect.android;
+package com.pictureselect.android.activity;
 
 import com.basepictureoptionslib.android.BaseActivity;
-import com.basepictureoptionslib.android.utils.HintPopUtils;
+import com.pictureselect.android.PictureVideoSelectConfirg;
+import com.pictureselect.android.R;
 import com.pictureselect.android.dto.StorePictureVideoItemDto;
 
 import java.util.ArrayList;

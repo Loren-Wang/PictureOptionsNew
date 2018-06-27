@@ -1,4 +1,4 @@
-package com.basepictureoptionslib.android;
+package com.pictureselect.android;
 
 public class AppCommon {
 

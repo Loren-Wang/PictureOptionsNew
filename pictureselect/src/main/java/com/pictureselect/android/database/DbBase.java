@@ -1,4 +1,4 @@
-package com.basepictureoptionslib.android.database;
+package com.pictureselect.android.database;
 
 
 import android.content.ContentValues;

@@ -1,4 +1,4 @@
-package com.basepictureoptionslib.android;
+package com.pictureselect.android.activity;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -21,8 +21,8 @@ public class PictureOptionsVideoPlayActivity extends AppCompatActivity{
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_options_video_play);
-        pictureOpWxPlayer = findViewById(R.id.pictureOpWxPlayer);
+        setContentView(com.basepictureoptionslib.android.R.layout.activity_options_video_play);
+        pictureOpWxPlayer = findViewById(com.basepictureoptionslib.android.R.id.pictureOpWxPlayer);
         int uiOptions = View.SYSTEM_UI_FLAG_LAYOUT_STABLE| //保持布局状态
 //                //全屏
                 View.SYSTEM_UI_FLAG_FULLSCREEN;
@@ -48,10 +48,10 @@ public class PictureOptionsVideoPlayActivity extends AppCompatActivity{
 
         if (isMute) {
             pictureOpWxPlayer.setVolumeOff();
-            getmMute.setImageResource(R.mipmap.icon_mute);
+            getmMute.setImageResource(com.basepictureoptionslib.android.R.mipmap.icon_mute);
         } else {
             pictureOpWxPlayer.setVolumeOn();
-            getmMute.setImageResource(R.mipmap.icon_unmute);
+            getmMute.setImageResource(com.basepictureoptionslib.android.R.mipmap.icon_unmute);
         }
 
         controller.getmMute().setOnClickListener(new View.OnClickListener() {
@@ -61,11 +61,11 @@ public class PictureOptionsVideoPlayActivity extends AppCompatActivity{
                 if (mute) {
                     pictureOpWxPlayer.setVolumeOn();
                     SharedPrefUtils.putBoolean(getApplicationContext(),AppCommon.VIDEO_PLAY_MUTE_OR_UNMUTE, false);
-                    getmMute.setImageResource(R.mipmap.icon_unmute);
+                    getmMute.setImageResource(com.basepictureoptionslib.android.R.mipmap.icon_unmute);
                 } else {
                     pictureOpWxPlayer.setVolumeOff();
                     SharedPrefUtils.putBoolean(getApplicationContext(),AppCommon.VIDEO_PLAY_MUTE_OR_UNMUTE, true);
-                    getmMute.setImageResource(R.mipmap.icon_mute);
+                    getmMute.setImageResource(com.basepictureoptionslib.android.R.mipmap.icon_mute);
                 }
             }
         });

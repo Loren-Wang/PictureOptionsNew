@@ -1,4 +1,4 @@
-package com.basepictureoptionslib.android.database;
+package com.pictureselect.android.database;
 
 /**
  * Created by wangliang on 0016/2017/10/16.
