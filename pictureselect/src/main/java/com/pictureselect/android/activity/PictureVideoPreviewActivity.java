@@ -180,7 +180,7 @@ public class PictureVideoPreviewActivity extends PictureVideoSelectBaseActivity 
                 ,getPictureVideoSelectorThemeConfig().getAcBarContentViewHeight() + statusBarHeight));
         findViewById(R.id.viewOpAcBar).setBackgroundColor(aBarAndBottomBgColor);
         //设置右上角文字
-        btnConfirm.setTextColor(getPictureVideoSelectorThemeConfig().getAcBarConfirmColor());
+        btnConfirm.setTextColor(getResources().getColor(getPictureVideoSelectorThemeConfig().getAcBarConfirmColor()));
         btnConfirm.setTextSize(TypedValue.COMPLEX_UNIT_PX,getResources().getDimensionPixelSize(getPictureVideoSelectorThemeConfig().getAcBarConfirmSize()));
         setViewWidthHeight(btnConfirm,RelativeLayout.LayoutParams.WRAP_CONTENT,getPictureVideoSelectorThemeConfig().getAcBarContentViewHeight());
         setViewWidthHeight(imgBtnback,RelativeLayout.LayoutParams.WRAP_CONTENT,getPictureVideoSelectorThemeConfig().getAcBarContentViewHeight());
@@ -196,7 +196,7 @@ public class PictureVideoPreviewActivity extends PictureVideoSelectBaseActivity 
                 cbShowOriginPic.setVisibility(View.GONE);
             }else {
                 cbShowOriginPic.setTextSize(TypedValue.COMPLEX_UNIT_PX,getResources().getDimensionPixelSize(getPictureVideoSelectorThemeConfig().getOriginPictureTextSize()));
-                cbShowOriginPic.setTextColor(getPictureVideoSelectorThemeConfig().getOriginPictureTextColor());
+                cbShowOriginPic.setTextColor(getResources().getColor(getPictureVideoSelectorThemeConfig().getOriginPictureTextColor()));
             }
 
             //设置底部操作栏高度以及背景颜色
@@ -205,7 +205,7 @@ public class PictureVideoPreviewActivity extends PictureVideoSelectBaseActivity 
                     ,getPictureVideoSelectorThemeConfig().getBottomOptionsHeight());
             //设置底部操作栏文字颜色以及大小
             cbShowOriginSelect.setTextSize(TypedValue.COMPLEX_UNIT_PX,getResources().getDimensionPixelSize(getPictureVideoSelectorThemeConfig().getSelectedTextSize()));
-            cbShowOriginSelect.setTextColor(getPictureVideoSelectorThemeConfig().getSelectedTextColor());
+            cbShowOriginSelect.setTextColor(getResources().getColor(getPictureVideoSelectorThemeConfig().getSelectedTextColor()));
         }
     }
 
