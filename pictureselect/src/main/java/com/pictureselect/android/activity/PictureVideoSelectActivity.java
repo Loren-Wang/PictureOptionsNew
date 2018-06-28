@@ -28,7 +28,6 @@ import com.pictureselect.android.dto.StorePictureVideoItemDto;
 import com.pictureselect.android.recycleViewHolder.BaseViewHolder;
 import com.pictureselect.android.setting.AppConfigSetting;
 import com.pictureselect.android.utils.ImageLoadingUtis;
-import com.pictureselect.android.utils.SdCardFileChangeUtils;
 import com.pictureselect.android.view.DividerGridItemDecoration;
 
 import java.util.ArrayList;
@@ -247,7 +246,7 @@ public class PictureVideoSelectActivity extends PictureVideoSelectBaseActivity i
                 }
                 if(allList.size() == 0){
                     //重新扫描文件夹
-                    SdCardFileChangeUtils.geInstance(getApplicationContext()).startScanSdCard();
+                    pictureVideoSelectorThemeConfig.startScanSdCard();
                 }
 
                 //获取已选择的列表

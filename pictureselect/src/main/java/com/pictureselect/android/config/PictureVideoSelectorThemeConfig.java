@@ -388,7 +388,7 @@ public class PictureVideoSelectorThemeConfig {
     /**
      * 开始文件扫描
      */
-    private void startScanSdCard(){
+    public void startScanSdCard(){
         //停止服务
         context.stopService(new Intent(context, SdCardDirService.class));
         //开启服务扫描
