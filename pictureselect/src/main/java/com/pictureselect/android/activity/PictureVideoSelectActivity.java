@@ -171,7 +171,7 @@ public class PictureVideoSelectActivity extends PictureVideoSelectBaseActivity i
         //初始化标题栏背景
         setViewWidthHeight(findViewById(R.id.viewOpAcBar),RelativeLayout.LayoutParams.MATCH_PARENT
                 ,getPictureVideoSelectorThemeConfig().getAcBarHeight());
-        findViewById(R.id.viewOpAcBar).setBackgroundColor(getPictureVideoSelectorThemeConfig().getThemeColor());
+        findViewById(R.id.viewOpAcBar).setBackgroundResource(getPictureVideoSelectorThemeConfig().getThemeColor());
         //设置标题
         ((TextView)findViewById(R.id.tvOpTitle)).setTextColor(getPictureVideoSelectorThemeConfig().getAcBarTitleColor());
         ((TextView)findViewById(R.id.tvOpTitle)).setTextSize(TypedValue.COMPLEX_UNIT_PX,getResources().getDimensionPixelSize(getPictureVideoSelectorThemeConfig().getAcBarTitleSize()));
@@ -216,7 +216,7 @@ public class PictureVideoSelectActivity extends PictureVideoSelectBaseActivity i
             //设置底部操作栏高度
             setViewWidthHeight(btnConfirm,RelativeLayout.LayoutParams.MATCH_PARENT
                     ,getPictureVideoSelectorThemeConfig().getBottomOptionsHeight());
-            findViewById(R.id.viewOpBottomOptions).setBackgroundColor(getPictureVideoSelectorThemeConfig().getThemeColor());
+            findViewById(R.id.viewOpBottomOptions).setBackgroundResource(getPictureVideoSelectorThemeConfig().getThemeColor());
         }
     }
 
