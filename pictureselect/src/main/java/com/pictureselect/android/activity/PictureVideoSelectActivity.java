@@ -170,23 +170,23 @@ public class PictureVideoSelectActivity extends PictureVideoSelectBaseActivity i
     private void initAcBarOptions(){
         //初始化标题栏背景
         setViewWidthHeight(findViewById(R.id.viewOpAcBar),RelativeLayout.LayoutParams.MATCH_PARENT
-                ,getResources().getDimensionPixelOffset(getPictureVideoSelectorThemeConfig().getAcBarHeight()));
+                ,getPictureVideoSelectorThemeConfig().getAcBarHeight());
         findViewById(R.id.viewOpAcBar).setBackgroundColor(getPictureVideoSelectorThemeConfig().getThemeColor());
         //设置标题
         ((TextView)findViewById(R.id.tvOpTitle)).setTextColor(getPictureVideoSelectorThemeConfig().getAcBarTitleColor());
         ((TextView)findViewById(R.id.tvOpTitle)).setTextSize(TypedValue.COMPLEX_UNIT_PX,getResources().getDimensionPixelSize(getPictureVideoSelectorThemeConfig().getAcBarTitleSize()));
         setViewWidthHeight(findViewById(R.id.tvOpTitle),RelativeLayout.LayoutParams.WRAP_CONTENT
-                ,getResources().getDimensionPixelOffset(getPictureVideoSelectorThemeConfig().getAcBarContentViewHeight()));
+                ,getPictureVideoSelectorThemeConfig().getAcBarContentViewHeight());
         //设置左上角文字
         ((Button)findViewById(R.id.btnOpCancel)).setTextColor(getPictureVideoSelectorThemeConfig().getAcBarCancelColor());
         ((Button)findViewById(R.id.btnOpCancel)).setTextSize(TypedValue.COMPLEX_UNIT_PX,getResources().getDimensionPixelSize(getPictureVideoSelectorThemeConfig().getAcBarCancelSize()));
         setViewWidthHeight(findViewById(R.id.btnOpCancel),RelativeLayout.LayoutParams.WRAP_CONTENT
-                ,getResources().getDimensionPixelOffset(getPictureVideoSelectorThemeConfig().getAcBarContentViewHeight()));
+                ,getPictureVideoSelectorThemeConfig().getAcBarContentViewHeight());
         //设置右上角文字
         btnConfirm.setTextColor(getPictureVideoSelectorThemeConfig().getAcBarConfirmColor());
         btnConfirm.setTextSize(TypedValue.COMPLEX_UNIT_PX,getResources().getDimensionPixelSize(getPictureVideoSelectorThemeConfig().getAcBarConfirmSize()));
         setViewWidthHeight(btnConfirm,RelativeLayout.LayoutParams.WRAP_CONTENT
-                ,getResources().getDimensionPixelOffset(getPictureVideoSelectorThemeConfig().getAcBarContentViewHeight()));
+                ,getPictureVideoSelectorThemeConfig().getAcBarContentViewHeight());
         findViewById(R.id.btnOpCancel).setOnClickListener(this);
         findViewById(R.id.btnOpConfirm).setOnClickListener(this);
     }
@@ -215,7 +215,7 @@ public class PictureVideoSelectActivity extends PictureVideoSelectBaseActivity i
             }
             //设置底部操作栏高度
             setViewWidthHeight(btnConfirm,RelativeLayout.LayoutParams.MATCH_PARENT
-                    ,getResources().getDimensionPixelOffset(getPictureVideoSelectorThemeConfig().getBottomOptionsHeight()));
+                    ,getPictureVideoSelectorThemeConfig().getBottomOptionsHeight());
             findViewById(R.id.viewOpBottomOptions).setBackgroundColor(getPictureVideoSelectorThemeConfig().getThemeColor());
         }
     }

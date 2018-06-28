@@ -177,13 +177,13 @@ public class PictureVideoPreviewActivity extends PictureVideoSelectBaseActivity 
     private void initAcBarOptions(){
         //初始化标题栏背景
         findViewById(R.id.viewOpAcBar).setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT
-                ,getResources().getDimensionPixelOffset(getPictureVideoSelectorThemeConfig().getAcBarHeight()) + statusBarHeight));
+                ,getPictureVideoSelectorThemeConfig().getAcBarContentViewHeight() + statusBarHeight));
         findViewById(R.id.viewOpAcBar).setBackgroundColor(aBarAndBottomBgColor);
         //设置右上角文字
         btnConfirm.setTextColor(getPictureVideoSelectorThemeConfig().getAcBarConfirmColor());
         btnConfirm.setTextSize(TypedValue.COMPLEX_UNIT_PX,getResources().getDimensionPixelSize(getPictureVideoSelectorThemeConfig().getAcBarConfirmSize()));
-        setViewWidthHeight(btnConfirm,RelativeLayout.LayoutParams.WRAP_CONTENT,getResources().getDimensionPixelOffset(getPictureVideoSelectorThemeConfig().getAcBarContentViewHeight()));
-        setViewWidthHeight(imgBtnback,RelativeLayout.LayoutParams.WRAP_CONTENT,getResources().getDimensionPixelOffset(getPictureVideoSelectorThemeConfig().getAcBarContentViewHeight()));
+        setViewWidthHeight(btnConfirm,RelativeLayout.LayoutParams.WRAP_CONTENT,getPictureVideoSelectorThemeConfig().getAcBarContentViewHeight());
+        setViewWidthHeight(imgBtnback,RelativeLayout.LayoutParams.WRAP_CONTENT,getPictureVideoSelectorThemeConfig().getAcBarContentViewHeight());
     }
 
     /**
@@ -202,7 +202,7 @@ public class PictureVideoPreviewActivity extends PictureVideoSelectBaseActivity 
             //设置底部操作栏高度以及背景颜色
             viewBottomOptions.setBackgroundColor(aBarAndBottomBgColor);
             setViewWidthHeight(viewBottomOptions,ViewGroup.LayoutParams.MATCH_PARENT
-                    ,getResources().getDimensionPixelOffset(getPictureVideoSelectorThemeConfig().getBottomOptionsHeight()));
+                    ,getPictureVideoSelectorThemeConfig().getBottomOptionsHeight());
             //设置底部操作栏文字颜色以及大小
             cbShowOriginSelect.setTextSize(TypedValue.COMPLEX_UNIT_PX,getResources().getDimensionPixelSize(getPictureVideoSelectorThemeConfig().getSelectedTextSize()));
             cbShowOriginSelect.setTextColor(getPictureVideoSelectorThemeConfig().getSelectedTextColor());

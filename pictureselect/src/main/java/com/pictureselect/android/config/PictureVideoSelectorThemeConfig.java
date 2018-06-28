@@ -84,8 +84,8 @@ public class PictureVideoSelectorThemeConfig {
     private int acBarCancelSize = R.dimen.base_text_size;//标题栏取消文字大小
     @DimenRes
     private int acBarConfirmSize = R.dimen.base_text_size;//标题栏确认文字大小
-    @DimenRes
-    private int acBarHeight = R.dimen.base_height;//标题栏高度
+
+    private int acBarHeight = 44;//标题栏高度
     @ColorRes
     private int originPictureTextColor = R.color.white;//原图文字颜色
     @DimenRes
@@ -98,10 +98,10 @@ public class PictureVideoSelectorThemeConfig {
     private int selectedTextColor = R.color.white;//选中文字颜色
     @DimenRes
     private int selectedTextSize = R.dimen.base_text_size;//选中文字大小
-    @DimenRes
-    private int acBarContentViewHeight = R.dimen.base_height;//标题栏内部控件高度
-    @DimenRes
-    private int bottomOptionsHeight = R.dimen.base_height;//底部操作栏高度
+
+    private int acBarContentViewHeight = 44;//标题栏内部控件高度
+
+    private int bottomOptionsHeight = 44;//底部操作栏高度
     @DrawableRes
     private Integer selectStateY = null;//选中状态图标
     @DrawableRes
@@ -254,7 +254,7 @@ public class PictureVideoSelectorThemeConfig {
     public int getAcBarHeight() {
         return acBarHeight;
     }
-    public PictureVideoSelectorThemeConfig setAcBarHeight(@DimenRes int acBarHeight) {
+    public PictureVideoSelectorThemeConfig setAcBarHeight(int acBarHeight) {
         this.acBarHeight = acBarHeight;
         return this;
     }
@@ -310,7 +310,7 @@ public class PictureVideoSelectorThemeConfig {
     public int getAcBarContentViewHeight() {
         return acBarContentViewHeight;
     }
-    public PictureVideoSelectorThemeConfig setAcBarContentViewHeight(@DimenRes int acBarContentViewHeight) {
+    public PictureVideoSelectorThemeConfig setAcBarContentViewHeight(int acBarContentViewHeight) {
         this.acBarContentViewHeight = acBarContentViewHeight;
         return this;
     }
@@ -318,7 +318,7 @@ public class PictureVideoSelectorThemeConfig {
     public int getBottomOptionsHeight() {
         return bottomOptionsHeight;
     }
-    public PictureVideoSelectorThemeConfig setBottomOptionsHeight(@DimenRes int bottomOptionsHeight) {
+    public PictureVideoSelectorThemeConfig setBottomOptionsHeight(int bottomOptionsHeight) {
         this.bottomOptionsHeight = bottomOptionsHeight;
         return this;
     }
