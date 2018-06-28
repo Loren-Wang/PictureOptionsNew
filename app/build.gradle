@@ -29,5 +29,5 @@ dependencies {
     implementation project(':picturecamera')
     implementation project(':picturecrop')
     implementation project(':pictureselect')
-    implementation project(':BasePictureOptionsLib')
+
 }

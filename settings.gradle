@@ -1,1 +1,1 @@
-include ':app', ':BasePictureOptionsLib', ':pictureselect', ':picturecrop', ':picturecamera'
+include ':app', ':pictureselect', ':picturecrop', ':picturecamera'

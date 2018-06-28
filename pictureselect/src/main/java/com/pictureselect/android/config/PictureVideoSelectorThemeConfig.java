@@ -364,7 +364,7 @@ public class PictureVideoSelectorThemeConfig {
         //添加相册扫描
         String absPath = Environment.getExternalStorageDirectory().getPath();
         File absFile = new File(absPath);
-        if(absFile != null) {
+        if(absFile != null && absFile.listFiles() != null) {
             for (File file : absFile.listFiles()) {
                 if (file.isDirectory() && file.getName().toLowerCase().equals("dcim")) {
                     scanDirList.add(file.getAbsolutePath() + "/");
