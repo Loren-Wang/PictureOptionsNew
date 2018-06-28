@@ -91,7 +91,7 @@ public class PictureVideoPreviewActivity extends PictureVideoSelectBaseActivity 
             statusBarHeight = getResources().getDimensionPixelSize(resourceId);
         }
         //设置标题栏最外层布局属性
-        int color = getResources().getColor(pictureVideoSelectorThemeConfig.getThemeColor());
+        int color = getResources().getColor(getPictureVideoSelectorThemeConfig().getThemeColor());
         int red = (color & 0xff0000) >> 16;
         int green = (color & 0x00ff00) >> 8;
         int blue = (color & 0x0000ff);
@@ -177,13 +177,13 @@ public class PictureVideoPreviewActivity extends PictureVideoSelectBaseActivity 
     private void initAcBarOptions(){
         //初始化标题栏背景
         findViewById(R.id.viewOpAcBar).setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT
-                ,getResources().getDimensionPixelOffset(pictureVideoSelectorThemeConfig.getAcBarHeight()) + statusBarHeight));
+                ,getResources().getDimensionPixelOffset(getPictureVideoSelectorThemeConfig().getAcBarHeight()) + statusBarHeight));
         findViewById(R.id.viewOpAcBar).setBackgroundColor(aBarAndBottomBgColor);
         //设置右上角文字
-        btnConfirm.setTextColor(pictureVideoSelectorThemeConfig.getAcBarConfirmColor());
-        btnConfirm.setTextSize(TypedValue.COMPLEX_UNIT_PX,getResources().getDimensionPixelSize(pictureVideoSelectorThemeConfig.getAcBarConfirmSize()));
-        setViewWidthHeight(btnConfirm,RelativeLayout.LayoutParams.WRAP_CONTENT,getResources().getDimensionPixelOffset(pictureVideoSelectorThemeConfig.getAcBarContentViewHeight()));
-        setViewWidthHeight(imgBtnback,RelativeLayout.LayoutParams.WRAP_CONTENT,getResources().getDimensionPixelOffset(pictureVideoSelectorThemeConfig.getAcBarContentViewHeight()));
+        btnConfirm.setTextColor(getPictureVideoSelectorThemeConfig().getAcBarConfirmColor());
+        btnConfirm.setTextSize(TypedValue.COMPLEX_UNIT_PX,getResources().getDimensionPixelSize(getPictureVideoSelectorThemeConfig().getAcBarConfirmSize()));
+        setViewWidthHeight(btnConfirm,RelativeLayout.LayoutParams.WRAP_CONTENT,getResources().getDimensionPixelOffset(getPictureVideoSelectorThemeConfig().getAcBarContentViewHeight()));
+        setViewWidthHeight(imgBtnback,RelativeLayout.LayoutParams.WRAP_CONTENT,getResources().getDimensionPixelOffset(getPictureVideoSelectorThemeConfig().getAcBarContentViewHeight()));
     }
 
     /**
@@ -195,17 +195,17 @@ public class PictureVideoPreviewActivity extends PictureVideoSelectBaseActivity 
             if(!pictureSelectConfirg.isShowOriginPicSelect()){
                 cbShowOriginPic.setVisibility(View.GONE);
             }else {
-                cbShowOriginPic.setTextSize(TypedValue.COMPLEX_UNIT_PX,getResources().getDimensionPixelSize(pictureVideoSelectorThemeConfig.getOriginPictureTextSize()));
-                cbShowOriginPic.setTextColor(pictureVideoSelectorThemeConfig.getOriginPictureTextColor());
+                cbShowOriginPic.setTextSize(TypedValue.COMPLEX_UNIT_PX,getResources().getDimensionPixelSize(getPictureVideoSelectorThemeConfig().getOriginPictureTextSize()));
+                cbShowOriginPic.setTextColor(getPictureVideoSelectorThemeConfig().getOriginPictureTextColor());
             }
 
             //设置底部操作栏高度以及背景颜色
             viewBottomOptions.setBackgroundColor(aBarAndBottomBgColor);
             setViewWidthHeight(viewBottomOptions,ViewGroup.LayoutParams.MATCH_PARENT
-                    ,getResources().getDimensionPixelOffset(pictureVideoSelectorThemeConfig.getBottomOptionsHeight()));
+                    ,getResources().getDimensionPixelOffset(getPictureVideoSelectorThemeConfig().getBottomOptionsHeight()));
             //设置底部操作栏文字颜色以及大小
-            cbShowOriginSelect.setTextSize(TypedValue.COMPLEX_UNIT_PX,getResources().getDimensionPixelSize(pictureVideoSelectorThemeConfig.getSelectedTextSize()));
-            cbShowOriginSelect.setTextColor(pictureVideoSelectorThemeConfig.getSelectedTextColor());
+            cbShowOriginSelect.setTextSize(TypedValue.COMPLEX_UNIT_PX,getResources().getDimensionPixelSize(getPictureVideoSelectorThemeConfig().getSelectedTextSize()));
+            cbShowOriginSelect.setTextColor(getPictureVideoSelectorThemeConfig().getSelectedTextColor());
         }
     }
 

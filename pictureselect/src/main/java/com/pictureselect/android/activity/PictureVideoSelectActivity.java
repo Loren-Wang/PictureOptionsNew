@@ -76,8 +76,9 @@ public class PictureVideoSelectActivity extends PictureVideoSelectBaseActivity i
         }else {
             pictureSelectConfirg = new PictureVideoSelectConfirg();
         }
+
         //设置标题
-        setTheme(pictureVideoSelectorThemeConfig.getThemeId());
+        setTheme(getPictureVideoSelectorThemeConfig().getThemeId());
 
         //初始化全局配置文件
         AppConfigSetting.CHANGE_PICTURE_SELECT_STATE_VIEW_PAINT_STATE = new Paint();
@@ -103,11 +104,11 @@ public class PictureVideoSelectActivity extends PictureVideoSelectBaseActivity i
         initBottomOptions();//初始化底部操作栏
 
         //设置图片选择显示列数
-        recyList.setLayoutManager(new GridLayoutManager(getApplicationContext(),pictureVideoSelectorThemeConfig.getShowRowCount()));
+        recyList.setLayoutManager(new GridLayoutManager(getApplicationContext(),getPictureVideoSelectorThemeConfig().getShowRowCount()));
         recyList.addItemDecoration(new DividerGridItemDecoration(getApplicationContext(),null));
         //初始化适配器
         pictureSelectsAdapter = new PictureSelectNoCameraAdapter(getApplicationContext(),windowWidth / 3,windowWidth / 3
-                ,pictureVideoSelectorThemeConfig.getSelectStateY(),pictureVideoSelectorThemeConfig.getSelectStateN()) {
+                ,getPictureVideoSelectorThemeConfig().getSelectStateY(),getPictureVideoSelectorThemeConfig().getSelectStateN()) {
             @Override
             public void onSelceChangeClick(BaseViewHolder holder, StorePictureVideoItemDto storePictureItemDto, int position) {
                 //设置选中
@@ -169,23 +170,23 @@ public class PictureVideoSelectActivity extends PictureVideoSelectBaseActivity i
     private void initAcBarOptions(){
         //初始化标题栏背景
         setViewWidthHeight(findViewById(R.id.viewOpAcBar),RelativeLayout.LayoutParams.MATCH_PARENT
-                ,getResources().getDimensionPixelOffset(pictureVideoSelectorThemeConfig.getAcBarHeight()));
-        findViewById(R.id.viewOpAcBar).setBackgroundColor(pictureVideoSelectorThemeConfig.getThemeColor());
+                ,getResources().getDimensionPixelOffset(getPictureVideoSelectorThemeConfig().getAcBarHeight()));
+        findViewById(R.id.viewOpAcBar).setBackgroundColor(getPictureVideoSelectorThemeConfig().getThemeColor());
         //设置标题
-        ((TextView)findViewById(R.id.tvOpTitle)).setTextColor(pictureVideoSelectorThemeConfig.getAcBarTitleColor());
-        ((TextView)findViewById(R.id.tvOpTitle)).setTextSize(TypedValue.COMPLEX_UNIT_PX,getResources().getDimensionPixelSize(pictureVideoSelectorThemeConfig.getAcBarTitleSize()));
+        ((TextView)findViewById(R.id.tvOpTitle)).setTextColor(getPictureVideoSelectorThemeConfig().getAcBarTitleColor());
+        ((TextView)findViewById(R.id.tvOpTitle)).setTextSize(TypedValue.COMPLEX_UNIT_PX,getResources().getDimensionPixelSize(getPictureVideoSelectorThemeConfig().getAcBarTitleSize()));
         setViewWidthHeight(findViewById(R.id.tvOpTitle),RelativeLayout.LayoutParams.WRAP_CONTENT
-                ,getResources().getDimensionPixelOffset(pictureVideoSelectorThemeConfig.getAcBarContentViewHeight()));
+                ,getResources().getDimensionPixelOffset(getPictureVideoSelectorThemeConfig().getAcBarContentViewHeight()));
         //设置左上角文字
-        ((Button)findViewById(R.id.btnOpCancel)).setTextColor(pictureVideoSelectorThemeConfig.getAcBarCancelColor());
-        ((Button)findViewById(R.id.btnOpCancel)).setTextSize(TypedValue.COMPLEX_UNIT_PX,getResources().getDimensionPixelSize(pictureVideoSelectorThemeConfig.getAcBarCancelSize()));
+        ((Button)findViewById(R.id.btnOpCancel)).setTextColor(getPictureVideoSelectorThemeConfig().getAcBarCancelColor());
+        ((Button)findViewById(R.id.btnOpCancel)).setTextSize(TypedValue.COMPLEX_UNIT_PX,getResources().getDimensionPixelSize(getPictureVideoSelectorThemeConfig().getAcBarCancelSize()));
         setViewWidthHeight(findViewById(R.id.btnOpCancel),RelativeLayout.LayoutParams.WRAP_CONTENT
-                ,getResources().getDimensionPixelOffset(pictureVideoSelectorThemeConfig.getAcBarContentViewHeight()));
+                ,getResources().getDimensionPixelOffset(getPictureVideoSelectorThemeConfig().getAcBarContentViewHeight()));
         //设置右上角文字
-        btnConfirm.setTextColor(pictureVideoSelectorThemeConfig.getAcBarConfirmColor());
-        btnConfirm.setTextSize(TypedValue.COMPLEX_UNIT_PX,getResources().getDimensionPixelSize(pictureVideoSelectorThemeConfig.getAcBarConfirmSize()));
+        btnConfirm.setTextColor(getPictureVideoSelectorThemeConfig().getAcBarConfirmColor());
+        btnConfirm.setTextSize(TypedValue.COMPLEX_UNIT_PX,getResources().getDimensionPixelSize(getPictureVideoSelectorThemeConfig().getAcBarConfirmSize()));
         setViewWidthHeight(btnConfirm,RelativeLayout.LayoutParams.WRAP_CONTENT
-                ,getResources().getDimensionPixelOffset(pictureVideoSelectorThemeConfig.getAcBarContentViewHeight()));
+                ,getResources().getDimensionPixelOffset(getPictureVideoSelectorThemeConfig().getAcBarContentViewHeight()));
         findViewById(R.id.btnOpCancel).setOnClickListener(this);
         findViewById(R.id.btnOpConfirm).setOnClickListener(this);
     }
@@ -200,8 +201,8 @@ public class PictureVideoSelectActivity extends PictureVideoSelectBaseActivity i
                 btnPreview.setVisibility(View.GONE);
             }else {
                 //设置预览选择文字
-                btnPreview.setTextSize(TypedValue.COMPLEX_UNIT_PX,getResources().getDimensionPixelSize(pictureVideoSelectorThemeConfig.getPreviewTextSize()));
-                btnPreview.setTextColor(pictureVideoSelectorThemeConfig.getPreviewTextColor());
+                btnPreview.setTextSize(TypedValue.COMPLEX_UNIT_PX,getResources().getDimensionPixelSize(getPictureVideoSelectorThemeConfig().getPreviewTextSize()));
+                btnPreview.setTextColor(getPictureVideoSelectorThemeConfig().getPreviewTextColor());
                 btnPreview.setOnClickListener(this);
             }
             //判断是否需要原图选择
@@ -209,13 +210,13 @@ public class PictureVideoSelectActivity extends PictureVideoSelectBaseActivity i
                 findViewById(R.id.cbOpShowOriginPic).setVisibility(View.GONE);
             }else {
                 //设置原图选择文字
-                ((CheckBox)findViewById(R.id.cbOpShowOriginPic)).setTextColor(pictureVideoSelectorThemeConfig.getOriginPictureTextColor());
-                ((CheckBox)findViewById(R.id.cbOpShowOriginPic)).setTextSize(TypedValue.COMPLEX_UNIT_PX,getResources().getDimensionPixelSize(pictureVideoSelectorThemeConfig.getOriginPictureTextSize()));
+                ((CheckBox)findViewById(R.id.cbOpShowOriginPic)).setTextColor(getPictureVideoSelectorThemeConfig().getOriginPictureTextColor());
+                ((CheckBox)findViewById(R.id.cbOpShowOriginPic)).setTextSize(TypedValue.COMPLEX_UNIT_PX,getResources().getDimensionPixelSize(getPictureVideoSelectorThemeConfig().getOriginPictureTextSize()));
             }
             //设置底部操作栏高度
             setViewWidthHeight(btnConfirm,RelativeLayout.LayoutParams.MATCH_PARENT
-                    ,getResources().getDimensionPixelOffset(pictureVideoSelectorThemeConfig.getBottomOptionsHeight()));
-            findViewById(R.id.viewOpBottomOptions).setBackgroundColor(pictureVideoSelectorThemeConfig.getThemeColor());
+                    ,getResources().getDimensionPixelOffset(getPictureVideoSelectorThemeConfig().getBottomOptionsHeight()));
+            findViewById(R.id.viewOpBottomOptions).setBackgroundColor(getPictureVideoSelectorThemeConfig().getThemeColor());
         }
     }
 
@@ -246,7 +247,7 @@ public class PictureVideoSelectActivity extends PictureVideoSelectBaseActivity i
                 }
                 if(allList.size() == 0){
                     //重新扫描文件夹
-                    pictureVideoSelectorThemeConfig.startScanSdCard();
+                    getPictureVideoSelectorThemeConfig().startScanSdCard();
                 }
 
                 //获取已选择的列表

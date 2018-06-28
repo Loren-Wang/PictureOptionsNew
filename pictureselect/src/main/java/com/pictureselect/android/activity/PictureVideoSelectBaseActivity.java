@@ -39,7 +39,6 @@ public abstract class PictureVideoSelectBaseActivity extends AppCompatActivity {
     protected boolean isSelectPicture = false;//是否选中了图片
     protected boolean isSelectVideo = false;//是否选择了视频
     protected PictureVideoSelectConfirg pictureSelectConfirg;
-    protected PictureVideoSelectorThemeConfig pictureVideoSelectorThemeConfig = PictureVideoSelectorThemeConfig.getInstance();
     protected ArrayList<StorePictureVideoItemDto> allList = new ArrayList<>();//所有的图片集合
     protected ArrayList<StorePictureVideoItemDto> selectedPicturesList = new ArrayList<StorePictureVideoItemDto>();//已经选中的图片列表,使用哈希表存储已选中的数据由于key的唯一
 
@@ -268,5 +267,9 @@ public abstract class PictureVideoSelectBaseActivity extends AppCompatActivity {
                 break;
         }
         return maxSelectNum;
+    }
+
+    public PictureVideoSelectorThemeConfig getPictureVideoSelectorThemeConfig() {
+        return  PictureVideoSelectorThemeConfig.getInstance(getApplicationContext());
     }
 }

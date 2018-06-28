@@ -14,6 +14,9 @@
         <activity
             android:name=".activity.PictureVideoPreviewActivity"
             android:theme="@style/AppTheme.TranslucentTheme"></activity>
+        <activity
+            android:name=".activity.PictureOptionsVideoPlayActivity"
+            android:theme="@style/AppTheme.TranslucentTheme"></activity>
         <service android:name=".service.SdCardDirService"/>
     </application>
 
