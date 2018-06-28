@@ -6,9 +6,8 @@ import android.database.Cursor;
 import android.media.MediaMetadataRetriever;
 import android.provider.MediaStore;
 
-import com.basepictureoptionslib.android.database.DbBase;
-import com.basepictureoptionslib.android.utils.CheckUtils;
-import com.basepictureoptionslib.android.utils.DbUtils;
+import com.lorenwang.tools.android.CheckUtils;
+import com.pictureselect.android.utils.PictureVideoDbUtils;
 
 import java.io.File;
 
@@ -23,7 +22,7 @@ public class DbScanSdCardForVideo extends DbBase{
     }
     private DbScanSdCardForVideo(Context context) {
         this.context = context;
-        boolean state = DbUtils.getInstance(context).execSQL("select * from " + property.TB_SCAN_SD_CARD_FOR_VIDEO);
+        boolean state = PictureVideoDbUtils.getInstance(context).execSQL("select * from " + property.TB_SCAN_SD_CARD_FOR_VIDEO);
         if(!state){
             createTable(context);
         }
@@ -70,7 +69,7 @@ public class DbScanSdCardForVideo extends DbBase{
                 retr.release();
                 retr = null;
                 file = null;
-                return DbUtils.getInstance(context).insert(property.TB_SCAN_SD_CARD_FOR_VIDEO,values) > 0;
+                return PictureVideoDbUtils.getInstance(context).insert(property.TB_SCAN_SD_CARD_FOR_VIDEO,values) > 0;
             } catch (Exception e) {
                 return false;
             }
@@ -86,7 +85,7 @@ public class DbScanSdCardForVideo extends DbBase{
      */
     public synchronized boolean delete(String path){
         if(CheckUtils.checkIsImage(path)){
-            return DbUtils.getInstance(context).delete(property.TB_SCAN_SD_CARD_FOR_VIDEO,
+            return PictureVideoDbUtils.getInstance(context).delete(property.TB_SCAN_SD_CARD_FOR_VIDEO,
                     MediaStore.Video.Media.DATA + "=?",new String[]{path}) > 0;
         }else {
             return false;
@@ -94,7 +93,7 @@ public class DbScanSdCardForVideo extends DbBase{
     }
 
     public synchronized Cursor getCursor(String selection, String[] selectionArgs){
-        return DbUtils.getInstance(context).select2(property.TB_SCAN_SD_CARD_FOR_VIDEO,null,selection,selectionArgs,null,null,null);
+        return PictureVideoDbUtils.getInstance(context).select2(property.TB_SCAN_SD_CARD_FOR_VIDEO,null,selection,selectionArgs,null,null,null);
     }
 
 
@@ -120,7 +119,7 @@ public class DbScanSdCardForVideo extends DbBase{
         createTbBUffer.append(MediaStore.Video.Media.HEIGHT).append(" int,");
         createTbBUffer.append(MediaStore.Video.Media.DURATION).append(" long");
         createTbBUffer.append(")");
-        boolean statues = DbUtils.getInstance(context).execSQL(createTbBUffer.toString());
+        boolean statues = PictureVideoDbUtils.getInstance(context).execSQL(createTbBUffer.toString());
         createTbBUffer = null;
         return statues;
     }

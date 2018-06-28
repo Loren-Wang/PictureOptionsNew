@@ -23,14 +23,16 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    //noinspection GradleCompatible
     implementation 'com.android.support:design:26.1.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
-    implementation project(':BasePictureOptionsLib')
 
     implementation 'com.github.bumptech.glide:glide:4.6.1'
-    implementation 'com.lorenwang.tools.android:AndroidToolsFromLorenWang:1.0.0@aar'
+    implementation 'com.lorenwang.tools.android:AndroidToolsFromLorenWang:1.0.1@aar'
+    implementation 'com.lorenwang.customviews.android:AndroidCustomViewsFromLorenWang:1.1.2@aar'
+    implementation 'com.lorenwang.anim.android:AndroidAnimFromLorenWang:1.0.0@aar'
 
 }
 //一定要加在最末尾，否则会导致无法读取到版本号

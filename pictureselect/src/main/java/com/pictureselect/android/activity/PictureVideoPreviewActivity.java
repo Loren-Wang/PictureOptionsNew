@@ -1,4 +1,4 @@
-package com.pictureselect.android;
+package com.pictureselect.android.activity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -8,22 +8,23 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.RelativeLayout;
 
-import com.basepictureoptionslib.android.plugin.image.ImageLoadingUtis;
-import com.lorenwang.tools.android.ParamsAndJudgeUtils;
-import com.pictureselect.android.activity.BasePictureVideoActivity;
+import com.lorenwang.customviews.android.RecycleViewViewpager;
+import com.lorenwang.customviews.interfaces_abstract.RecycleviewViewPageOnPageChangeListener;
+import com.pictureselect.android.R;
 import com.pictureselect.android.adapter.PicturePreviewAdapter;
+import com.pictureselect.android.config.PictureVideoSelectConfirg;
 import com.pictureselect.android.dto.StorePictureVideoItemDto;
-import com.pictureselect.android.interfaces_abstract.RecycleviewViewPageOnPageChangeListener;
 import com.pictureselect.android.setting.AppConfigSetting;
-import com.pictureselect.android.view.RecycleViewViewpager;
+import com.pictureselect.android.utils.ImageLoadingUtis;
 
 import java.util.ArrayList;
 
@@ -45,10 +46,8 @@ import java.util.ArrayList;
  * 修改时间：
  * 备注：
  */
-public class PictureVideoPreviewActivity extends BasePictureVideoActivity {
+public class PictureVideoPreviewActivity extends PictureVideoSelectBaseActivity {
 
-    private View viewAcBar;//标题栏背景
-    private TextView tvTitle;//标题
     private ImageButton imgBtnback;//后退按钮
     private Button btnConfirm;//确定按钮
     private View viewBottomOptions;//底部操作栏背景
@@ -62,6 +61,7 @@ public class PictureVideoPreviewActivity extends BasePictureVideoActivity {
     private ArrayList<StorePictureVideoItemDto> adapterShowList;//适配器显示列表
     private int windowWidth;
     private int windowHeight;
+    private int statusBarHeight;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,8 +72,6 @@ public class PictureVideoPreviewActivity extends BasePictureVideoActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_picture_and_video_preview);
 
-        viewAcBar = findViewById(R.id.viewOpAcBar);
-        tvTitle = findViewById(R.id.tvOpTitle);
         imgBtnback = findViewById(R.id.imgBtnOpback);
         btnConfirm = findViewById(R.id.btnOpConfirm);
         viewBottomOptions = findViewById(R.id.viewOpBottomOptions);
@@ -87,6 +85,18 @@ public class PictureVideoPreviewActivity extends BasePictureVideoActivity {
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         windowWidth = dm.widthPixels;
         windowHeight = dm.heightPixels;
+        statusBarHeight = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            statusBarHeight = getResources().getDimensionPixelSize(resourceId);
+        }
+        //设置标题栏最外层布局属性
+        int color = getResources().getColor(pictureVideoSelectorThemeConfig.getThemeColor());
+        int red = (color & 0xff0000) >> 16;
+        int green = (color & 0x00ff00) >> 8;
+        int blue = (color & 0x0000ff);
+        aBarAndBottomBgColor = (aBarAndBottomAlpha << 24) | (red << 16) | (green << 8) | blue;
+
         picturePreviewAdapter = new PicturePreviewAdapter(this,windowWidth,windowHeight);
         recyList.setRecycleviewViewPageOnPageChangeListener(new RecycleviewViewPageOnPageChangeListener() {
             @Override
@@ -151,7 +161,7 @@ public class PictureVideoPreviewActivity extends BasePictureVideoActivity {
 
 
         //设置标题栏属性
-        setAcBar();
+        initAcBarOptions();
         //初始化底部操作栏
         initBottomOptions();
         //初始化图片显示列表
@@ -162,39 +172,18 @@ public class PictureVideoPreviewActivity extends BasePictureVideoActivity {
     }
 
     /**
-     * 设置标题栏属性
+     * 初始化标题栏参数
      */
-    private void setAcBar(){
-        int statusBarHeight = 0;
-        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            statusBarHeight = getResources().getDimensionPixelSize(resourceId);
-        }
-        //设置标题栏最外层布局属性
-        int color = getResources().getColor(pictureSelectConfirg.getaBarColor());
-        int red = (color & 0xff0000) >> 16;
-        int green = (color & 0x00ff00) >> 8;
-        int blue = (color & 0x0000ff);
-        aBarAndBottomBgColor = (aBarAndBottomAlpha << 24) | (red << 16) | (green << 8) | blue;
-        ViewGroup.LayoutParams viewAcBarLayoutParams = viewAcBar.getLayoutParams();
-        int height = ParamsAndJudgeUtils.dip2px(getApplicationContext(), pictureSelectConfirg.getaBarHeight()) + statusBarHeight;
-        if(viewAcBarLayoutParams == null){
-            viewAcBarLayoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,height);
-        }else {
-            viewAcBarLayoutParams.height = height;
-        }
-        viewAcBar.setBackgroundColor(aBarAndBottomBgColor);
-        viewAcBar.setLayoutParams(viewAcBarLayoutParams);
-
-        //设置标题文字颜色
-        tvTitle.setTextColor(pictureSelectConfirg.getTitleColor());
-        //设置标题栏确认取消文字大小颜色
-        btnConfirm.setTextSize(pictureSelectConfirg.getaBarTextSize());
-        btnConfirm.setTextColor(pictureSelectConfirg.getaBarTextColor());
-        //设置标题、确认按钮、后退按钮padding
-        tvTitle.setPadding(tvTitle.getPaddingLeft(),tvTitle.getPaddingTop() + statusBarHeight,tvTitle.getPaddingRight(),tvTitle.getPaddingBottom());
-        imgBtnback.setPadding(imgBtnback.getPaddingLeft(),imgBtnback.getPaddingTop() + statusBarHeight,imgBtnback.getPaddingRight(),imgBtnback.getPaddingBottom());
-        btnConfirm.setPadding(btnConfirm.getPaddingLeft(),btnConfirm.getPaddingTop() + statusBarHeight,btnConfirm.getPaddingRight(),btnConfirm.getPaddingBottom());
+    private void initAcBarOptions(){
+        //初始化标题栏背景
+        findViewById(R.id.viewOpAcBar).setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT
+                ,getResources().getDimensionPixelOffset(pictureVideoSelectorThemeConfig.getAcBarHeight()) + statusBarHeight));
+        findViewById(R.id.viewOpAcBar).setBackgroundColor(aBarAndBottomBgColor);
+        //设置右上角文字
+        btnConfirm.setTextColor(pictureVideoSelectorThemeConfig.getAcBarConfirmColor());
+        btnConfirm.setTextSize(TypedValue.COMPLEX_UNIT_PX,getResources().getDimensionPixelSize(pictureVideoSelectorThemeConfig.getAcBarConfirmSize()));
+        setViewWidthHeight(btnConfirm,RelativeLayout.LayoutParams.WRAP_CONTENT,getResources().getDimensionPixelOffset(pictureVideoSelectorThemeConfig.getAcBarContentViewHeight()));
+        setViewWidthHeight(imgBtnback,RelativeLayout.LayoutParams.WRAP_CONTENT,getResources().getDimensionPixelOffset(pictureVideoSelectorThemeConfig.getAcBarContentViewHeight()));
     }
 
     /**
@@ -205,24 +194,18 @@ public class PictureVideoPreviewActivity extends BasePictureVideoActivity {
             //判断是否需要原图选择
             if(!pictureSelectConfirg.isShowOriginPicSelect()){
                 cbShowOriginPic.setVisibility(View.GONE);
+            }else {
+                cbShowOriginPic.setTextSize(TypedValue.COMPLEX_UNIT_PX,getResources().getDimensionPixelSize(pictureVideoSelectorThemeConfig.getOriginPictureTextSize()));
+                cbShowOriginPic.setTextColor(pictureVideoSelectorThemeConfig.getOriginPictureTextColor());
             }
 
             //设置底部操作栏高度以及背景颜色
-            int height = ParamsAndJudgeUtils.dip2px(getApplicationContext(),pictureSelectConfirg.getBottomOptionsHeight());
-            ViewGroup.LayoutParams layoutParams = viewBottomOptions.getLayoutParams();
-            if(layoutParams == null){
-                layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,height);
-            }else {
-                layoutParams.height = height;
-            }
             viewBottomOptions.setBackgroundColor(aBarAndBottomBgColor);
-            viewBottomOptions.setLayoutParams(layoutParams);
-
+            setViewWidthHeight(viewBottomOptions,ViewGroup.LayoutParams.MATCH_PARENT
+                    ,getResources().getDimensionPixelOffset(pictureVideoSelectorThemeConfig.getBottomOptionsHeight()));
             //设置底部操作栏文字颜色以及大小
-            cbShowOriginSelect.setTextSize(pictureSelectConfirg.getBottomOptionsTextSize());
-            cbShowOriginPic.setTextSize(pictureSelectConfirg.getBottomOptionsTextSize());
-            cbShowOriginSelect.setTextColor(pictureSelectConfirg.getBottomOptionsTextColor());
-            cbShowOriginPic.setTextColor(pictureSelectConfirg.getBottomOptionsTextColor());
+            cbShowOriginSelect.setTextSize(TypedValue.COMPLEX_UNIT_PX,getResources().getDimensionPixelSize(pictureVideoSelectorThemeConfig.getSelectedTextSize()));
+            cbShowOriginSelect.setTextColor(pictureVideoSelectorThemeConfig.getSelectedTextColor());
         }
     }
 
@@ -274,7 +257,7 @@ public class PictureVideoPreviewActivity extends BasePictureVideoActivity {
         intent.putExtras(bundle);
         setResult(RESULT_OK,intent);
         finish();
-        overridePendingTransition(0,R.anim.frame_anim_to_bottom);
+        overridePendingTransition(0,com.lorenwang.anim.android.R.anim.frame_anim_to_bottom);
     }
 
     @Override
@@ -315,8 +298,6 @@ public class PictureVideoPreviewActivity extends BasePictureVideoActivity {
         viewBottomOptions = null;
         btnConfirm = null;
         imgBtnback = null;
-        tvTitle = null;
-        viewAcBar = null;
         setContentView(R.layout.activity_options_base_null);
         System.gc();
         super.onDestroy();

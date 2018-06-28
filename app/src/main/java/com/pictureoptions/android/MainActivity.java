@@ -15,10 +15,9 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import com.basepictureoptionslib.android.AppCommon;
-import com.basepictureoptionslib.android.utils.LogUtils;
-import com.pictureselect.android.PictureVideoSelectActivity;
-import com.pictureselect.android.PictureVideoSelectConfirg;
+import com.pictureselect.android.AppCommon;
+import com.pictureselect.android.activity.PictureVideoSelectActivity;
+import com.pictureselect.android.config.PictureVideoSelectConfirg;
 import com.pictureselect.android.utils.SdCardFileChangeUtils;
 
 import java.util.ArrayList;
@@ -55,7 +54,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String PROJECT_FILE_DIR_VIDEO = PROJECT_FILE_DIR +  "video/";
         String PROJECT_FILE_DIR_CAMERA_IMAGE = PROJECT_FILE_DIR +  "ydCameraImages/";
         SdCardFileChangeUtils.geInstance(getApplicationContext()).init( new String[]{
-                PROJECT_FILE_DIR_VIDEO,PROJECT_FILE_DIR_CAMERA_IMAGE
+                PROJECT_FILE_DIR_VIDEO,PROJECT_FILE_DIR_CAMERA_IMAGE,Environment.getExternalStorageDirectory().getPath() + "/DCIM/"
+                ,Environment.getExternalStorageDirectory().getPath() + "/Pictures/"
         });
 
         //异常信息收集
@@ -134,12 +134,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     try {
                         pictureVideoSelectConfirg.setMaxSelectPictureNum(Integer.parseInt(edtMaxPictureNum.getText().toString()));
                     } catch (Exception e) {
-                        LogUtils.logD(TAG, "未获取到最大选择图片数量");
+//                        LogUtils.logD(TAG, "未获取到最大选择图片数量");
                     }
                     try {
                         pictureVideoSelectConfirg.setMaxSelectVideoNum(Integer.parseInt(edtMaxVideoNum.getText().toString()));
                     } catch (Exception e) {
-                        LogUtils.logD(TAG, "未获取到最大选择视频数量");
+//                        LogUtils.logD(TAG, "未获取到最大选择视频数量");
                     }
 
                     pictureVideoSelectConfirg.setAllowConcurrentSelection(cbAllowSelectAll.isChecked());

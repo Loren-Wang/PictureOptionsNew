@@ -8,9 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.basepictureoptionslib.android.AppCommon;
-import com.pictureselect.android.activity.PictureOptionsVideoPlayActivity;
+import com.pictureselect.android.AppCommon;
 import com.pictureselect.android.R;
+import com.pictureselect.android.activity.PictureOptionsVideoPlayActivity;
 import com.pictureselect.android.dto.StorePictureVideoItemDto;
 import com.pictureselect.android.recycleViewHolder.PicturePreviewViewHolder;
 

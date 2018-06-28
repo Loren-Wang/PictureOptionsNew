@@ -9,10 +9,10 @@
 
     <application>
         <activity
-            android:name=".PictureVideoSelectActivity"
+            android:name=".activity.PictureVideoSelectActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".PictureVideoPreviewActivity"
+            android:name=".activity.PictureVideoPreviewActivity"
             android:theme="@style/AppTheme.TranslucentTheme"></activity>
         <service android:name=".service.SdCardDirService"/>
     </application>

@@ -1,4 +1,4 @@
-package com.pictureselect.android;
+package com.pictureselect.android.activity;
 
 import android.Manifest;
 import android.content.Intent;
@@ -10,23 +10,24 @@ import android.provider.MediaStore;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.basepictureoptionslib.android.AppCommon;
-import com.basepictureoptionslib.android.plugin.image.ImageLoadingUtis;
-import com.lorenwang.tools.android.ParamsAndJudgeUtils;
-import com.pictureselect.android.activity.BasePictureVideoActivity;
+import com.pictureselect.android.AppCommon;
+import com.pictureselect.android.R;
 import com.pictureselect.android.adapter.PictureSelectNoCameraAdapter;
+import com.pictureselect.android.config.PictureVideoSelectConfirg;
 import com.pictureselect.android.database.DbScanSdCardForPicture;
 import com.pictureselect.android.database.DbScanSdCardForVideo;
 import com.pictureselect.android.database.DbSdCardPictureVideoList;
 import com.pictureselect.android.dto.StorePictureVideoItemDto;
 import com.pictureselect.android.recycleViewHolder.BaseViewHolder;
 import com.pictureselect.android.setting.AppConfigSetting;
+import com.pictureselect.android.utils.ImageLoadingUtis;
 import com.pictureselect.android.utils.SdCardFileChangeUtils;
 import com.pictureselect.android.view.DividerGridItemDecoration;
 
@@ -49,12 +50,11 @@ import static com.pictureselect.android.setting.AppConfigSetting.showSelectList;
  * 修改时间：
  * 备注：
  */
-public class PictureVideoSelectActivity extends BasePictureVideoActivity implements View.OnClickListener {
+public class PictureVideoSelectActivity extends PictureVideoSelectBaseActivity implements View.OnClickListener {
 
     private RecyclerView recyList;//图片列表
-    private View viewBottomOptions;//底部操作栏
-    private CheckBox cbShowOriginPic;//原图选择
     private Button btnPreview;//预览按钮
+    private Button btnConfirm;//确定按钮
 
     private PictureSelectNoCameraAdapter pictureSelectsAdapter;
 
@@ -77,7 +77,8 @@ public class PictureVideoSelectActivity extends BasePictureVideoActivity impleme
         }else {
             pictureSelectConfirg = new PictureVideoSelectConfirg();
         }
-        setTheme(pictureSelectConfirg.getThemeId());
+        //设置标题
+        setTheme(pictureVideoSelectorThemeConfig.getThemeId());
 
         //初始化全局配置文件
         AppConfigSetting.CHANGE_PICTURE_SELECT_STATE_VIEW_PAINT_STATE = new Paint();
@@ -86,21 +87,9 @@ public class PictureVideoSelectActivity extends BasePictureVideoActivity impleme
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_picture_and_video_select);
-
         recyList = findViewById(R.id.recyOpList);
-        viewBottomOptions = findViewById(R.id.viewOpBottomOptions);
-        cbShowOriginPic = findViewById(R.id.cbOpShowOriginPic);
         btnPreview = findViewById(R.id.btnOpPreview);
-
-        //根据主题配置文件设置主题
-        PictureSelectThemeConfig instance = PictureSelectThemeConfig.getInstance();
-        findViewById(R.id.viewOpAcBar).setLayoutParams(new ViewGroup.LayoutParams
-                (ViewGroup.LayoutParams.MATCH_PARENT,instance.getAcBarHeight()));
-        findViewById(R.id.viewOpAcBar).setBackgroundColor(instance.getThemeColor());
-        //设置标题
-        ((TextView)findViewById(R.id.tvOpTitle)).setTextColor(instance.getAcBarTitleColor());
-        ((TextView)findViewById(R.id.tvOpTitle)).setTextSize(instance.getAcBarTitleSize());
-
+        btnConfirm = findViewById(R.id.btnOpConfirm);
 
 
         //初始话参数
@@ -108,12 +97,18 @@ public class PictureVideoSelectActivity extends BasePictureVideoActivity impleme
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         windowWidth = dm.widthPixels;
 
-        //初始化列表显示参数
-        recyList.setLayoutManager(new GridLayoutManager(getApplicationContext(),pictureSelectConfirg.getShowRowCount()));
+        //初始化线程
+        initHandler();
+        //根据主题配置文件设置主题
+        initAcBarOptions();//初始化标题栏
+        initBottomOptions();//初始化底部操作栏
+
+        //设置图片选择显示列数
+        recyList.setLayoutManager(new GridLayoutManager(getApplicationContext(),pictureVideoSelectorThemeConfig.getShowRowCount()));
         recyList.addItemDecoration(new DividerGridItemDecoration(getApplicationContext(),null));
         //初始化适配器
         pictureSelectsAdapter = new PictureSelectNoCameraAdapter(getApplicationContext(),windowWidth / 3,windowWidth / 3
-                ,pictureSelectConfirg.getSelectStateY(),pictureSelectConfirg.getSelectStateN()) {
+                ,pictureVideoSelectorThemeConfig.getSelectStateY(),pictureVideoSelectorThemeConfig.getSelectStateN()) {
             @Override
             public void onSelceChangeClick(BaseViewHolder holder, StorePictureVideoItemDto storePictureItemDto, int position) {
                 //设置选中
@@ -133,13 +128,6 @@ public class PictureVideoSelectActivity extends BasePictureVideoActivity impleme
 
         };
 
-
-        //初始化线程
-        initHandler();
-        //初始化标题栏
-        setAcBar(pictureSelectConfirg);
-        //初始化底部操作栏
-        initBottomOptions();
         //初始化图片列表
         permisstionRequest(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE},PERMISSTION_REQUEST_FOR_EXTERNAL_STORAGE);
 
@@ -158,9 +146,6 @@ public class PictureVideoSelectActivity extends BasePictureVideoActivity impleme
                 }
             }
         });
-        btnPreview.setOnClickListener(this);
-        btnCancel.setOnClickListener(this);
-        btnConfirm.setOnClickListener(this);
 
 
     }
@@ -178,6 +163,34 @@ public class PictureVideoSelectActivity extends BasePictureVideoActivity impleme
         }
     }
 
+
+    /**
+     * 初始化标题栏参数
+     */
+    private void initAcBarOptions(){
+        //初始化标题栏背景
+        setViewWidthHeight(findViewById(R.id.viewOpAcBar),RelativeLayout.LayoutParams.MATCH_PARENT
+                ,getResources().getDimensionPixelOffset(pictureVideoSelectorThemeConfig.getAcBarHeight()));
+        findViewById(R.id.viewOpAcBar).setBackgroundColor(pictureVideoSelectorThemeConfig.getThemeColor());
+        //设置标题
+        ((TextView)findViewById(R.id.tvOpTitle)).setTextColor(pictureVideoSelectorThemeConfig.getAcBarTitleColor());
+        ((TextView)findViewById(R.id.tvOpTitle)).setTextSize(TypedValue.COMPLEX_UNIT_PX,getResources().getDimensionPixelSize(pictureVideoSelectorThemeConfig.getAcBarTitleSize()));
+        setViewWidthHeight(findViewById(R.id.tvOpTitle),RelativeLayout.LayoutParams.WRAP_CONTENT
+                ,getResources().getDimensionPixelOffset(pictureVideoSelectorThemeConfig.getAcBarContentViewHeight()));
+        //设置左上角文字
+        ((Button)findViewById(R.id.btnOpCancel)).setTextColor(pictureVideoSelectorThemeConfig.getAcBarCancelColor());
+        ((Button)findViewById(R.id.btnOpCancel)).setTextSize(TypedValue.COMPLEX_UNIT_PX,getResources().getDimensionPixelSize(pictureVideoSelectorThemeConfig.getAcBarCancelSize()));
+        setViewWidthHeight(findViewById(R.id.btnOpCancel),RelativeLayout.LayoutParams.WRAP_CONTENT
+                ,getResources().getDimensionPixelOffset(pictureVideoSelectorThemeConfig.getAcBarContentViewHeight()));
+        //设置右上角文字
+        btnConfirm.setTextColor(pictureVideoSelectorThemeConfig.getAcBarConfirmColor());
+        btnConfirm.setTextSize(TypedValue.COMPLEX_UNIT_PX,getResources().getDimensionPixelSize(pictureVideoSelectorThemeConfig.getAcBarConfirmSize()));
+        setViewWidthHeight(btnConfirm,RelativeLayout.LayoutParams.WRAP_CONTENT
+                ,getResources().getDimensionPixelOffset(pictureVideoSelectorThemeConfig.getAcBarContentViewHeight()));
+        findViewById(R.id.btnOpCancel).setOnClickListener(this);
+        findViewById(R.id.btnOpConfirm).setOnClickListener(this);
+    }
+
     /**
      * 初始化底部操作栏
      */
@@ -185,29 +198,25 @@ public class PictureVideoSelectActivity extends BasePictureVideoActivity impleme
         if(pictureSelectConfirg.isShowPreview() || pictureSelectConfirg.isShowOriginPicSelect()){
             //判断是否需要预览
             if(!pictureSelectConfirg.isShowPreview()){
-               btnPreview.setVisibility(View.GONE);
+                btnPreview.setVisibility(View.GONE);
+            }else {
+                //设置预览选择文字
+                btnPreview.setTextSize(TypedValue.COMPLEX_UNIT_PX,getResources().getDimensionPixelSize(pictureVideoSelectorThemeConfig.getPreviewTextSize()));
+                btnPreview.setTextColor(pictureVideoSelectorThemeConfig.getPreviewTextColor());
+                btnPreview.setOnClickListener(this);
             }
             //判断是否需要原图选择
             if(!pictureSelectConfirg.isShowOriginPicSelect()){
-                cbShowOriginPic.setVisibility(View.GONE);
-            }
-
-            //设置底部操作栏高度以及背景颜色
-            viewBottomOptions.setBackgroundResource(pictureSelectConfirg.getBottomOptionsBackground());
-            int height = ParamsAndJudgeUtils.dip2px(getApplicationContext(),pictureSelectConfirg.getBottomOptionsHeight());
-            ViewGroup.LayoutParams layoutParams = viewBottomOptions.getLayoutParams();
-            if(layoutParams == null){
-                layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,height);
+                findViewById(R.id.cbOpShowOriginPic).setVisibility(View.GONE);
             }else {
-                layoutParams.height = height;
+                //设置原图选择文字
+                ((CheckBox)findViewById(R.id.cbOpShowOriginPic)).setTextColor(pictureVideoSelectorThemeConfig.getOriginPictureTextColor());
+                ((CheckBox)findViewById(R.id.cbOpShowOriginPic)).setTextSize(TypedValue.COMPLEX_UNIT_PX,getResources().getDimensionPixelSize(pictureVideoSelectorThemeConfig.getOriginPictureTextSize()));
             }
-            viewBottomOptions.setLayoutParams(layoutParams);
-
-            //设置底部操作栏文字颜色以及大小
-            btnPreview.setTextSize(pictureSelectConfirg.getBottomOptionsTextSize());
-            cbShowOriginPic.setTextSize(pictureSelectConfirg.getBottomOptionsTextSize());
-            btnPreview.setTextColor(pictureSelectConfirg.getBottomOptionsTextColor());
-            cbShowOriginPic.setTextColor(pictureSelectConfirg.getBottomOptionsTextColor());
+            //设置底部操作栏高度
+            setViewWidthHeight(btnConfirm,RelativeLayout.LayoutParams.MATCH_PARENT
+                    ,getResources().getDimensionPixelOffset(pictureVideoSelectorThemeConfig.getBottomOptionsHeight()));
+            findViewById(R.id.viewOpBottomOptions).setBackgroundColor(pictureVideoSelectorThemeConfig.getThemeColor());
         }
     }
 
@@ -461,7 +470,6 @@ public class PictureVideoSelectActivity extends BasePictureVideoActivity impleme
 
     /**
      * 跳转到预览界面
-     * @param position
      */
     private void goToPreview(Integer allListShowPosi,boolean isShowAllList){
         if(isAllowGoToPreview) {
@@ -479,7 +487,7 @@ public class PictureVideoSelectActivity extends BasePictureVideoActivity impleme
             bundle.putBoolean(getResources().getString(R.string.go_to_poreview_act_key_for_is_select_video), isSelectVideo);
             intent.putExtras(bundle);
             startActivityForResult(intent, GO_TO_PREVIEW_ACT_REQUES_CODE);
-            overridePendingTransition(R.anim.anim_from_center, 0);
+            overridePendingTransition(com.lorenwang.anim.android.R.anim.anim_from_center, 0);
             isAllowGoToPreview = false;
         }
     }
@@ -571,8 +579,6 @@ public class PictureVideoSelectActivity extends BasePictureVideoActivity impleme
         allList = null;
         pictureSelectConfirg = null;
         btnPreview = null;
-        cbShowOriginPic = null;
-        viewBottomOptions = null;
         recyList = null;
 
         super.onDestroy();

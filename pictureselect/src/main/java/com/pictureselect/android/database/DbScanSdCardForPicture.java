@@ -7,10 +7,9 @@ import android.media.ExifInterface;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 
-import com.basepictureoptionslib.android.database.DbBase;
-import com.basepictureoptionslib.android.utils.CheckUtils;
-import com.basepictureoptionslib.android.utils.DbUtils;
+import com.lorenwang.tools.android.CheckUtils;
 import com.lorenwang.tools.android.ParamsAndJudgeUtils;
+import com.pictureselect.android.utils.PictureVideoDbUtils;
 
 import java.io.File;
 
@@ -25,7 +24,7 @@ public class DbScanSdCardForPicture extends DbBase{
     }
     private DbScanSdCardForPicture(Context context) {
         this.context = context;
-        boolean state = DbUtils.getInstance(context).execSQL("select * from " + property.TB_SCAN_SD_CARD_FOR_PICTURE);
+        boolean state = PictureVideoDbUtils.getInstance(context).execSQL("select * from " + property.TB_SCAN_SD_CARD_FOR_PICTURE);
         if(!state){
             createTable(context);
         }
@@ -78,7 +77,7 @@ public class DbScanSdCardForPicture extends DbBase{
                 //设置旋转角度
                 values.put(MediaStore.Images.Media.ORIENTATION,exifInterface.getAttribute(ExifInterface.TAG_ORIENTATION));
                 file = null;
-                return DbUtils.getInstance(context).insert(property.TB_SCAN_SD_CARD_FOR_PICTURE,values) > 0;
+                return PictureVideoDbUtils.getInstance(context).insert(property.TB_SCAN_SD_CARD_FOR_PICTURE,values) > 0;
             } catch (Exception e) {
                 return false;
             }
@@ -94,7 +93,7 @@ public class DbScanSdCardForPicture extends DbBase{
      */
     public synchronized boolean delete(String path){
         if(CheckUtils.checkIsImage(path)){
-            return DbUtils.getInstance(context).delete(property.TB_SCAN_SD_CARD_FOR_PICTURE,
+            return PictureVideoDbUtils.getInstance(context).delete(property.TB_SCAN_SD_CARD_FOR_PICTURE,
                     MediaStore.Images.Media.DATA + "=?",new String[]{path}) > 0;
         }else {
             return false;
@@ -102,7 +101,7 @@ public class DbScanSdCardForPicture extends DbBase{
     }
 
     public synchronized Cursor getCursor(String selection, String[] selectionArgs){
-        return DbUtils.getInstance(context).select2(property.TB_SCAN_SD_CARD_FOR_PICTURE,null,selection,selectionArgs,null,null,MediaStore.Images.Media.DATE_MODIFIED);
+        return PictureVideoDbUtils.getInstance(context).select2(property.TB_SCAN_SD_CARD_FOR_PICTURE,null,selection,selectionArgs,null,null,MediaStore.Images.Media.DATE_MODIFIED);
     }
 
 
@@ -129,7 +128,7 @@ public class DbScanSdCardForPicture extends DbBase{
         createTbBUffer.append(MediaStore.Images.Media.HEIGHT).append(" int,");
         createTbBUffer.append(MediaStore.Images.Media.ORIENTATION).append(" int");
         createTbBUffer.append(")");
-        boolean statues = DbUtils.getInstance(context).execSQL(createTbBUffer.toString());
+        boolean statues = PictureVideoDbUtils.getInstance(context).execSQL(createTbBUffer.toString());
         createTbBUffer = null;
         return statues;
     }

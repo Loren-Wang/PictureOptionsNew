@@ -1,4 +1,4 @@
-package com.basepictureoptionslib.android.plugin.wxplayer;
+package com.pictureselect.android.wxplayer;
 
 import android.app.Activity;
 import android.content.Context;

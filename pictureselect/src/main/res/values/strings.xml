@@ -5,6 +5,11 @@
     <string name="toast_hint_not_allow_concurrent_selection">不允许同时选择图片和视频</string>
     <string name="confirm_have_size">确定</string>
     <string name="preview_have_size">预览</string>
+    <string name="cancel">取消</string>
+    <string name="confirm">确定</string>
+    <string name="preview">预览</string>
+    <string name="origin_picture">原图</string>
+    <string name="select_picture">选中</string>
 
     <!--跳转到与偶按界面需要传递的参数key-->
     <string name="go_to_poreview_act_key_for_select_list">select_list</string>

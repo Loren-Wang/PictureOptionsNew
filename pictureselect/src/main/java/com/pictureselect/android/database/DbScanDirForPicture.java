@@ -3,8 +3,8 @@ package com.pictureselect.android.database;
 import android.content.Context;
 import android.provider.MediaStore;
 
-import com.basepictureoptionslib.android.database.DbBase;
-import com.basepictureoptionslib.android.utils.DbUtils;
+import com.pictureselect.android.utils.PictureVideoDbUtils;
+
 
 public class DbScanDirForPicture  extends DbBase{
     private static DbScanDirForPicture dbScanDirForPicture;
@@ -17,7 +17,7 @@ public class DbScanDirForPicture  extends DbBase{
     }
     private DbScanDirForPicture(Context context) {
         this.context = context;
-        boolean state = DbUtils.getInstance(context).execSQL("select * from " + property.TB_SCAN_DIR_FOR_PICTURE);
+        boolean state = PictureVideoDbUtils.getInstance(context).execSQL("select * from " + property.TB_SCAN_DIR_FOR_PICTURE);
         if(!state){
             createTable(context);
         }
@@ -96,7 +96,7 @@ public class DbScanDirForPicture  extends DbBase{
         createTbBUffer.append(MediaStore.Images.Media.HEIGHT).append(" int,");
         createTbBUffer.append(MediaStore.Images.Media.ORIENTATION).append(" int");
         createTbBUffer.append(")");
-        boolean statues = DbUtils.getInstance(context).execSQL(createTbBUffer.toString());
+        boolean statues = PictureVideoDbUtils.getInstance(context).execSQL(createTbBUffer.toString());
         createTbBUffer = null;
         return statues;
     }

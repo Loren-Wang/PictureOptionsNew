@@ -1,4 +1,4 @@
-package com.basepictureoptionslib.android.plugin.image;
+package com.pictureselect.android.utils;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -6,12 +6,12 @@ import android.os.Looper;
 import android.text.TextUtils;
 import android.widget.ImageView;
 
-import com.basepictureoptionslib.android.plugin.wxplayer.PictureOptionsWxPlayer;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.load.engine.cache.ExternalCacheDiskCacheFactory;
 import com.bumptech.glide.load.engine.cache.InternalCacheDiskCacheFactory;
 import com.bumptech.glide.request.RequestOptions;
+import com.pictureselect.android.wxplayer.PictureOptionsWxPlayer;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -114,11 +114,13 @@ public class ImageLoadingUtis {
                 File file = new File(filePath);
                 if (file.isDirectory()) {
                     File files[] = file.listFiles();
-                    for (File file1 : files) {
-                        deleteFolderFile(file1.getAbsolutePath(), true);
+                    if(files != null) {
+                        for (File file1 : files) {
+                            deleteFolderFile(file1.getAbsolutePath(), true);
+                        }
                     }
                 }
-                if (deleteThisPath) {
+                if (deleteThisPath && file != null) {
                     if (!file.isDirectory()) {
                         file.delete();
                     } else {
@@ -155,6 +157,9 @@ public class ImageLoadingUtis {
      * @throws Exception
      */
     private long getFolderSize(File file) throws Exception {
+        if(file == null){
+            return 0;
+        }
         long size = 0;
         try {
             File[] fileList = file.listFiles();

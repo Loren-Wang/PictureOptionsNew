@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.basepictureoptionslib.android.plugin.image.ImageLoadingUtis;
+import com.pictureselect.android.utils.ImageLoadingUtis;
 import com.bumptech.glide.request.RequestOptions;
 import com.pictureselect.android.R;
 import com.pictureselect.android.dto.StorePictureVideoItemDto;

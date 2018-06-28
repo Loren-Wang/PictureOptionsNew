@@ -12,7 +12,6 @@ import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
-import com.basepictureoptionslib.android.utils.LogUtils;
 import com.pictureselect.android.contentobserver.SystemPictureVideoContentObserver;
 import com.pictureselect.android.database.DbScanSdCardForPicture;
 import com.pictureselect.android.database.DbScanSdCardForVideo;
@@ -46,7 +45,6 @@ public class SdCardFileChangeUtils {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            LogUtils.logD(TAG,"hhh");
             Uri uri = (Uri) msg.obj;
             Cursor cursor;
             String displayName;
@@ -141,10 +139,12 @@ public class SdCardFileChangeUtils {
         //添加相册扫描
         String absPath = Environment.getExternalStorageDirectory().getPath();
         File absFile = new File(absPath);
-        for(File file : absFile.listFiles()){
-            if(file.isDirectory() && file.getName().toLowerCase().equals("dcim")){
-                scanDirList.add(file.getAbsolutePath() + "/");
-                break;
+        if(absFile != null) {
+            for (File file : absFile.listFiles()) {
+                if (file.isDirectory() && file.getName().toLowerCase().equals("dcim")) {
+                    scanDirList.add(file.getAbsolutePath() + "/");
+                    break;
+                }
             }
         }
 

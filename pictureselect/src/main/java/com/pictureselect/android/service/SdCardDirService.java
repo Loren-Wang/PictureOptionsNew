@@ -7,12 +7,12 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
-import com.basepictureoptionslib.android.database.DbColumnsAndProperty;
-import com.basepictureoptionslib.android.utils.DbUtils;
-import com.basepictureoptionslib.android.utils.LogUtils;
+import com.lorenwang.tools.android.LogUtils;
+import com.pictureselect.android.database.DbColumnsAndProperty;
 import com.pictureselect.android.database.DbScanSdCardForPicture;
 import com.pictureselect.android.database.DbScanSdCardForVideo;
 import com.pictureselect.android.setting.AppConfigSetting;
+import com.pictureselect.android.utils.PictureVideoDbUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -36,8 +36,8 @@ public class SdCardDirService extends Service {
             ArrayList<String> pathList = extras.getStringArrayList("scanDir");
 
             //清空数据库
-            DbUtils.getInstance(getApplicationContext()).deleteDatabaseTableData(DbColumnsAndProperty.getInstance().TB_SCAN_SD_CARD_FOR_PICTURE);
-            DbUtils.getInstance(getApplicationContext()).deleteDatabaseTableData(DbColumnsAndProperty.getInstance().TB_SCAN_SD_CARD_FOR_VIDEO);
+            PictureVideoDbUtils.getInstance(getApplicationContext()).deleteDatabaseTableData(DbColumnsAndProperty.getInstance().TB_SCAN_SD_CARD_FOR_PICTURE);
+            PictureVideoDbUtils.getInstance(getApplicationContext()).deleteDatabaseTableData(DbColumnsAndProperty.getInstance().TB_SCAN_SD_CARD_FOR_VIDEO);
             //开始扫描
             for(String observerPath : pathList) {
                 //检测网址是否为空

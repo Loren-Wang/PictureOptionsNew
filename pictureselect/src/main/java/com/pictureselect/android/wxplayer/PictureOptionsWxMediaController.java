@@ -1,4 +1,4 @@
-package com.basepictureoptionslib.android.plugin.wxplayer;
+package com.pictureselect.android.wxplayer;
 
 import android.content.Context;
 import android.os.Handler;
@@ -12,8 +12,8 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.basepictureoptionslib.android.R;
 import com.bumptech.glide.Glide;
+import com.pictureselect.android.R;
 
 /**
  * author   maimingliang

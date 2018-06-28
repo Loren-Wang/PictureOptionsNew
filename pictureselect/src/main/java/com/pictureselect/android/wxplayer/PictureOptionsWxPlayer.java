@@ -1,4 +1,4 @@
-package com.basepictureoptionslib.android.plugin.wxplayer;
+package com.pictureselect.android.wxplayer;
 
 import android.app.Activity;
 import android.content.Context;
@@ -16,8 +16,8 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
-import com.basepictureoptionslib.android.AppCommon;
-import com.basepictureoptionslib.android.utils.SharedPrefUtils;
+import com.lorenwang.tools.android.SharedPrefUtils;
+import com.pictureselect.android.AppCommon;
 
 import java.io.IOException;
 import java.util.Map;
@@ -214,7 +214,7 @@ public class PictureOptionsWxPlayer extends FrameLayout implements PictureOption
             mMediaPlayer.setOnErrorListener(mOnErrorListener);
             mMediaPlayer.setOnCompletionListener(mOnCompletionListener);
             mMediaPlayer.setOnSeekCompleteListener(mOnSeekCompleteListener);
-            boolean isMute = SharedPrefUtils.getBoolean(getContext(),AppCommon.VIDEO_PLAY_MUTE_OR_UNMUTE, true);
+            boolean isMute = SharedPrefUtils.getInstance(getContext()).getBoolean(AppCommon.VIDEO_PLAY_MUTE_OR_UNMUTE, true);
             if (isMute) {
                 setVolumeOff();
             } else {
