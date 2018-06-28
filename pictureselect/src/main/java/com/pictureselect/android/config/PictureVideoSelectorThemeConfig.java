@@ -1,13 +1,30 @@
 package com.pictureselect.android.config;
 
+import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
+import android.provider.MediaStore;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DimenRes;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
+import android.text.TextUtils;
 
 import com.pictureselect.android.R;
+import com.pictureselect.android.contentobserver.SystemPictureVideoContentObserver;
+import com.pictureselect.android.database.DbScanSdCardForPicture;
+import com.pictureselect.android.database.DbScanSdCardForVideo;
+import com.pictureselect.android.service.SdCardDirService;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * 创建时间： 0027/2018/6/27 下午 5:03
@@ -42,7 +59,11 @@ import java.util.ArrayList;
  */
 public class PictureVideoSelectorThemeConfig {
     private static PictureVideoSelectorThemeConfig pictureVideoSelectConfirg;
-    public static PictureVideoSelectorThemeConfig getInstance(){
+    private static Context context;
+    public static PictureVideoSelectorThemeConfig getInstance(Context ctx){
+        if(ctx != null){
+            context = ctx;
+        }
         if(pictureVideoSelectConfirg == null){
             pictureVideoSelectConfirg = new PictureVideoSelectorThemeConfig();
         }
@@ -90,10 +111,93 @@ public class PictureVideoSelectorThemeConfig {
     private int showRowCount = 3;//显示的列数
     private ArrayList<String> scanDirList = new ArrayList<>();//  指定扫描文件夹（将扫描做到配置当中）
 
+    private final int SYS_DATABASE_CHANGE_FOR_PICTURE = 0;//系统图片数据库变更
+    private final int SYS_DATABASE_CHANGE_FOR_VIDEO = 1;//系统视频数据库变更
+
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            Uri uri = (Uri) msg.obj;
+            Cursor cursor;
+            String displayName;
+            String path;
+            Iterator<String> iterator;
+            boolean isHave;//是否在扫描文件夹中
+            switch (msg.what){
+                case SYS_DATABASE_CHANGE_FOR_PICTURE:
+                    cursor = context.getContentResolver().query(uri,null,
+                            null, null, null);
+                    if(cursor != null){
+                        if(cursor.moveToNext()) {
+                            //判断是否在扫描的文件夹里
+                            displayName = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME));
+                            path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
+                            if(isHaveScanDirList(path,displayName)) {
+                                DbScanSdCardForPicture.getInstance(context).insert(path);
+                            }
+                            path = null;
+                        }
+                        cursor.close();
+                    }
+                    cursor = null;
+                    break;
+                case SYS_DATABASE_CHANGE_FOR_VIDEO:
+                    cursor = context.getContentResolver().query(uri,null,
+                            null, null, null);
+                    if(cursor != null){
+                        if(cursor.moveToNext()) {
+                            //判断是否在扫描的文件夹里
+                            displayName = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DISPLAY_NAME));
+                            path = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DATA));
+                            if(isHaveScanDirList(path,displayName)) {
+                                DbScanSdCardForVideo.getInstance(context).insert(path);
+                            }
+                            path = null;
+                        }
+                        cursor.close();
+                    }
+                    cursor = null;
+                    break;
+                default:
+                    break;
+            }
+
+        }
+
+        /**
+         * 判断是否在扫描文件夹下
+         * @param path
+         * @param displayName
+         * @return
+         */
+        private boolean isHaveScanDirList(String path,String displayName){
+            //判断是否存在于被扫描文件夹中
+            if(!TextUtils.isEmpty(displayName)){
+                Iterator<String> iterator = scanDirList.iterator();
+                path = path.replace(displayName,"");
+                displayName = null;
+                while (iterator.hasNext()){
+                    if(path.indexOf(iterator.next()) == 0){
+                        iterator = null;
+                        return true;
+                    }
+                }
+                iterator = null;
+                //如果没有存在
+                return false;
+            }else {
+                return false;
+            }
+        }
+    };
+
+
+
+
     public int getAcBarTitleColor() {
         return acBarTitleColor;
     }
-
     public PictureVideoSelectorThemeConfig setAcBarTitleColor(@ColorRes int acBarTitleColor) {
         this.acBarTitleColor = acBarTitleColor;
         return this;
@@ -102,7 +206,6 @@ public class PictureVideoSelectorThemeConfig {
     public int getThemeColor() {
         return themeColor;
     }
-
     public PictureVideoSelectorThemeConfig setThemeColor(@ColorRes int themeColor) {
         this.themeColor = themeColor;
         return this;
@@ -111,7 +214,6 @@ public class PictureVideoSelectorThemeConfig {
     public int getAcBarCancelColor() {
         return acBarCancelColor;
     }
-
     public PictureVideoSelectorThemeConfig setAcBarCancelColor(@ColorRes int acBarCancelColor) {
         this.acBarCancelColor = acBarCancelColor;
         return this;
@@ -120,7 +222,6 @@ public class PictureVideoSelectorThemeConfig {
     public int getAcBarConfirmColor() {
         return acBarConfirmColor;
     }
-
     public PictureVideoSelectorThemeConfig setAcBarConfirmColor(@ColorRes int acBarConfirmColor) {
         this.acBarConfirmColor = acBarConfirmColor;
         return this;
@@ -129,7 +230,6 @@ public class PictureVideoSelectorThemeConfig {
     public int getAcBarTitleSize() {
         return acBarTitleSize;
     }
-
     public PictureVideoSelectorThemeConfig setAcBarTitleSize(@DimenRes int acBarTitleSize) {
         this.acBarTitleSize = acBarTitleSize;
         return this;
@@ -138,7 +238,6 @@ public class PictureVideoSelectorThemeConfig {
     public int getAcBarCancelSize() {
         return acBarCancelSize;
     }
-
     public PictureVideoSelectorThemeConfig setAcBarCancelSize(@DimenRes int acBarCancelSize) {
         this.acBarCancelSize = acBarCancelSize;
         return this;
@@ -147,7 +246,6 @@ public class PictureVideoSelectorThemeConfig {
     public int getAcBarConfirmSize() {
         return acBarConfirmSize;
     }
-
     public PictureVideoSelectorThemeConfig setAcBarConfirmSize(@DimenRes int acBarConfirmSize) {
         this.acBarConfirmSize = acBarConfirmSize;
         return this;
@@ -156,7 +254,6 @@ public class PictureVideoSelectorThemeConfig {
     public int getAcBarHeight() {
         return acBarHeight;
     }
-
     public PictureVideoSelectorThemeConfig setAcBarHeight(@DimenRes int acBarHeight) {
         this.acBarHeight = acBarHeight;
         return this;
@@ -165,7 +262,6 @@ public class PictureVideoSelectorThemeConfig {
     public int getOriginPictureTextColor() {
         return originPictureTextColor;
     }
-
     public PictureVideoSelectorThemeConfig setOriginPictureTextColor(@ColorRes int originPictureTextColor) {
         this.originPictureTextColor = originPictureTextColor;
         return this;
@@ -174,7 +270,6 @@ public class PictureVideoSelectorThemeConfig {
     public int getOriginPictureTextSize() {
         return originPictureTextSize;
     }
-
     public PictureVideoSelectorThemeConfig setOriginPictureTextSize(@DimenRes int originPictureTextSize) {
         this.originPictureTextSize = originPictureTextSize;
         return this;
@@ -183,7 +278,6 @@ public class PictureVideoSelectorThemeConfig {
     public int getPreviewTextColor() {
         return previewTextColor;
     }
-
     public PictureVideoSelectorThemeConfig setPreviewTextColor(@ColorRes int previewTextColor) {
         this.previewTextColor = previewTextColor;
         return this;
@@ -192,7 +286,6 @@ public class PictureVideoSelectorThemeConfig {
     public int getPreviewTextSize() {
         return previewTextSize;
     }
-
     public PictureVideoSelectorThemeConfig setPreviewTextSize(@DimenRes int previewTextSize) {
         this.previewTextSize = previewTextSize;
         return this;
@@ -201,7 +294,6 @@ public class PictureVideoSelectorThemeConfig {
     public int getSelectedTextColor() {
         return selectedTextColor;
     }
-
     public PictureVideoSelectorThemeConfig setSelectedTextColor(@ColorRes int selectedTextColor) {
         this.selectedTextColor = selectedTextColor;
         return this;
@@ -210,7 +302,6 @@ public class PictureVideoSelectorThemeConfig {
     public int getSelectedTextSize() {
         return selectedTextSize;
     }
-
     public PictureVideoSelectorThemeConfig setSelectedTextSize(@DimenRes int selectedTextSize) {
         this.selectedTextSize = selectedTextSize;
         return this;
@@ -219,7 +310,6 @@ public class PictureVideoSelectorThemeConfig {
     public int getAcBarContentViewHeight() {
         return acBarContentViewHeight;
     }
-
     public PictureVideoSelectorThemeConfig setAcBarContentViewHeight(@DimenRes int acBarContentViewHeight) {
         this.acBarContentViewHeight = acBarContentViewHeight;
         return this;
@@ -228,7 +318,6 @@ public class PictureVideoSelectorThemeConfig {
     public int getBottomOptionsHeight() {
         return bottomOptionsHeight;
     }
-
     public PictureVideoSelectorThemeConfig setBottomOptionsHeight(@DimenRes int bottomOptionsHeight) {
         this.bottomOptionsHeight = bottomOptionsHeight;
         return this;
@@ -237,7 +326,6 @@ public class PictureVideoSelectorThemeConfig {
     public Integer getSelectStateY() {
         return selectStateY;
     }
-
     public PictureVideoSelectorThemeConfig setSelectStateY(@DrawableRes Integer selectStateY) {
         this.selectStateY = selectStateY;
         return this;
@@ -246,7 +334,6 @@ public class PictureVideoSelectorThemeConfig {
     public Integer getSelectStateN() {
         return selectStateN;
     }
-
     public PictureVideoSelectorThemeConfig setSelectStateN(@DrawableRes Integer selectStateN) {
         this.selectStateN = selectStateN;
         return this;
@@ -255,26 +342,69 @@ public class PictureVideoSelectorThemeConfig {
     public int getShowRowCount() {
         return showRowCount;
     }
-
     public PictureVideoSelectorThemeConfig setShowRowCount(int showRowCount) {
         this.showRowCount = showRowCount;
         return this;
     }
 
-    public ArrayList<String> getScanDirList() {
-        return scanDirList;
-    }
 
-    public PictureVideoSelectorThemeConfig setScanDirList(ArrayList<String> scanDirList) {
-        this.scanDirList = scanDirList;
+    public PictureVideoSelectorThemeConfig setScanDirList(@Nullable String[] observerPaths){
+        if(observerPaths == null){
+            return this;
+        }
+        //开启扫描
+        scanDirList.clear();
+        for(String observerPath : observerPaths) {
+            if(observerPath.trim().lastIndexOf("/") == observerPath.trim().length() - 1) {
+                scanDirList.add(observerPath);
+            }else {
+                scanDirList.add(observerPath.trim() + "/");
+            }
+        }
+        //添加相册扫描
+        String absPath = Environment.getExternalStorageDirectory().getPath();
+        File absFile = new File(absPath);
+        if(absFile != null) {
+            for (File file : absFile.listFiles()) {
+                if (file.isDirectory() && file.getName().toLowerCase().equals("dcim")) {
+                    scanDirList.add(file.getAbsolutePath() + "/");
+                    break;
+                }
+            }
+        }
+
+        if(context != null) {
+            //开始扫描
+            startScanSdCard();
+            //开启图片系统数据库监听
+            context.getContentResolver().registerContentObserver(MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                    , true, new SystemPictureVideoContentObserver(handler, SYS_DATABASE_CHANGE_FOR_PICTURE));
+            //开启视频系统数据库监听
+            context.getContentResolver().registerContentObserver(MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+                    , true, new SystemPictureVideoContentObserver(handler, SYS_DATABASE_CHANGE_FOR_VIDEO));
+        }
         return this;
     }
+    /**
+     * 开始文件扫描
+     */
+    private void startScanSdCard(){
+        //停止服务
+        context.stopService(new Intent(context, SdCardDirService.class));
+        //开启服务扫描
+        Intent intent = new Intent(context, SdCardDirService.class);
+        Bundle bundle = new Bundle();
+        bundle.putStringArrayList("scanDir",scanDirList);
+        intent.putExtras(bundle);
+        context.startService(intent);
+    }
+
+
 
     @StyleRes
     public int getThemeId() {
         return themeId;
     }
-
     public PictureVideoSelectorThemeConfig setThemeId(@StyleRes int themeId) {
         this.themeId = themeId;
         return this;
