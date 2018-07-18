@@ -142,17 +142,26 @@ public class ChangePictureSelectStateView extends View {
         }
     }
 
-    @Override
-    public void setSelected(boolean selected) {
+    public void setSelected(boolean selected,boolean isChangeBg) {
         isSelect = selected;
-        if(isSelect){
-            setBackgroundColor(Color.parseColor("#99000000"));
-        }else {
-            setBackgroundColor(Color.parseColor("#00000000"));
+        if(isChangeBg) {
+            if (isSelect) {
+                setBackgroundColor(Color.parseColor("#99000000"));
+            } else {
+                setBackgroundColor(Color.parseColor("#00000000"));
+            }
         }
         postInvalidate();
     }
 
+    @Override
+    public void setSelected(boolean selected) {
+        setSelected(selected,true);
+    }
+
+    public boolean isSelect() {
+        return isSelect;
+    }
 
     /**
      * 设置有效范围
